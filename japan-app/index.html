@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#ffffff" />
+<title>יפן · Honeymoon Itinerary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff;
+    --surface:#ffffff;
+    --surface-2:#f5f5f6;
+    --ink:#111113;
+    --muted:#76767c;
+    --indigo:#111113;
+    --indigo-2:#000000;
+    --vermilion:#111113;
+    --vermilion-soft:#e6e6e8;
+    --gold:#9a9aa0;
+    --line:#e7e7ea;
+    --line-2:#f0f0f2;
+    --shadow:0 6px 22px rgba(17,17,19,.07);
+    --shadow-sm:0 1px 4px rgba(17,17,19,.05);
+    --radius:20px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Assistant',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  .wrap{max-width:980px;margin:0 auto;padding:0 16px;}
+
+  /* ---------- Header ---------- */
+  header.top{
+    background:var(--surface);color:var(--ink);position:relative;
+    border-bottom:1px solid var(--line);
+  }
+  .hd{padding:34px 16px 28px;text-align:center;position:relative;z-index:1;}
+  .torii{color:var(--muted);font-weight:700;letter-spacing:2px;}
+  .kicker{font-size:12px;letter-spacing:6px;text-transform:uppercase;color:var(--muted);margin:0 0 10px;}
+  .title-he{font-size:52px;line-height:1;margin:0;font-weight:800;letter-spacing:-1px;}
+  .title-sub{font-size:13px;letter-spacing:5px;color:var(--muted);margin:12px 0 0;text-transform:uppercase;}
+  .stats{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:24px auto 2px;max-width:680px;}
+  .stat{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;
+        padding:9px 16px;min-width:84px;}
+  .stat b{display:block;font-size:24px;font-weight:800;line-height:1.1;letter-spacing:-.5px;}
+  .stat span{font-size:11.5px;color:var(--muted);letter-spacing:.5px;}
+
+  /* ---------- Nav ---------- */
+  nav.tabs{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);
+           backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line);}
+  .tabs-inner{max-width:980px;margin:0 auto;display:flex;gap:6px;padding:9px 12px;
+              overflow-x:auto;scrollbar-width:none;}
+  .tabs-inner::-webkit-scrollbar{display:none;}
+  nav.tabs button{appearance:none;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;
+    font-family:inherit;font-size:14.5px;font-weight:700;color:var(--ink);white-space:nowrap;
+    padding:9px 18px;border-radius:999px;display:flex;align-items:center;gap:7px;transition:.18s;}
+  nav.tabs button .ti{font-size:16px;}
+  nav.tabs button:hover{border-color:var(--ink);}
+  nav.tabs button.active{color:#fff;background:var(--ink);border-color:var(--ink);}
+
+  /* ---------- Panes ---------- */
+  main{padding:22px 0 60px;}
+  .tab-pane{display:none;animation:fade .28s ease;}
+  .tab-pane.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .section-head{display:flex;align-items:baseline;gap:10px;margin:6px 2px 16px;}
+  .section-head h2{font-size:32px;margin:0;font-weight:800;letter-spacing:-1px;}
+  .section-head .jp{color:var(--vermilion);font-size:16px;}
+  .lead{color:var(--muted);font-size:15.5px;margin:0 2px 24px;max-width:680px;line-height:1.55;}
+
+  /* ---------- Overview option cards ---------- */
+  .opt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .opt-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+            box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column;}
+  .opt-card .oc-head{padding:16px 16px 12px;border-bottom:1px solid var(--line-2);position:relative;}
+  .oc-num{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;}
+  .oc-title{font-size:25px;font-weight:800;margin:3px 0 2px;letter-spacing:-.5px;}
+  .oc-tag{display:inline-block;font-size:12px;font-weight:700;color:var(--ink);background:var(--surface);
+          border:1.5px solid var(--line);border-radius:999px;padding:4px 12px;margin-top:6px;}
+  .oc-desc{font-size:13.5px;color:var(--muted);padding:12px 16px 6px;line-height:1.5;}
+  .oc-list{list-style:none;margin:0;padding:4px 16px 16px;flex:1;}
+  .oc-list li{display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line-2);font-size:13.5px;}
+  .oc-list li:last-child{border-bottom:none;}
+  .oc-city{font-weight:700;flex:1;}
+  .oc-dates{color:var(--muted);font-size:12px;direction:ltr;}
+  .oc-n{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;
+        font-size:11.5px;font-weight:700;color:var(--indigo);padding:1px 7px;white-space:nowrap;}
+  .oc-go{display:block;text-align:center;background:var(--ink);color:#fff;font-weight:700;
+         font-size:14.5px;padding:14px;cursor:pointer;border:none;margin:6px 16px 16px;border-radius:999px;
+         transition:.18s;}
+  .oc-go:hover{background:#000;transform:translateY(-1px);}
+
+  /* ---------- Tips ---------- */
+  .tips-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:8px;}
+  .tip{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+       padding:16px 16px 14px;box-shadow:var(--shadow-sm);}
+  .tip h4{margin:0 0 6px;font-size:16px;display:flex;align-items:center;gap:8px;}
+  .tip p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55;}
+
+  .diff{background:var(--surface-2);border:1px solid var(--line);
+        border-radius:var(--radius);padding:18px 18px 6px;margin-top:26px;}
+  .diff h3{margin:0 0 10px;font-size:20px;}
+  .diff .dl{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line-2);font-size:14px;}
+  .diff .dl:first-of-type{border-top:none;}
+  .diff .dnum{font-weight:800;color:var(--vermilion);flex:0 0 auto;}
+
+  /* ---------- Option detail ---------- */
+  .opt-hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+            padding:22px 24px;box-shadow:var(--shadow-sm);margin-bottom:18px;}
+  .opt-hero .oh-num{color:var(--muted);font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;}
+  .opt-hero h2{font-size:34px;margin:4px 0 6px;font-weight:800;letter-spacing:-1px;}
+  .opt-hero .oh-tag{font-size:13px;font-weight:700;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:4px 14px;display:inline-block;}
+  .opt-hero p{margin:10px 0 0;color:var(--muted);font-size:14.5px;}
+
+  /* mini table */
+  .mtable{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+          overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:22px;}
+  .mtable .mt-row{display:grid;grid-template-columns:1.4fr 1fr auto 1.6fr;gap:10px;align-items:center;
+                  padding:11px 16px;border-bottom:1px solid var(--line-2);font-size:13.5px;}
+  .mtable .mt-row:last-child{border-bottom:none;}
+  .mtable .mt-row.head{background:var(--surface-2);font-weight:700;color:var(--muted);font-size:12px;letter-spacing:.5px;}
+  .mt-city{font-weight:700;}
+  .mt-dates{color:var(--muted);direction:ltr;text-align:right;font-size:12.5px;}
+  .mt-n{justify-self:start;background:var(--surface-2);color:var(--indigo);font-weight:700;border-radius:8px;padding:1px 9px;font-size:12px;white-space:nowrap;}
+  .mt-hotel{color:var(--muted);}
+
+  /* segment cards */
+  details.seg{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+              margin-bottom:14px;box-shadow:var(--shadow-sm);overflow:hidden;}
+  details.seg[open]{box-shadow:var(--shadow);}
+  .seg-sum{list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:14px;}
+  .seg-sum::-webkit-details-marker{display:none;}
+  .seg-day{flex:0 0 auto;width:46px;height:46px;border-radius:12px;background:var(--indigo);color:#fff;
+           display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;}
+  .seg-day b{font-size:18px;}
+  .seg-day span{font-size:9px;letter-spacing:1px;color:rgba(255,255,255,.6);}
+  .seg-meta{flex:1;min-width:0;}
+  .seg-meta h3{margin:0;font-size:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .seg-meta .seg-dates{color:var(--muted);font-size:12.5px;direction:ltr;font-weight:600;}
+  .seg-meta .seg-hotel{font-size:13px;color:var(--muted);margin-top:2px;}
+  .seg-meta .seg-hotel b{color:var(--ink);font-weight:700;}
+  .chev{flex:0 0 auto;color:var(--muted);transition:.25s;font-size:18px;}
+  details.seg[open] .chev{transform:rotate(180deg);}
+  .seg-body{padding:2px 18px 18px;border-top:1px solid var(--line-2);}
+
+  .hl-row{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0 4px;}
+  .hl{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1.5px solid var(--line);
+      border-radius:999px;padding:7px 8px 7px 16px;font-size:13.5px;font-weight:700;transition:.18s;}
+  .hl:hover{border-color:var(--ink);}
+  .hl .pin{font-size:12px;}
+  .hl a.mini{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;
+             background:var(--surface-2);color:var(--ink);text-decoration:none;font-size:12px;border:1px solid var(--line);}
+  .hl a.mini:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  .hotel-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface-2);
+             border:1px solid var(--line);border-radius:12px;padding:11px 14px;margin:14px 0;}
+  .hotel-box .hb-ic{font-size:10px;font-weight:800;letter-spacing:.5px;color:var(--muted);
+        background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 7px;flex:0 0 auto;}
+  .hotel-box .hb-txt{flex:1;min-width:120px;}
+  .hotel-box .hb-txt b{font-size:14.5px;}
+  .hotel-box .hb-txt span{display:block;font-size:12.5px;color:var(--muted);}
+
+  .btn-map,.btn-book{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:12.5px;
+        font-weight:700;padding:7px 12px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;}
+  .btn-map{background:var(--surface-2);color:var(--indigo);}
+  .btn-map:hover{background:var(--surface-2);border-color:var(--ink);color:var(--ink);}
+  .btn-book{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .btn-book:hover{background:#000;}
+  .ext{opacity:.55;font-weight:700;}
+
+  .tl{margin:16px 0 4px;}
+  .tl-day{display:flex;gap:12px;padding:10px 0;border-top:1px dashed var(--line-2);}
+  .tl-day:first-child{border-top:none;}
+  .tl-date{flex:0 0 auto;font-weight:800;color:var(--vermilion);font-size:13px;direction:ltr;min-width:42px;text-align:left;padding-top:1px;}
+  .tl-c h5{margin:0 0 2px;font-size:15px;}
+  .tl-c p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55;}
+
+  .transfer{display:flex;align-items:center;gap:10px;margin-top:14px;background:var(--surface-2);
+            border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px;}
+  .transfer .tr-ic{font-size:10px;font-weight:800;letter-spacing:.5px;color:var(--muted);
+        background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 7px;flex:0 0 auto;}
+  .transfer b{color:var(--ink);}
+  .transfer span{color:var(--muted);}
+
+  .note-inline{font-size:12.5px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);
+               border-radius:10px;padding:9px 12px;margin-top:12px;}
+
+  /* ---------- Files page ---------- */
+  .files-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+         box-shadow:var(--shadow-sm);padding:18px;}
+  .panel h3{margin:0 0 4px;font-size:18px;display:flex;align-items:center;gap:8px;}
+  .panel .ph-sub{font-size:13px;color:var(--muted);margin:0 0 14px;}
+  .drop{border:2px dashed var(--line);border-radius:12px;padding:26px 16px;text-align:center;cursor:pointer;
+        transition:.18s;background:var(--surface-2);}
+  .drop:hover,.drop.over{border-color:var(--indigo);background:var(--surface-2);}
+  .drop .di{width:42px;height:42px;margin:0 auto;border:1.5px solid var(--line);border-radius:50%;
+            display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:400;color:var(--muted);line-height:1;}
+  .drop:hover .di,.drop.over .di{border-color:var(--ink);color:var(--ink);}
+  .drop p{margin:6px 0 0;font-size:13.5px;color:var(--muted);}
+  .drop b{color:var(--indigo);}
+  .filelist,.linklist{list-style:none;margin:14px 0 0;padding:0;}
+  .filelist li,.linklist li{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);
+        border-radius:10px;margin-bottom:8px;background:var(--surface-2);}
+  .fl-ic{font-size:10px;font-weight:800;letter-spacing:.5px;color:var(--muted);flex:0 0 auto;
+        background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:7px 6px;min-width:40px;text-align:center;}
+  .fl-info{flex:1;min-width:0;}
+  .fl-info b{font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .fl-info span{font-size:11.5px;color:var(--muted);}
+  .fl-info a{color:var(--indigo);text-decoration:none;font-size:12px;font-weight:600;}
+  .icon-btn{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:8px;
+            cursor:pointer;width:32px;height:32px;font-size:20px;line-height:1;color:var(--muted);flex:0 0 auto;}
+  .icon-btn:hover{color:var(--ink);border-color:var(--ink);background:var(--surface-2);}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+  .field label{font-size:12.5px;font-weight:700;color:var(--muted);}
+  .field input,.field textarea{font-family:inherit;font-size:14px;border:1px solid var(--line);border-radius:10px;
+        padding:10px 12px;background:var(--surface-2);color:var(--ink);resize:vertical;}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--indigo);background:#fff;}
+  .btn-primary{appearance:none;border:none;background:var(--ink);color:#fff;font-family:inherit;font-weight:700;
+        font-size:14px;padding:12px 22px;border-radius:999px;cursor:pointer;transition:.18s;}
+  .btn-primary:hover{background:#000;}
+  .empty{font-size:13px;color:var(--muted);text-align:center;padding:14px;font-style:italic;}
+  .saved-flash{font-size:12px;color:var(--ink);font-weight:700;margin-right:8px;opacity:0;transition:.3s;}
+  .saved-flash.show{opacity:1;}
+
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:24px 16px 30px;}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:880px){
+    .opt-grid{grid-template-columns:1fr;}
+    .files-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:640px){
+    .title-he{font-size:38px;}
+    .tips-grid{grid-template-columns:1fr;}
+    .mtable .mt-row{grid-template-columns:1fr auto;grid-template-areas:"city n" "dates dates" "hotel hotel";gap:3px 10px;padding:12px 14px;}
+    .mtable .mt-row.head{display:none;}
+    .mt-city{grid-area:city;} .mt-n{grid-area:n;justify-self:end;} .mt-dates{grid-area:dates;text-align:right;}
+    .mt-hotel{grid-area:hotel;}
+    .stat{min-width:70px;padding:7px 10px;}
+    .stat b{font-size:18px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="hd">
+    <p class="kicker">Honeymoon Itinerary</p>
+    <h1 class="title-he">יפן</h1>
+    <p class="title-sub">9.9 – 3.10 · 24 Nights</p>
+    <div class="stats">
+      <div class="stat"><b>24</b><span>לילות</span></div>
+      <div class="stat"><b>9</b><span>יעדים</span></div>
+      <div class="stat"><b>2</b><span>טיסות פנים</span></div>
+      <div class="stat"><b>3</b><span>אפשרויות</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-inner">
+    <button data-tab="overview" class="active">סקירה</button>
+    <button data-tab="opt1">אופציה 1</button>
+    <button data-tab="opt2">אופציה 2</button>
+    <button data-tab="opt3">אופציה 3</button>
+    <button data-tab="files">הקבצים שלנו</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section class="tab-pane active" id="pane-overview">
+    <div class="section-head"><h2>סקירה כללית</h2></div>
+    <p class="lead">שלוש אפשרויות מסלול לאותם 24 לילות. כולן מתחילות ומסתיימות בטוקיו, עם 2 טיסות פנים. בחרו אופציה כדי לראות את הפירוט המלא יום-אחר-יום.</p>
+    <div class="opt-grid" id="ov-cards"></div>
+
+    <div class="diff" id="ov-diff"></div>
+
+    <div class="section-head" style="margin-top:30px"><h2>לפני שיוצאים</h2></div>
+    <div class="tips-grid" id="ov-tips"></div>
+  </section>
+
+  <section class="tab-pane" id="pane-opt1"></section>
+  <section class="tab-pane" id="pane-opt2"></section>
+  <section class="tab-pane" id="pane-opt3"></section>
+
+  <section class="tab-pane" id="pane-files">
+    <div class="section-head"><h2>הקבצים שלנו</h2></div>
+    <p class="lead">העלו כרטיסי טיסה, אישורי מלון, צילומים ומסמכים — נשמרים מקומית בדפדפן על המכשיר הזה. אפשר גם לשמור לינקים חשובים והערות לטיול.</p>
+    <div class="files-grid">
+      <div class="panel">
+        <h3>קבצים</h3>
+        <p class="ph-sub">כרטיסים, אישורים, צילומים, PDF — נשמר על המכשיר.</p>
+        <div class="drop" id="drop">
+          <div class="di">+</div>
+          <p><b>לחצו להעלאה</b> או גררו קבצים לכאן</p>
+        </div>
+        <input type="file" id="fileInput" multiple hidden />
+        <ul class="filelist" id="fileList"></ul>
+      </div>
+      <div class="panel">
+        <h3>לינקים שמורים</h3>
+        <p class="ph-sub">הזמנות, מפות, מסמכים בענן.</p>
+        <div class="field"><label>כותרת</label><input id="linkTitle" placeholder="למשל: אישור מלון בקיוטו" /></div>
+        <div class="field"><label>קישור (URL)</label><input id="linkUrl" placeholder="https://..." dir="ltr" /></div>
+        <button class="btn-primary" id="addLink">הוספת לינק</button>
+        <ul class="linklist" id="linkList"></ul>
+
+        <h3 style="margin-top:20px">הערות</h3>
+        <p class="ph-sub">מספרי אישור, טלפונים, כל מה שחשוב.</p>
+        <div class="field"><textarea id="notes" rows="5" placeholder="כתבו כאן..."></textarea></div>
+        <div><button class="btn-primary" id="saveNotes">שמירת הערות</button><span class="saved-flash" id="notesFlash">נשמר ✓</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>מסע ליפן · נשמר מקומית בדפדפן</footer>
+
+<script>
+/* ===================== HELPERS: links ===================== */
+const gmap  = q => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+const gbook = q => `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(q)}`;
+
+const mapBtn = (name, region) =>
+  `<a class="btn-map" target="_blank" rel="noopener" href="${gmap(name + ' ' + (region||''))}">Google&nbsp;Maps <span class="ext">↗</span></a>`;
+const bookBtn = q =>
+  `<a class="btn-book" target="_blank" rel="noopener" href="${gbook(q)}">Booking <span class="ext">↗</span></a>`;
+
+/* ===================== SHARED SEGMENTS ===================== */
+const TOKYO_START = {
+  city:"טוקיו", region:"Tokyo Japan", dates:"9–11.9", nights:3,
+  hotel:"Sotetsu Fresa Inn Higashi-Shinjuku", hotelNote:"שינג׳וקו — נוח להמשך", booking:true,
+  highlights:["Sensō-ji","Meiji Jingu","Shibuya Sky","Omoide Yokocho","Akihabara"],
+  days:[
+    {d:"9.9", t:"נחיתה", x:"מהאנדה למרכז כ-40 דק׳. בלי תוכניות — צ׳ק-אין ושינה."},
+    {d:"10.9", t:"מזרח ישן", x:"Sensō-ji מוקדם לפני הקבוצות, רחוב Nakamise, נהר סומידה, Ueno ושוק Ameyoko, ואקיהברה לערב. יום רגוע בכוונה בגלל הג׳ט-לג."},
+    {d:"11.9", t:"מערב מודרני", x:"Meiji Jingu, הרג׳וקו (Takeshita), Omotesando, הליכה ל-Shibuya דרך Cat Street, ו-Shibuya Sky שעה לפני השקיעה."}
+  ],
+  transfer:{t:"טוקיו ← האקונה", x:"רכבת Romancecar משינג׳וקו · ~1:25 + 30–50 דק׳ לגורה"}
+};
+
+const HAKONE_HL = ["Owakudani Ropeway","אגם Ashi","Hakone-jinja","Open-Air Museum","Hakone-Yumoto"];
+const HAKONE_DAYS = [
+  {d:"12.9", t:"הגעה ומסלול", x:"התחלת הלולאה (אם הגעתם מוקדם) או ישר לריוקאן בגורה — אונסן וארוחת קאיסקי."},
+  {d:"13.9", t:"הלולאה המעגלית", x:"רכבת הרים ל-Gora, רכבל ל-Sounzan, רופוויי מעל Owakudani הגעשי, שיט באגם Ashi, שער הטורי של Hakone-jinja. בבוקר — ניסיון נוף להר פוג׳י."}
+];
+const hakone = transfer => ({
+  city:"האקונה", region:"Hakone Japan", dates:"12–13.9", nights:2,
+  hotel:"ריוקאן באזור Gora", hotelNote:"אונסן + חצי-פנסיון", booking:true, hotelQuery:"ryokan Gora Hakone onsen",
+  highlights:HAKONE_HL, days:HAKONE_DAYS, transfer
+});
+
+const OSAKA_HL = ["Dotonbori","שוק Kuromon","טירת אוסקה","Shinsaibashi"];
+const osaka = date => ({
+  city:"אוסקה", region:"Osaka Japan", dates:date, nights:1,
+  hotel:"Red Roof Inn Osaka Namba Nipponbashi", hotelNote:"נמבה — נוח לאיטמי", booking:true,
+  highlights:OSAKA_HL,
+  days:[{d:date, t:"אוכל ואורות", x:"אחה״צ: טירת אוסקה / שוק Kuromon / Shinsaibashi. ערב Dotonbori בניאון ואוכל רחוב. למחרת בבוקר — טיסה מאיטמי לקיושו."}],
+  transfer:{t:"אוסקה ← קיושו", x:"טיסה ~1:15 · רישיון בינלאומי נדרש ✈️"}
+});
+
+const TOKYO_END = {
+  city:"טוקיו — סיום", region:"Ginza Tokyo Japan", dates:"30.9–2.10", nights:3,
+  hotel:"Hotel Monterey La Soeur Ginza", hotelNote:"גינזה", booking:true,
+  highlights:["teamLab Borderless","שוק Tsukiji","גני Hamarikyu","Ginza","Tokyo Tower"],
+  days:[
+    {d:"30.9", t:"הגעה לגינזה", x:"נחיתה אחה״צ, צ׳ק-אין, וערב בגינזה."},
+    {d:"1.10", t:"טוקיו מודרנית", x:"השוק החיצוני של Tsukiji בבוקר, גני Hamarikyu, אחה״צ teamLab Borderless (כרטיס בשעה מתוזמנת מראש), וערב ב-Tokyo Tower / Roppongi."},
+    {d:"2.10", t:"יום חופשי", x:"קניות ומקומות אהובים, או מה שפספסתם (Shimokitazawa / טיול יום לקמאקורה). ארוחת סיום."},
+    {d:"3.10", t:"חזרה הביתה", x:"בוקר חופשי, ואז לשדה התעופה לטיסה ב-21:00."}
+  ],
+  transfer:null
+};
+
+const KYUSHU_HL = ["הר Aso (Nakadake)","Daikanbo","Kusasenri","מפל Nabegataki","Takachiho","Kurokawa Onsen"];
+
+/* ===================== OPTIONS ===================== */
+const OPTIONS = [
+  {
+    id:"opt1", num:"אופציה 1", tag:"כולל מצומוטו",
+    summary:"עשיר בטבע ואתרים — קמיקוצ׳י וטירת מצומוטו. לילה אחד באוסקה ביום המעבר לקיושו.",
+    segments:[
+      TOKYO_START,
+      hakone({t:"האקונה ← מצומוטו", x:"רכבת Azusa · ~4–4.5ש · הקטע הארוך — לצאת מוקדם"}),
+      {
+        city:"מצומוטו", region:"Matsumoto Japan", dates:"14–15.9", nights:2,
+        hotel:"Onsen Hotel OMOTO", hotelNote:"אונסן", booking:true,
+        highlights:["טירת מצומוטו","Nakamachi","Kamikōchi","Nawate"],
+        days:[
+          {d:"14.9", t:"הגעה ועיר", x:"רחובות Nakamachi ו-Nawate, וטירת מצומוטו (מקורית, יפה מוארת בערב)."},
+          {d:"15.9", t:"קמיקוצ׳י", x:"יום טבע מרכזי: Kappa Bridge → Taisho Pond → (אופ׳ Myojin). מגיעים ברכבת Alpico ל-Shin-Shimashima ואז אוטובוס; רכבים פרטיים אסורים בשמורה."}
+        ],
+        transfer:{t:"מצומוטו ← טאקאיאמה", x:"אוטובוס Hirayu · ~2.5ש · הזמנה מראש"}
+      },
+      {
+        city:"טאקאיאמה", region:"Takayama Japan", dates:"16–17.9", nights:2,
+        hotel:"Takayama Green Hotel", hotelNote:"אונסן", booking:true,
+        highlights:["Sanmachi Suji","שוק Miyagawa","Takayama Jinya","Hida Folk Village","שירקאווה-גו"],
+        days:[
+          {d:"16.9", t:"עיר עתיקה", x:"שוק Miyagawa בבוקר, Takayama Jinya, רחובות Sanmachi ומבשלות סאקה, אחה״צ Hida Folk Village. ערב: סטייק Hida beef."},
+          {d:"17.9", t:"שירקאווה-גו", x:"בדרך לקנזאווה: תצפית Shiroyama, בתי Gassho-zukuri, בית Wada."}
+        ],
+        transfer:{t:"טאקאיאמה ← קנזאווה", x:"אוטובוס · ~50–75 דק׳ · הזמנה מראש"}
+      },
+      {
+        city:"קנזאווה", region:"Kanazawa Japan", dates:"18–19.9", nights:2,
+        hotel:"מלון ליד תחנת קנזאווה / Higashi Chaya", hotelNote:"להזמנה לפי אזור", booking:true, hotelQuery:"hotel Kanazawa Station",
+        highlights:["Kenroku-en","Higashi Chaya","שוק Ōmichō","טירת קנזאווה","Nagamachi"],
+        days:[
+          {d:"18.9", t:"לב העיר", x:"שוק Ōmichō, רובע הגיישות Higashi Chaya, גן Kenroku-en, טירת קנזאווה, ורובע הסמוראים Nagamachi. הליכה נוחה (+Loop Bus)."},
+          {d:"19.9", t:"נינוח", x:"מוזיאון המאה ה-21, רובע Kazue-machi, או סדנת עלי זהב."}
+        ],
+        transfer:{t:"קנזאווה ← קיוטו", x:"רכבת Thunderbird · ~2:15"}
+      },
+      {
+        city:"קיוטו + נארה", region:"Kyoto Japan", dates:"20–23.9", nights:4,
+        hotel:"KABIN Kyoto", hotelNote:"נארה כטיול יום", booking:true,
+        highlights:["Kiyomizu-dera","Fushimi Inari","יער הבמבוק","Kinkaku-ji","Gion","Philosopher's Path","שוק Nishiki","Tōdai-ji (נארה)"],
+        days:[
+          {d:"20.9", t:"מזרח קיוטו (Higashiyama)", x:"Kiyomizu-dera מוקדם, Sannenzaka/Ninenzaka, פגודת Yasaka, Yasaka Shrine, Kōdai-ji, ו-Gion בערב."},
+          {d:"21.9", t:"אראשיאמה ו-Kinkaku-ji", x:"יער הבמבוק עד 8:00, Tenryū-ji, גן Okōchi Sansō, גשר Togetsukyō, אחה״צ Kinkaku-ji."},
+          {d:"22.9", t:"פושימי אינארי + נארה", x:"Fushimi Inari מוקדם עד Yotsutsuji, רכבת לנארה, Tōdai-ji והבודהה הגדול, פארק הצבאים, Kasuga Taisha."},
+          {d:"23.9", t:"שביל הפילוסוף", x:"Nanzen-ji, Philosopher's Path, Ginkaku-ji, שוק Nishiki, או סדנת צביעת משי Kyō-Yūzen."}
+        ],
+        note:"בתוך קיוטו — רכבות ומטרו עדיפים על אוטובוסים העמוסים (Keihan, JR Sagano לאראשיאמה).",
+        transfer:{t:"קיוטו ← אוסקה", x:"רכבת Special Rapid · ~15–30 דק׳"}
+      },
+      osaka("24.9"),
+      {
+        city:"קיושו — אסו + קורוקאווה", region:"Aso Kumamoto Japan", dates:"25–29.9", nights:5,
+        hotel:"Fairfield by Marriott Aso → Kurokawa-So", hotelNote:"לימי הטיולים → ריוקאן לסיום הרומנטי", booking:true, hotelQuery:"Fairfield by Marriott Aso",
+        highlights:KYUSHU_HL,
+        days:[
+          {d:"25.9", t:"הגעה לאסו", x:"טיסה בבוקר, רכב, נסיעה לאסו (~1ש). תצפית Daikanbo, Komezuka, מישורי Kusasenri."},
+          {d:"26.9", t:"הר הגעש", x:"לוע Nakadake (אם פתוח), מסלול Sunasenri/Sensuikyo, מקדש Aso, מפלים."},
+          {d:"27.9", t:"טיול יום", x:"קניון Takachiho עם שיט סירות (מרהיב), או ה״גיהנומים״ הצבעוניים של Beppu + יופואין."},
+          {d:"28.9", t:"מעבר לקורוקאווה", x:"נסיעה קצרה (~40 דק׳) דרך מפל Nabegataki וקניון Kikuchi. צ׳ק-אין Kurokawa-So, אונסן."},
+          {d:"29.9", t:"קורוקאווה נינוח", x:"כרטיס דילוג בין 3 אונסנים, סיבוב בכפר, והליכה ברמות Kuju."}
+        ],
+        transfer:{t:"קיושו ← טוקיו", x:"רכב לשדה ~1.5ש · טיסה ~1:40 ✈️"}
+      },
+      TOKYO_END
+    ]
+  },
+  {
+    id:"opt2", num:"אופציה 2", tag:"בלי מצומוטו",
+    summary:"רגוע יותר וזורם טוב יותר בתחבורה. 5 לילות בקיוטו, 3 בקנזאווה.",
+    segments:[
+      TOKYO_START,
+      hakone({t:"האקונה ← טאקאיאמה", x:"רכבת Hida · ~5ש · יום ארוך אך יפה"}),
+      {
+        city:"טאקאיאמה", region:"Takayama Japan", dates:"14–16.9", nights:3,
+        hotel:"Takayama Green Hotel", hotelNote:"אונסן", booking:true,
+        highlights:["Sanmachi Suji","שוק Miyagawa","Takayama Jinya","Hida Folk Village","שירקאווה-גו"],
+        days:[
+          {d:"14.9", t:"הגעה", x:"ערב בעיר העתיקה Sanmachi, סאקה ו-Hida beef."},
+          {d:"15.9", t:"עיר וכפר", x:"שוק Miyagawa, Takayama Jinya, Hida Folk Village; אחה״צ נינוח."},
+          {d:"16.9", t:"שירקאווה-גו (טיול יום)", x:"הלוך-ושוב רגוע (~50 דק׳ לכל כיוון), כפרי ה-Gassho, בלי לחץ של יום מעבר."}
+        ],
+        transfer:{t:"טאקאיאמה ← קנזאווה", x:"אוטובוס · ~2:15 · הזמנה מראש"}
+      },
+      {
+        city:"קנזאווה", region:"Kanazawa Japan", dates:"17–19.9", nights:3,
+        hotel:"מלון ליד תחנת קנזאווה / Higashi Chaya", hotelNote:"להזמנה לפי אזור", booking:true, hotelQuery:"hotel Kanazawa Station",
+        highlights:["Kenroku-en","Higashi Chaya","שוק Ōmichō","מוזיאון המאה ה-21","Nagamachi"],
+        days:[
+          {d:"17.9", t:"לב העיר", x:"שוק Ōmichō, Higashi Chaya, Kenroku-en, טירת קנזאווה, Nagamachi."},
+          {d:"18.9", t:"נינוח", x:"מוזיאון המאה ה-21, Nishi Chaya, Kazue-machi, מוזיאון D.T. Suzuki, סדנת עלי זהב."},
+          {d:"19.9", t:"יום פתוח", x:"טיול יום (Noto / Kaga Onsen) או יום עצלן בעיר."}
+        ],
+        transfer:{t:"קנזאווה ← קיוטו", x:"רכבת Thunderbird · ~2:15"}
+      },
+      {
+        city:"קיוטו + נארה", region:"Kyoto Japan", dates:"20–24.9", nights:5,
+        hotel:"KABIN Kyoto", hotelNote:"נארה כטיול יום", booking:true,
+        highlights:["Kiyomizu-dera","Fushimi Inari","יער הבמבוק","Kinkaku-ji","Gion","Philosopher's Path","שוק Nishiki","Tōdai-ji (נארה)"],
+        days:[
+          {d:"20.9", t:"מזרח קיוטו (Higashiyama)", x:"Kiyomizu-dera מוקדם, Sannenzaka/Ninenzaka, פגודת Yasaka, Yasaka Shrine, Kōdai-ji, ו-Gion בערב."},
+          {d:"21.9", t:"אראשיאמה ו-Kinkaku-ji", x:"יער הבמבוק עד 8:00, Tenryū-ji, גן Okōchi Sansō, גשר Togetsukyō, אחה״צ Kinkaku-ji."},
+          {d:"22.9", t:"פושימי אינארי + נארה", x:"Fushimi Inari מוקדם עד Yotsutsuji, רכבת לנארה, Tōdai-ji והבודהה הגדול, פארק הצבאים, Kasuga Taisha."},
+          {d:"23.9", t:"שביל הפילוסוף", x:"Nanzen-ji, Philosopher's Path, Ginkaku-ji, שוק Nishiki, או סדנת צביעת משי Kyō-Yūzen."},
+          {d:"24.9", t:"יום גמיש", x:"Ryōan-ji / Ninna-ji, סדנת מלאכה, או טיול יום ל-Uji (Byōdō-in ותה מאצ׳ה)."}
+        ],
+        note:"בתוך קיוטו — רכבות ומטרו עדיפים על אוטובוסים העמוסים.",
+        transfer:{t:"קיוטו ← אוסקה", x:"רכבת Special Rapid · ~15–30 דק׳"}
+      },
+      osaka("25.9"),
+      {
+        city:"קיושו — אסו + קורוקאווה", region:"Aso Kumamoto Japan", dates:"26–29.9", nights:4,
+        hotel:"Fairfield by Marriott Aso → Kurokawa-So", hotelNote:"לימי הטיולים → ריוקאן לסיום הרומנטי", booking:true, hotelQuery:"Fairfield by Marriott Aso",
+        highlights:KYUSHU_HL,
+        days:[
+          {d:"26.9", t:"הגעה לאסו", x:"טיסה, רכב. Daikanbo, Kusasenri."},
+          {d:"27.9", t:"הר געש / Takachiho", x:"Nakadake ומסלולים, או קניון Takachiho."},
+          {d:"28.9", t:"מעבר לקורוקאווה", x:"דרך מפל Nabegataki. צ׳ק-אין Kurokawa-So, אונסן."},
+          {d:"29.9", t:"קורוקאווה נינוח", x:"דילוג בין 3 אונסנים והכפר."}
+        ],
+        transfer:{t:"קיושו ← טוקיו", x:"רכב לשדה ~1.5ש · טיסה ~1:40 ✈️"}
+      },
+      TOKYO_END
+    ]
+  },
+  {
+    id:"opt3", num:"אופציה 3", tag:"בלי מצומוטו",
+    summary:"במקום מצומוטו — לילה נוסף בקיוטו (5) ולילה נוסף בקיושו (6), עם יום נפרד ל-Takachiho ויום ל-Beppu.",
+    segments:[
+      TOKYO_START,
+      hakone({t:"האקונה ← טאקאיאמה", x:"רכבת Hida · ~5ש · יום ארוך אך יפה"}),
+      {
+        city:"טאקאיאמה", region:"Takayama Japan", dates:"14–15.9", nights:2,
+        hotel:"Takayama Green Hotel", hotelNote:"אונסן", booking:true,
+        highlights:["Sanmachi Suji","שוק Miyagawa","Takayama Jinya","Hida Folk Village"],
+        days:[
+          {d:"14.9", t:"הגעה ועיר עתיקה", x:"יום נסיעה ארוך מהאקונה דרך נגויה. ערב ברחובות Sanmachi וסטייק Hida beef."},
+          {d:"15.9", t:"עיר וכפר", x:"שוק Miyagawa בבוקר, Takayama Jinya, רחובות Sanmachi, אחה״צ Hida Folk Village."}
+        ],
+        transfer:{t:"טאקאיאמה ← קנזאווה", x:"אוטובוס · ~50–75 דק׳ · הזמנה מראש"}
+      },
+      {
+        city:"קנזאווה", region:"Kanazawa Japan", dates:"16–17.9", nights:2,
+        hotel:"מלון ליד תחנת קנזאווה / Higashi Chaya", hotelNote:"להזמנה לפי אזור", booking:true, hotelQuery:"hotel Kanazawa Station",
+        highlights:["Kenroku-en","Higashi Chaya","שוק Ōmichō","מוזיאון המאה ה-21","Nagamachi","שירקאווה-גו"],
+        days:[
+          {d:"16.9", t:"הגעה דרך שירקאווה-גו", x:"עצירת ביקור בכפרי ה-Gassho בדרך, ואחה״צ/ערב ברובע Higashi Chaya ו-Kazue-machi."},
+          {d:"17.9", t:"לב העיר", x:"שוק Ōmichō, גן Kenroku-en, טירת קנזאווה, רובע הסמוראים Nagamachi, ומוזיאון המאה ה-21."}
+        ],
+        transfer:{t:"קנזאווה ← קיוטו", x:"רכבת Thunderbird · ~2:15"}
+      },
+      {
+        city:"קיוטו + נארה", region:"Kyoto Japan", dates:"18–22.9", nights:5,
+        hotel:"KABIN Kyoto", hotelNote:"נארה כטיול יום", booking:true,
+        highlights:["Kiyomizu-dera","Fushimi Inari","יער הבמבוק","Kinkaku-ji","Gion","Philosopher's Path","שוק Nishiki","Tōdai-ji (נארה)"],
+        days:[
+          {d:"18.9", t:"מזרח קיוטו (Higashiyama)", x:"Kiyomizu-dera מוקדם, Sannenzaka/Ninenzaka, פגודת Yasaka, Yasaka Shrine, Kōdai-ji, ו-Gion בערב."},
+          {d:"19.9", t:"אראשיאמה ו-Kinkaku-ji", x:"יער הבמבוק עד 8:00, Tenryū-ji, Okōchi Sansō, גשר Togetsukyō, אחה״צ Kinkaku-ji."},
+          {d:"20.9", t:"פושימי אינארי + נארה", x:"Fushimi Inari עד Yotsutsuji, רכבת לנארה, Tōdai-ji והבודהה הגדול, פארק הצבאים, Kasuga Taisha."},
+          {d:"21.9", t:"שביל הפילוסוף", x:"Nanzen-ji, Philosopher's Path, Ginkaku-ji, שוק Nishiki, או סדנת צביעת משי Kyō-Yūzen."},
+          {d:"22.9", t:"יום גמיש", x:"Ryōan-ji / Ninna-ji, סדנת מלאכה, או טיול יום ל-Uji (Byōdō-in ותה מאצ׳ה)."}
+        ],
+        note:"בתוך קיוטו — רכבות ומטרו עדיפים על אוטובוסים העמוסים.",
+        transfer:{t:"קיוטו ← אוסקה", x:"רכבת Special Rapid · ~15–30 דק׳"}
+      },
+      osaka("23.9"),
+      {
+        city:"קיושו — אסו + קורוקאווה", region:"Aso Kumamoto Japan", dates:"24–29.9", nights:6,
+        hotel:"Fairfield by Marriott Aso → Kurokawa-So", hotelNote:"לימי הטיולים → ריוקאן לסיום הרומנטי", booking:true, hotelQuery:"Fairfield by Marriott Aso",
+        highlights:["הר Aso (Nakadake)","Daikanbo","Kusasenri","מפל Nabegataki","Takachiho","Beppu","Kurokawa Onsen"],
+        days:[
+          {d:"24.9", t:"הגעה לאסו", x:"טיסה בבוקר, רכב, נסיעה לאסו (~1ש). תצפית Daikanbo, Komezuka, מישורי Kusasenri."},
+          {d:"25.9", t:"הר הגעש", x:"לוע Nakadake (אם פתוח), מסלול Sunasenri/Sensuikyo, מקדש Aso, מפלים."},
+          {d:"26.9", t:"טיול יום Takachiho", x:"קניון Takachiho עם שיט סירות בין המצוקים — אחד הנופים היפים באזור."},
+          {d:"27.9", t:"טיול יום Beppu", x:"ה״גיהנומים״ הצבעוניים של Beppu (Umi Jigoku, Chinoike Jigoku) ועצירה ביופואין (Lake Kinrin)."},
+          {d:"28.9", t:"מעבר לקורוקאווה", x:"נסיעה קצרה (~40 דק׳) דרך מפל Nabegataki וקניון Kikuchi. צ׳ק-אין Kurokawa-So, אונסן."},
+          {d:"29.9", t:"קורוקאווה נינוח", x:"כרטיס דילוג בין 3 אונסנים, סיבוב בכפר, והליכה ברמות Kuju."}
+        ],
+        transfer:{t:"קיושו ← טוקיו", x:"רכב לשדה ~1.5ש · טיסה ~1:40 ✈️"}
+      },
+      TOKYO_END
+    ]
+  }
+];
+
+const DIFF = [
+  {n:"1", x:"עשירה בטבע ואתרים (קמיקוצ׳י, טירת מצומוטו) — במחיר יום נסיעה ארוך אחד."},
+  {n:"2", x:"רגועה וזורמת, בלי מצומוטו, עם 5 לילות בקיוטו ו-3 בקנזאווה."},
+  {n:"3", x:"בלי מצומוטו, אבל 5 לילות בקיוטו ו-6 בקיושו (יום ל-Takachiho ויום ל-Beppu) — הכי נינוחה בקצה הדרומי."}
+];
+
+const TIPS = [
+  {ic:"🎫", h:"להזמין מוקדם", x:"רכבות (Romancecar / Azusa / Thunderbird / Hida / שינקנסן), אוטובוסי האלפים (Alpico · Nohi · Hokutetsu — נמכרים מהר), טיסות ANA/JAL לקיושו, והריוקאנים בהאקונה וב-Kurokawa-So."},
+  {ic:"🚗", h:"רכב בקיושו", x:"רישיון בינלאומי (IDP) חובה — להנפיק בארץ לפני הטיסה. איסוף והחזרה בשדה קומאמוטו. נוהגים משמאל."},
+  {ic:"🧳", h:"מזוודות", x:"שילוח (takkyubin) מטוקיו ישירות לקיוטו — וכל קטע האלפים עם תיק קטן בלבד."},
+  {ic:"🌦️", h:"עונה", x:"אמצע ספטמבר = שיא טייפונים. הזמנות עם ביטול חינם + ביטוח. פוג׳י מהאקונה נראה בעיקר בבוקר צלול. שלכת עדיין מוקדמת."}
+];
+
+/* ===================== RENDER: overview ===================== */
+function overviewCard(opt){
+  const lis = opt.segments.map(s=>`
+    <li>
+      <span class="oc-city">${s.city}</span>
+      <span class="oc-dates">${s.dates}</span>
+      <span class="oc-n">${s.nights} ל׳</span>
+    </li>`).join("");
+  return `<div class="opt-card">
+    <div class="oc-head">
+      <span class="oc-num">${opt.num}</span>
+      <div class="oc-title">${opt.tag}</div>
+    </div>
+    <div class="oc-desc">${opt.summary}</div>
+    <ul class="oc-list">${lis}</ul>
+    <button class="oc-go" data-go="${opt.id}">לפירוט המלא ←</button>
+  </div>`;
+}
+document.getElementById("ov-cards").innerHTML = OPTIONS.map(overviewCard).join("");
+document.getElementById("ov-diff").innerHTML =
+  `<h3>ההבדל בקצרה</h3>` + DIFF.map(d=>`<div class="dl"><span class="dnum">אופציה ${d.n}</span><span>${d.x}</span></div>`).join("");
+document.getElementById("ov-tips").innerHTML =
+  TIPS.map(t=>`<div class="tip"><h4>${t.h}</h4><p>${t.x}</p></div>`).join("");
+
+/* ===================== RENDER: option detail ===================== */
+function segHTML(s, idx){
+  const hls = s.highlights.map(h=>`
+    <span class="hl">${h}
+      <a class="mini" target="_blank" rel="noopener" title="Google Maps" href="${gmap(h.replace(/\(.*?\)/g,'').trim()+' '+s.region)}">↗</a>
+    </span>`).join("");
+  const days = s.days.map(d=>`
+    <div class="tl-day">
+      <div class="tl-date">${d.d}</div>
+      <div class="tl-c"><h5>${d.t}</h5><p>${d.x}</p></div>
+    </div>`).join("");
+  const hotelLinks = (s.booking ? bookBtn(s.hotelQuery || s.hotel) : "") +
+                     mapBtn(s.hotelQuery || s.hotel, s.region);
+  return `<details class="seg" ${idx===0?'open':''}>
+    <summary class="seg-sum">
+      <div class="seg-day"><b>${s.nights}</b><span>לילות</span></div>
+      <div class="seg-meta">
+        <h3>${s.city} <span class="seg-dates">${s.dates}</span></h3>
+        <div class="seg-hotel"><b>${s.hotel}</b> · ${s.hotelNote}</div>
+      </div>
+      <span class="chev">▾</span>
+    </summary>
+    <div class="seg-body">
+      <div class="hl-row">${hls}</div>
+      <div class="hotel-box">
+        <span class="hb-ic">לינה</span>
+        <div class="hb-txt"><b>${s.hotel}</b><span>${s.hotelNote}</span></div>
+        ${hotelLinks}
+      </div>
+      <div class="tl">${days}</div>
+      ${s.note?`<div class="note-inline">${s.note}</div>`:''}
+      ${s.transfer?`<div class="transfer"><span class="tr-ic">מעבר</span><div><b>${s.transfer.t}</b> <span>· ${s.transfer.x}</span></div></div>`:''}
+    </div>
+  </details>`;
+}
+
+function renderOption(opt){
+  const hero = `<div class="opt-hero">
+    <span class="oh-num">${opt.num}</span>
+    <h2>${opt.tag}</h2>
+    <span class="oh-tag">${opt.segments.length} יעדים · 24 לילות</span>
+    <p>${opt.summary}</p>
+  </div>`;
+  const table = `<div class="mtable">
+    <div class="mt-row head"><span>יעד</span><span>תאריכים</span><span>לילות</span><span>לינה</span></div>
+    ${opt.segments.map(s=>`<div class="mt-row">
+      <span class="mt-city">${s.city}</span>
+      <span class="mt-dates">${s.dates}</span>
+      <span class="mt-n">${s.nights} ל׳</span>
+      <span class="mt-hotel">${s.hotel}</span>
+    </div>`).join("")}
+  </div>`;
+  const segs = opt.segments.map(segHTML).join("");
+  document.getElementById("pane-"+opt.id).innerHTML =
+    `<div class="section-head"><h2>${opt.num}</h2></div>`
+    + hero + table + segs;
+}
+OPTIONS.forEach(renderOption);
+
+/* ===================== TABS ===================== */
+const btns = document.querySelectorAll("nav.tabs button");
+function activate(tab){
+  btns.forEach(x=>x.classList.toggle("active", x.dataset.tab===tab));
+  document.querySelectorAll(".tab-pane").forEach(p=>p.classList.toggle("active", p.id==="pane-"+tab));
+  window.scrollTo({top:0,behavior:"instant"});
+}
+btns.forEach(b=>b.addEventListener("click",()=>activate(b.dataset.tab)));
+document.getElementById("ov-cards").addEventListener("click", e=>{
+  const go = e.target.closest("[data-go]");
+  if(go) activate(go.dataset.go);
+});
+
+/* ===================== FILES: IndexedDB ===================== */
+const DB_NAME="japanTrip", STORE="files";
+function openDB(){
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open(DB_NAME,1);
+    r.onupgradeneeded=()=>{ if(!r.result.objectStoreNames.contains(STORE)) r.result.createObjectStore(STORE,{keyPath:"id"}); };
+    r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
+  });
+}
+async function dbAdd(rec){ const db=await openDB(); return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(rec);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);}); }
+async function dbAll(){ const db=await openDB(); return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readonly");const rq=tx.objectStore(STORE).getAll();rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);}); }
+async function dbDel(id){ const db=await openDB(); return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);}); }
+
+const fmtSize = b => b<1024?b+" B":b<1048576?(b/1024).toFixed(0)+" KB":(b/1048576).toFixed(1)+" MB";
+const fileIcon = (type,name="") => {
+  const ext=(name.split('.').pop()||'').toUpperCase();
+  if(/pdf/i.test(type)||ext==='PDF') return 'PDF';
+  if(/image/i.test(type)) return 'IMG';
+  if(/word|document/i.test(type)||/^DOCX?$/.test(ext)) return 'DOC';
+  if(/sheet|excel/i.test(type)||/^XLSX?$/.test(ext)||ext==='CSV') return 'XLS';
+  return (ext||'FILE').slice(0,4);
+};
+
+async function renderFiles(){
+  const list=document.getElementById("fileList");
+  const items=(await dbAll()).sort((a,b)=>b.ts-a.ts);
+  if(!items.length){ list.innerHTML=`<li class="empty" style="border:none;background:none">עדיין לא הועלו קבצים</li>`; return; }
+  list.innerHTML="";
+  items.forEach(it=>{
+    const url=URL.createObjectURL(it.blob);
+    const li=document.createElement("li");
+    li.innerHTML=`<span class="fl-ic">${fileIcon(it.type,it.name)}</span>
+      <div class="fl-info"><b>${it.name}</b><span>${fmtSize(it.size)} · </span><a href="${url}" target="_blank" rel="noopener">פתיחה / הורדה</a></div>
+      <button class="icon-btn" title="מחיקה">×</button>`;
+    li.querySelector(".icon-btn").onclick=async()=>{ await dbDel(it.id); renderFiles(); };
+    list.appendChild(li);
+  });
+}
+async function addFiles(fileList){
+  for(const f of fileList){
+    await dbAdd({id:crypto.randomUUID(), name:f.name, type:f.type, size:f.size, ts:Date.now(), blob:f});
+  }
+  renderFiles();
+}
+const drop=document.getElementById("drop"), fileInput=document.getElementById("fileInput");
+drop.onclick=()=>fileInput.click();
+fileInput.onchange=()=>{ if(fileInput.files.length) addFiles(fileInput.files); fileInput.value=""; };
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
+drop.addEventListener("drop",e=>{ if(e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+
+/* ===================== LINKS + NOTES: localStorage ===================== */
+const LS_LINKS="japanTrip_links", LS_NOTES="japanTrip_notes";
+const getLinks=()=>{ try{return JSON.parse(localStorage.getItem(LS_LINKS))||[];}catch{return [];} };
+const setLinks=v=>localStorage.setItem(LS_LINKS,JSON.stringify(v));
+
+function renderLinks(){
+  const list=document.getElementById("linkList"); const links=getLinks();
+  if(!links.length){ list.innerHTML=`<li class="empty" style="border:none;background:none">אין לינקים שמורים</li>`; return; }
+  list.innerHTML="";
+  links.forEach((l,i)=>{
+    const li=document.createElement("li");
+    li.innerHTML=`<span class="fl-ic">URL</span>
+      <div class="fl-info"><b>${l.title||l.url}</b><a href="${l.url}" target="_blank" rel="noopener" dir="ltr">${l.url}</a></div>
+      <button class="icon-btn" title="מחיקה">×</button>`;
+    li.querySelector(".icon-btn").onclick=()=>{ const a=getLinks(); a.splice(i,1); setLinks(a); renderLinks(); };
+    list.appendChild(li);
+  });
+}
+document.getElementById("addLink").onclick=()=>{
+  const t=document.getElementById("linkTitle"), u=document.getElementById("linkUrl");
+  let url=u.value.trim(); if(!url) return;
+  if(!/^https?:\/\//i.test(url)) url="https://"+url;
+  const a=getLinks(); a.push({title:t.value.trim(), url}); setLinks(a);
+  t.value=""; u.value=""; renderLinks();
+};
+const notes=document.getElementById("notes");
+notes.value=localStorage.getItem(LS_NOTES)||"";
+document.getElementById("saveNotes").onclick=()=>{
+  localStorage.setItem(LS_NOTES, notes.value);
+  const f=document.getElementById("notesFlash"); f.classList.add("show"); setTimeout(()=>f.classList.remove("show"),1500);
+};
+
+renderFiles(); renderLinks();
+</script>
+</body>
+</html>
