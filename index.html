@@ -30,9 +30,6 @@
   #pane-opt1{--accent:#c2402e;--accent-light:#f5e5e0;--accent-bright:#e74c3c;}
   #pane-opt2{--accent:#1b4d2b;--accent-light:#f0f8e0;--accent-bright:#c8ff00;}
   #pane-opt3{--accent:#001f5e;--accent-light:#e5eef8;--accent-bright:#5b7dbe;}
-  #ov-cards .opt-card:nth-child(1){--accent:#c2402e;--accent-light:#f5e5e0;--accent-bright:#e74c3c;}
-  #ov-cards .opt-card:nth-child(2){--accent:#1b4d2b;--accent-light:#f0f8e0;--accent-bright:#c8ff00;}
-  #ov-cards .opt-card:nth-child(3){--accent:#001f5e;--accent-light:#e5eef8;--accent-bright:#5b7dbe;}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{
@@ -73,6 +70,11 @@
   nav.tabs button .ti{font-size:16px;}
   nav.tabs button:hover{border-color:var(--ink);}
   nav.tabs button.active{color:#fff;background:var(--ink);border-color:var(--ink);}
+  .tab-div{flex:0 0 auto;width:1px;align-self:center;height:22px;background:var(--line);margin:0 4px;}
+  nav.tabs button.tab-alt{font-size:13px;font-weight:600;color:var(--muted);border-color:var(--line-2);
+    background:var(--surface-2);padding:8px 14px;}
+  nav.tabs button.tab-alt:hover{color:var(--ink);border-color:var(--muted);}
+  nav.tabs button.tab-alt.active{color:#fff;background:var(--muted);border-color:var(--muted);}
 
   /* ---------- Panes ---------- */
   main{padding:22px 0 60px;}
@@ -107,6 +109,27 @@
          font-size:14.5px;padding:14px;cursor:pointer;border:none;margin:6px 16px 16px;border-radius:999px;
          transition:.18s;}
   .oc-go:hover{opacity:.9;transform:translateY(-1px);}
+
+  /* featured (our chosen route) */
+  .opt-card.featured{border-width:2.5px;box-shadow:var(--shadow);}
+  .opt-card.featured .oc-head{padding:18px 20px 14px;}
+  .oc-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.5px;
+        color:#fff;background:var(--accent);border-radius:999px;padding:5px 14px;}
+  .opt-card.featured .oc-title{font-size:30px;margin-top:8px;}
+  .opt-card.featured .oc-desc{font-size:14.5px;padding:14px 20px 8px;}
+  .opt-card.featured .oc-list{padding:4px 20px 18px;display:grid;grid-template-columns:1fr 1fr;column-gap:32px;}
+  .opt-card.featured .oc-go{font-size:15.5px;padding:15px;margin:6px 20px 18px;}
+
+  /* alternatives (minor, de-emphasized) */
+  .opt-grid-2{grid-template-columns:1fr 1fr;}
+  .alt-head h2{font-size:22px;color:var(--muted);}
+  .alt-head .jp{color:var(--muted)!important;}
+  .opt-card.alt{border-color:var(--line);box-shadow:none;}
+  .opt-card.alt .oc-head{background:var(--surface-2);border-bottom:1px solid var(--line);}
+  .opt-card.alt .oc-num{color:var(--muted);}
+  .opt-card.alt .oc-title{font-size:20px;color:var(--muted);}
+  .opt-card.alt .oc-go{background:var(--surface-2);color:var(--ink);border:1.5px solid var(--line);}
+  .opt-card.alt .oc-go:hover{background:var(--surface);border-color:var(--ink);transform:none;}
 
   /* ---------- Tips ---------- */
   .tips-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:8px;}
@@ -306,6 +329,7 @@
   /* ---------- Responsive ---------- */
   @media (max-width:880px){
     .opt-grid{grid-template-columns:1fr;}
+    .opt-card.featured .oc-list{grid-template-columns:1fr;}
     .files-grid{grid-template-columns:1fr;}
     .budget-grid{grid-template-columns:1fr;}
   }
@@ -356,19 +380,23 @@
 <nav class="tabs">
   <div class="tabs-inner">
     <button data-tab="overview" class="active">סקירה</button>
-    <button data-tab="opt1">אופציה 1</button>
-    <button data-tab="opt2">אופציה 2</button>
-    <button data-tab="opt3">אופציה 3</button>
+    <button data-tab="opt3">המסלול שלנו</button>
     <button data-tab="budget">תקציב</button>
     <button data-tab="files">הקבצים שלנו</button>
+    <span class="tab-div"></span>
+    <button data-tab="opt1" class="tab-alt">אופציה 1</button>
+    <button data-tab="opt2" class="tab-alt">אופציה 2</button>
   </div>
 </nav>
 
 <main class="wrap">
   <section class="tab-pane active" id="pane-overview">
-    <div class="section-head"><h2>סקירה כללית</h2></div>
-    <p class="lead">שלוש אפשרויות מסלול לאותם 24 לילות. כולן מתחילות ומסתיימות בטוקיו, עם 2 טיסות פנים. בחרו אופציה כדי לראות את הפירוט המלא יום-אחר-יום.</p>
-    <div class="opt-grid" id="ov-cards"></div>
+    <div class="section-head"><h2>המסלול שלנו</h2></div>
+    <p class="lead">בחרנו במסלול <b>"בלי מצומוטו"</b> — לילה נוסף בקיוטו ובקיושו, עם יום נפרד ל-Takachiho ויום ל-Beppu. הנה הוא במלואו. שתי החלופות שמורות למטה לעיון בלבד.</p>
+    <div id="ov-featured"></div>
+
+    <div class="section-head alt-head" style="margin-top:34px"><h2>מסלולים חלופיים</h2><span class="jp">לעיון בלבד</span></div>
+    <div class="opt-grid opt-grid-2" id="ov-alts"></div>
 
     <div class="diff" id="ov-diff"></div>
 
@@ -673,7 +701,7 @@ const OPTIONS = [
     ]
   },
   {
-    id:"opt3", num:"אופציה 3", tag:"בלי מצומוטו",
+    id:"opt3", num:"המסלול שלנו", tag:"בלי מצומוטו",
     summary:"במקום מצומוטו — לילה נוסף בקיוטו (5) ולילה נוסף בקיושו (6), עם יום נפרד ל-Takachiho ויום ל-Beppu.",
     segments:[
       TOKYO_START,
@@ -746,7 +774,7 @@ const TIPS = [
 ];
 
 /* ===================== RENDER: overview ===================== */
-function overviewCard(opt){
+function overviewCard(opt, featured){
   const colors = {opt1:{accent:'#c2402e',light:'#f5e5e0',bright:'#e74c3c'},opt2:{accent:'#1b4d2b',light:'#f0f8e0',bright:'#c8ff00'},opt3:{accent:'#001f5e',light:'#e5eef8',bright:'#5b7dbe'}};
   const c = colors[opt.id] || colors.opt1;
   const lis = opt.segments.map(s=>`
@@ -755,17 +783,20 @@ function overviewCard(opt){
       <span class="oc-dates">${s.dates}</span>
       <span class="oc-n">${s.nights} ל׳</span>
     </li>`).join("");
-  return `<div class="opt-card" style="--accent:${c.accent};--accent-light:${c.light};--accent-bright:${c.bright}">
-    <div class="oc-head">
-      <span class="oc-num">${opt.num}</span>
-      <div class="oc-title">${opt.tag}</div>
-    </div>
+  const head = featured
+    ? `<span class="oc-badge">★ המסלול שלנו</span><div class="oc-title">${opt.tag}</div>`
+    : `<span class="oc-num">${opt.num}</span><div class="oc-title">${opt.tag}</div>`;
+  return `<div class="opt-card ${featured?'featured':'alt'}" style="--accent:${c.accent};--accent-light:${c.light};--accent-bright:${c.bright}">
+    <div class="oc-head">${head}</div>
     <div class="oc-desc">${opt.summary}</div>
     <ul class="oc-list">${lis}</ul>
-    <button class="oc-go" data-go="${opt.id}">לפירוט המלא ←</button>
+    <button class="oc-go" data-go="${opt.id}">${featured?'לפירוט המלא של המסלול ←':'לצפייה במסלול ←'}</button>
   </div>`;
 }
-document.getElementById("ov-cards").innerHTML = OPTIONS.map(overviewCard).join("");
+const featuredOpt = OPTIONS.find(o=>o.id==="opt3");
+const altOpts = OPTIONS.filter(o=>o.id!=="opt3");
+document.getElementById("ov-featured").innerHTML = overviewCard(featuredOpt, true);
+document.getElementById("ov-alts").innerHTML = altOpts.map(o=>overviewCard(o, false)).join("");
 document.getElementById("ov-diff").innerHTML =
   `<h3>ההבדל בקצרה</h3>` + DIFF.map(d=>`<div class="dl"><span class="dnum">אופציה ${d.n}</span><span>${d.x}</span></div>`).join("");
 document.getElementById("ov-tips").innerHTML =
@@ -838,7 +869,7 @@ function activate(tab){
   window.scrollTo({top:0,behavior:"instant"});
 }
 btns.forEach(b=>b.addEventListener("click",()=>activate(b.dataset.tab)));
-document.getElementById("ov-cards").addEventListener("click", e=>{
+document.getElementById("pane-overview").addEventListener("click", e=>{
   const go = e.target.closest("[data-go]");
   if(go) activate(go.dataset.go);
 });
