@@ -239,6 +239,32 @@
   .choose-box .cb-opt b{font-size:13.5px;}
   .choose-box .cb-note{font-size:11.5px;font-weight:700;color:var(--accent);background:var(--accent-light);border-radius:999px;padding:2px 9px;}
 
+  /* ---------- Route map ---------- */
+  .map-wrap{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);
+        box-shadow:var(--shadow-sm);padding:10px;margin-bottom:22px;overflow:hidden;}
+  .map-wrap svg{width:100%;height:auto;display:block;}
+  .rmap-sea{fill:#eef2f6;}
+  .rmap-land{fill:#e2e5ea;stroke:#d3d6dd;stroke-width:1;}
+  .rmap-line{fill:none;stroke-width:3;stroke-dasharray:1 8;stroke-linecap:round;opacity:.9;}
+  .rmap-dot{stroke:#fff;stroke-width:2.5;}
+  .rmap-num{fill:#fff;font-weight:800;font-size:12px;font-family:inherit;}
+  .rmap-label{font-weight:800;font-size:13px;fill:var(--ink);font-family:inherit;paint-order:stroke;stroke:#fff;stroke-width:3.5px;stroke-linejoin:round;}
+
+  /* ---------- Trip calendar ---------- */
+  .cal-wrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:16px;margin-bottom:22px;}
+  .cal-month{font-size:15px;font-weight:800;margin:0 0 12px;text-align:center;letter-spacing:.3px;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+  .cal-dow{font-size:11px;font-weight:700;color:var(--muted);text-align:center;padding-bottom:2px;}
+  .cal-cell{min-height:46px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+        background:var(--surface-2);border:1px solid var(--line-2);overflow:hidden;padding:2px;}
+  .cal-cell.empty{background:transparent;border:none;}
+  .cal-cell.trip{border:none;color:#fff;}
+  .cal-cell .cd{font-size:13px;font-weight:800;line-height:1;}
+  .cal-cell .cc{font-size:8px;line-height:1.05;font-weight:700;text-align:center;max-width:100%;overflow:hidden;}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px;justify-content:center;}
+  .cal-legend .lg{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--muted);}
+  .cal-legend .dot{width:11px;height:11px;border-radius:3px;}
+
   /* ---------- Files page ---------- */
   .files-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
   .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
@@ -407,6 +433,12 @@
     <div class="section-head"><h2>המסלול שלנו</h2></div>
     <p class="lead">בחרנו במסלול <b>"בלי מצומוטו"</b> — לילה נוסף בקיוטו ובקיושו, עם יום נפרד ל-Takachiho ויום ל-Beppu. הנה הוא במלואו. שתי החלופות שמורות למטה לעיון בלבד.</p>
     <div id="ov-featured"></div>
+
+    <div class="section-head" style="margin-top:30px"><h2>מפת המסלול</h2></div>
+    <div id="ov-map"></div>
+
+    <div class="section-head" style="margin-top:30px"><h2>לוח המסע</h2></div>
+    <div id="ov-cal"></div>
 
     <div class="section-head alt-head" style="margin-top:34px"><h2>מסלולים חלופיים</h2><span class="jp">לעיון בלבד</span></div>
     <div class="opt-grid opt-grid-2" id="ov-alts"></div>
@@ -842,10 +874,98 @@ function overviewCard(opt, featured){
     <button class="oc-go" data-go="${opt.id}">${featured?'לפירוט המלא של המסלול ←':'לצפייה במסלול ←'}</button>
   </div>`;
 }
+/* ===================== MAP + CALENDAR ===================== */
+const ACCENT={opt1:"#c2402e",opt2:"#1b4d2b",opt3:"#001f5e"};
+const CITY_XY={
+  "טוקיו":{x:543,y:158,dx:15,dy:5,a:"start",s:"טוקיו"},
+  "טוקיו — סיום":{x:543,y:158,dx:15,dy:5,a:"start",s:"טוקיו"},
+  "האקונה":{x:505,y:202,dx:6,dy:22,a:"start",s:"האקונה"},
+  "מצומוטו":{x:462,y:118,dx:8,dy:-11,a:"start",s:"מצומוטו"},
+  "טאקאיאמה":{x:423,y:133,dx:-12,dy:-9,a:"end",s:"טאקאיאמה"},
+  "קנזאווה":{x:391,y:98,dx:-8,dy:-11,a:"end",s:"קנזאווה"},
+  "קיוטו + נארה":{x:350,y:211,dx:-13,dy:-2,a:"end",s:"קיוטו"},
+  "אוסקה":{x:338,y:233,dx:-13,dy:16,a:"end",s:"אוסקה"},
+  "קיושו — אסו + קורוקאווה":{x:140,y:345,dx:0,dy:30,a:"middle",s:"קיושו"}
+};
+const CITY_COLOR={
+  "טוקיו":"#c2402e","טוקיו — סיום":"#c2402e","האקונה":"#1b6b3a",
+  "טאקאיאמה":"#d98324","קנזאווה":"#1e3a5f","קיוטו + נארה":"#7b4397",
+  "אוסקה":"#c2185b","קיושו — אסו + קורוקאווה":"#0f766e","מצומוטו":"#5b7dbe"
+};
+const CITY_SHORT={
+  "טוקיו":"טוקיו","טוקיו — סיום":"טוקיו","האקונה":"האקונה","טאקאיאמה":"טאקאיאמה",
+  "קנזאווה":"קנזאווה","קיוטו + נארה":"קיוטו","אוסקה":"אוסקה",
+  "קיושו — אסו + קורוקאווה":"קיושו","מצומוטו":"מצומוטו"
+};
+const JAPAN_LAND=`
+  <path class="rmap-land" d="M300 250 C298 205 322 150 372 112 C412 82 470 84 520 108 C572 128 604 120 620 150 C610 176 566 186 520 192 C476 184 434 170 402 192 C372 212 352 238 332 256 C318 264 302 264 300 250 Z"/>
+  <path class="rmap-land" d="M250 258 C268 250 306 252 320 266 C316 282 278 288 256 278 C244 272 244 262 250 258 Z"/>
+  <path class="rmap-land" d="M96 322 C92 296 132 284 168 300 C204 314 208 352 182 378 C156 402 110 398 96 366 C86 350 94 336 96 322 Z"/>
+`;
+function routeMapSVG(opt, accent){
+  const pts=opt.segments.map(s=>CITY_XY[s.city]).filter(Boolean);
+  if(pts.length<2) return "";
+  const dPath="M "+pts.map(p=>`${p.x} ${p.y}`).join(" L ");
+  const seen={}; let n=0; const dots=[];
+  pts.forEach(p=>{const k=p.x+","+p.y; if(seen[k])return; seen[k]=++n; dots.push({p,n});});
+  const dotsSVG=dots.map(({p,n})=>{
+    const anchor=p.a==="end"?"end":p.a==="start"?"start":"middle";
+    return `<g>
+      <circle class="rmap-dot" cx="${p.x}" cy="${p.y}" r="11" fill="${accent}"/>
+      <text class="rmap-num" x="${p.x}" y="${p.y+4}" text-anchor="middle">${n}</text>
+      <text class="rmap-label" x="${p.x+p.dx}" y="${p.y+p.dy}" text-anchor="${anchor}">${p.s}</text>
+    </g>`;
+  }).join("");
+  return `<svg viewBox="18 62 604 336" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="מפת המסלול">
+    <rect x="0" y="0" width="640" height="470" class="rmap-sea"/>
+    ${JAPAN_LAND}
+    <path class="rmap-line" d="${dPath}" stroke="${accent}"/>
+    ${dotsSVG}
+  </svg>`;
+}
+function tripSchedule(){
+  const seg=OPTIONS.find(o=>o.id==="opt3").segments;
+  const parse=s=>{const [d,m]=s.split(".").map(Number);return {d,m};};
+  const dim=m=>m===9?30:31;
+  const map={};
+  seg.forEach(s=>{
+    const [a,b]=s.dates.split("–");
+    const co=parse(b); let cur=parse(a);
+    while(!(cur.m===co.m&&cur.d===co.d)){
+      map[cur.m*100+cur.d]=s.city;
+      cur.d++; if(cur.d>dim(cur.m)){cur.d=1;cur.m++;}
+    }
+  });
+  return map;
+}
+function calendarHTML(){
+  const sched=tripSchedule();
+  const dow=["א","ב","ג","ד","ה","ו","ש"];
+  const days=[]; for(let d=1;d<=30;d++) days.push({m:9,d}); [1,2,3].forEach(d=>days.push({m:10,d}));
+  const firstDow=new Date(2026,8,1).getDay();
+  let cells=""; for(let i=0;i<firstDow;i++) cells+=`<div class="cal-cell empty"></div>`;
+  days.forEach(({m,d})=>{
+    if(m===10&&d===3){ cells+=`<div class="cal-cell trip" style="background:#8a8a90"><span class="cd">3</span><span class="cc">טיסה</span></div>`; return; }
+    const city=sched[m*100+d];
+    if(city){ cells+=`<div class="cal-cell trip" style="background:${CITY_COLOR[city]}"><span class="cd">${d}</span><span class="cc">${CITY_SHORT[city]}</span></div>`; }
+    else { cells+=`<div class="cal-cell"><span class="cd" style="color:var(--muted)">${d}</span></div>`; }
+  });
+  const order=[]; const seenSh=new Set(); OPTIONS.find(o=>o.id==="opt3").segments.forEach(s=>{const sh=CITY_SHORT[s.city]; if(!seenSh.has(sh)){seenSh.add(sh); order.push(s.city);}});
+  const legend=order.map(c=>`<span class="lg"><span class="dot" style="background:${CITY_COLOR[c]}"></span>${CITY_SHORT[c]}</span>`).join("")
+    +`<span class="lg"><span class="dot" style="background:#8a8a90"></span>טיסה הביתה</span>`;
+  return `<div class="cal-wrap">
+    <p class="cal-month">ספטמבר – אוקטובר 2026</p>
+    <div class="cal-grid">${dow.map(x=>`<div class="cal-dow">${x}</div>`).join("")}${cells}</div>
+    <div class="cal-legend">${legend}</div>
+  </div>`;
+}
+
 const featuredOpt = OPTIONS.find(o=>o.id==="opt3");
 const altOpts = OPTIONS.filter(o=>o.id!=="opt3");
 document.getElementById("ov-featured").innerHTML = overviewCard(featuredOpt, true);
 document.getElementById("ov-alts").innerHTML = altOpts.map(o=>overviewCard(o, false)).join("");
+document.getElementById("ov-map").innerHTML = `<div class="map-wrap">${routeMapSVG(featuredOpt, ACCENT.opt3)}</div>`;
+document.getElementById("ov-cal").innerHTML = calendarHTML();
 document.getElementById("ov-diff").innerHTML =
   `<h3>ההבדל בקצרה</h3>` + DIFF.map(d=>`<div class="dl"><span class="dnum">אופציה ${d.n}</span><span>${d.x}</span></div>`).join("");
 document.getElementById("ov-tips").innerHTML =
@@ -916,7 +1036,9 @@ function renderOption(opt){
   const segs = opt.segments.map(segHTML).join("");
   document.getElementById("pane-"+opt.id).innerHTML =
     `<div class="section-head"><h2>${opt.num}</h2></div>`
-    + hero + table + segs;
+    + hero
+    + `<div class="section-head"><h2>מפת המסלול</h2></div><div class="map-wrap">${routeMapSVG(opt, ACCENT[opt.id]||"#111113")}</div>`
+    + table + segs;
 }
 OPTIONS.forEach(renderOption);
 
