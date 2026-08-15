@@ -239,6 +239,59 @@
   .choose-box .cb-opt b{font-size:13.5px;}
   .choose-box .cb-note{font-size:11.5px;font-weight:700;color:var(--accent);background:var(--accent-light);border-radius:999px;padding:2px 9px;}
 
+  /* ---------- Flights ---------- */
+  .fl-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px;}
+  .fl-card{background:var(--surface);border:2px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden;}
+  .fl-card.out{--fl:#1b6b3a;--fl-l:#eaf6ee;}
+  .fl-card.back{--fl:#c2402e;--fl-l:#f9ece9;}
+  .fl-card{border-color:var(--fl);}
+  .fl-head{background:var(--fl-l);padding:14px 16px 12px;border-bottom:2px solid var(--fl);}
+  .fl-dir{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1px;color:#fff;background:var(--fl);border-radius:999px;padding:3px 12px;}
+  .fl-title{font-size:21px;font-weight:800;letter-spacing:-.4px;margin:7px 0 3px;}
+  .fl-cls{font-size:11.5px;font-weight:700;color:var(--fl);}
+  .fl-body{padding:14px 16px 16px;}
+  .fl-leg{padding:11px 0;border-bottom:1px dashed var(--line-2);}
+  .fl-leg:first-child{padding-top:2px;}
+  .fl-no{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;}
+  .fl-no b{font-size:14px;direction:ltr;}
+  .fl-no span{font-size:11.5px;color:var(--muted);font-weight:700;}
+  .fl-route{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;}
+  .fl-pt{display:flex;flex-direction:column;gap:1px;min-width:0;}
+  .fl-time{font-size:14.5px;font-weight:800;letter-spacing:-.2px;}
+  .fl-place{font-size:12.5px;font-weight:700;color:var(--fl);}
+  .fl-term{font-size:10.5px;color:var(--muted);line-height:1.3;}
+  .fl-arrow{display:flex;flex-direction:column;align-items:center;gap:1px;flex:0 0 auto;padding:0 2px;}
+  .fl-dur{font-size:10px;font-weight:700;color:var(--muted);white-space:nowrap;}
+  .fl-ln{font-size:13px;color:var(--fl);}
+  .fl-layover{font-size:12px;font-weight:700;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:7px 11px;margin-top:11px;}
+  .fl-leave{display:flex;gap:9px;align-items:flex-start;background:var(--fl-l);border:1px solid var(--fl);border-radius:11px;padding:10px 12px;margin-top:9px;}
+  .fl-lv-ic{font-size:9.5px;font-weight:800;letter-spacing:.4px;color:#fff;background:var(--fl);border-radius:6px;padding:3px 7px;flex:0 0 auto;white-space:nowrap;}
+  .fl-leave b{font-size:13px;display:block;}
+  .fl-leave span{font-size:12px;color:var(--muted);line-height:1.5;}
+  .fl-note{font-size:12px;color:var(--muted);line-height:1.55;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line-2);}
+  .fl-tix{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;}
+  .fl-ref{font-size:11px;font-weight:800;letter-spacing:.5px;color:var(--fl);background:var(--fl-l);
+        border:1px solid var(--fl);border-radius:999px;padding:4px 11px;direction:ltr;}
+  .btn-ticket.fl-tk{background:var(--fl);border-color:var(--fl);}
+
+  /* ticket buttons on a day */
+  .tix-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px;}
+  .btn-ticket{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:12.5px;font-weight:700;
+        padding:8px 14px;border-radius:999px;white-space:nowrap;background:var(--accent);color:#fff;
+        border:1.5px solid var(--accent);transition:.18s;}
+  .btn-ticket:hover{opacity:.88;transform:translateY(-1px);}
+  .btn-ticket .ext{opacity:.7;}
+
+  .access-line{display:flex;align-items:flex-start;gap:10px;margin-top:12px;background:var(--surface-2);
+        border:1px solid var(--line);border-radius:12px;padding:9px 13px;font-size:12.5px;color:var(--muted);line-height:1.55;}
+  .access-line .ac-ic{font-size:10px;font-weight:800;letter-spacing:.5px;color:var(--muted);
+        background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 7px;flex:0 0 auto;margin-top:1px;}
+  .warn-box{display:flex;align-items:flex-start;gap:10px;margin-top:12px;background:#fdf3e0;
+        border:1px solid #f0d9a8;border-radius:12px;padding:11px 13px;font-size:12.5px;color:#7a5300;line-height:1.6;}
+  .warn-box .wb-ic{font-size:10px;font-weight:800;letter-spacing:.5px;color:#9a6a00;
+        background:#fff;border:1px solid #f0d9a8;border-radius:6px;padding:3px 7px;flex:0 0 auto;margin-top:1px;}
+  .warn-box a{color:#7a5300;font-weight:700;}
+
   /* ---------- Route map ---------- */
   .map-wrap{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);
         box-shadow:var(--shadow-sm);padding:10px;margin-bottom:22px;overflow:hidden;}
@@ -368,6 +421,7 @@
   /* ---------- Responsive ---------- */
   @media (max-width:880px){
     .opt-grid{grid-template-columns:1fr;}
+    .fl-grid{grid-template-columns:1fr;}
     .opt-card.featured .oc-list{grid-template-columns:1fr;}
     .files-grid{grid-template-columns:1fr;}
     .budget-grid{grid-template-columns:1fr;}
@@ -433,6 +487,9 @@
     <div class="section-head"><h2>המסלול שלנו</h2></div>
     <p class="lead">בחרנו במסלול <b>"בלי מצומוטו"</b> — לילה נוסף בקיוטו ובקיושו, עם יום נפרד ל-Takachiho ויום ל-Beppu. הנה הוא במלואו. שתי החלופות שמורות למטה לעיון בלבד.</p>
     <div id="ov-featured"></div>
+
+    <div class="section-head" style="margin-top:30px"><h2>הטיסות שלנו</h2></div>
+    <div id="ov-flights"></div>
 
     <div class="section-head" style="margin-top:30px"><h2>מפת המסלול</h2></div>
     <div id="ov-map"></div>
@@ -534,6 +591,9 @@
 </main>
 
 <footer>מסע ליפן · נשמר מקומית בדפדפן</footer>
+
+<!-- כרטיסים אישיים — קובץ אופציונלי, קיים רק בגרסה הפרטית -->
+<script src="tickets.js" onerror="this.dataset.missing=1"></script>
 
 <script>
 /* ===================== LOCK / PASSWORD GATE ===================== */
@@ -747,14 +807,16 @@ const OPTIONS = [
   },
   {
     id:"opt3", num:"המסלול שלנו", tag:"בלי מצומוטו",
-    summary:"המסלול שסגרנו — בלי מצומוטו: 5 לילות בקיוטו+נארה ו-5 בקיושו (יום ל-Takachiho ויום ל-Beppu), וסיום של 4 לילות בטוקיו.",
+    summary:"המסלול שסגרנו — בלי מצומוטו: 5 לילות בקיוטו+נארה, קיושו על פני 3 בסיסים (אסו, קורוקאווה, בפו), וסיום של 4 לילות בטוקיו.",
     segments:[
       {
-        city:"טוקיו", region:"Tokyo Japan", dates:"9.9–12.9", nights:3,
-        hotel:"Sotetsu Fresa Inn Higashi-Shinjuku", hotelNote:"שינג׳וקו — נוח להמשך", booking:true, cancel:"5.9",
+        city:"טוקיו", region:"Shibuya Jingumae Tokyo Japan", dates:"9.9–12.9", nights:3,
+        hotel:"Dormy Inn Premium Shibuya-jingumae", hotelNote:"שיבויה / ג׳ינגומאה", booking:true, cancel:"4.9",
+        hotelQuery:"Dormy Inn Premium Shibuya Jingumae",
+        access:"כ-10 דק׳ הליכה מתחנת שיבויה, קרוב יותר לתחנת Meiji-Jingumae (מטרו טוקיו / פוקוטושין).",
         highlights:["Sensō-ji","Meiji Jingu","Shibuya Sky","Omoide Yokocho","Akihabara"],
         days:[
-          {d:"9.9", t:"נחיתה", x:"מהאנדה למרכז כ-40 דק׳. בלי תוכניות — צ׳ק-אין ושינה."},
+          {d:"9.9", t:"נחיתה בהנדה 22:20", x:"נוחתים ב-22:20 (טרמינל 3). עם ביקורת דרכונים וכבודה — יציאה מהשדה סביב 23:15, ומהאנדה לשיבויה כ-30–40 דק׳. הגעה למלון בערך 00:00–00:30. שימו לב: הרכבות האחרונות מהנדה יוצאות בסביבות חצות — אם מתעכבים, מונית (~7,000–9,000 ¥). היום הזה הוא רק צ׳ק-אין ושינה."},
           {d:"10.9", t:"מזרח ישן", x:"Sensō-ji מוקדם לפני הקבוצות, רחוב Nakamise, נהר סומידה, Ueno ושוק Ameyoko, ואקיהברה לערב."},
           {d:"11.9", t:"מערב מודרני", x:"Meiji Jingu, הרג׳וקו (Takeshita), Omotesando, הליכה ל-Shibuya דרך Cat Street, ו-Shibuya Sky שעה לפני השקיעה."}
         ],
@@ -762,17 +824,15 @@ const OPTIONS = [
       },
       {
         city:"האקונה", region:"Hakone Gora Japan", dates:"12.9–14.9", nights:2,
-        hotel:"Hotel Indigo Hakone Gora / Masutomi Ryokan", hotelNote:"אונסן בגורה · שתי אופציות לבחירה", booking:true, hotelQuery:"Hotel Indigo Hakone Gora",
-        choose:[
-          {name:"Hotel Indigo Hakone Gora (IHG)", cancel:"13.8", note:""},
-          {name:"Masutomi Ryokan", cancel:"4.9", note:"הזול יותר"}
-        ],
+        hotel:"Hotel Indigo Hakone Gora", hotelNote:"אונסן בגורה — זה מה שבחרנו", booking:true, cancel:"13.8", hotelQuery:"Hotel Indigo Hakone Gora",
+        access:"כ-5 דק׳ הליכה מתחנת גורה — התחנה האחרונה ברכבל האקונה טוזאן.",
         highlights:HAKONE_HL, days:HAKONE_DAYS,
         transfer:{t:"האקונה ← טאקאיאמה", x:"רכבת Hida · ~5ש · יום ארוך אך יפה"}
       },
       {
         city:"טאקאיאמה", region:"Takayama Japan", dates:"14.9–16.9", nights:2,
         hotel:"Takayama Green Hotel (Keio Group)", hotelNote:"Hida Takayama Onsen", booking:true, cancel:"9.8", hotelQuery:"Takayama Green Hotel",
+        access:"כ-10 דק׳ הליכה מתחנת JR טאקאיאמה, ולמלון גם שאטל חינם מהתחנה.",
         highlights:["Sanmachi Suji","שוק Miyagawa","Takayama Jinya","Hida Folk Village"],
         days:[
           {d:"14.9", t:"הגעה ועיר עתיקה", x:"יום נסיעה ארוך מהאקונה דרך נגויה. ערב ברחובות Sanmachi וסטייק Hida beef."},
@@ -783,6 +843,7 @@ const OPTIONS = [
       {
         city:"קנזאווה", region:"Kanazawa Japan", dates:"16.9–18.9", nights:2,
         hotel:"SOKI Kanazawa", hotelNote:"ליד תחנת קנזאווה", booking:true, cancel:"14.9", hotelQuery:"SOKI Kanazawa",
+        access:"צמוד לתחנת קנזאווה (יציאה מזרחית) — כמה דקות הליכה בלבד.",
         highlights:["Kenroku-en","Higashi Chaya","שוק Ōmichō","מוזיאון המאה ה-21","Nagamachi","שירקאווה-גו"],
         days:[
           {d:"16.9", t:"הגעה דרך שירקאווה-גו", x:"עצירת ביקור בכפרי ה-Gassho בדרך, ואחה״צ/ערב ברובע Higashi Chaya ו-Kazue-machi."},
@@ -793,47 +854,75 @@ const OPTIONS = [
       {
         city:"קיוטו + נארה", region:"Kyoto Japan", dates:"18.9–23.9", nights:5,
         hotel:"KABIN Kyoto", hotelNote:"נארה כטיול יום", booking:true, cancel:"14.9",
-        highlights:["Kiyomizu-dera","Fushimi Inari","יער הבמבוק","Kinkaku-ji","Gion","Philosopher's Path","שוק Nishiki","Tōdai-ji (נארה)"],
+        access:"כ-10 דק׳ הליכה מתחנת קיוטו (יציאה דרומית) או מתחנת המטרו Kyoto/Shichijo.",
+        highlights:["Kiyomizu-dera","Fushimi Inari","יער הבמבוק","Kinkaku-ji","Gion","Philosopher's Path","שוק Nishiki","Tōdai-ji (נארה)","teamLab Kyoto","Studio Shinobi YASE (סכינים)"],
         days:[
           {d:"18.9", t:"מזרח קיוטו (Higashiyama)", x:"Kiyomizu-dera מוקדם, Sannenzaka/Ninenzaka, פגודת Yasaka, Yasaka Shrine, Kōdai-ji, ו-Gion בערב."},
-          {d:"19.9", t:"אראשיאמה ו-Kinkaku-ji", x:"יער הבמבוק עד 8:00, Tenryū-ji, Okōchi Sansō, גשר Togetsukyō, אחה״צ Kinkaku-ji."},
+          {d:"19.9", t:"teamLab Kyoto (9:30) + אראשיאמה", x:"בוקר: teamLab Kyoto — כניסה בשעה 9:30 (כרטיס קבוע מראש). אחה״צ: יער הבמבוק, Tenryū-ji, Okōchi Sansō וגשר Togetsukyō באראשיאמה — יהיה עמוס יותר מאשר בבוקר מוקדם, אך עדיין שווה."},
           {d:"20.9", t:"פושימי אינארי + נארה", x:"Fushimi Inari עד Yotsutsuji, רכבת לנארה, Tōdai-ji והבודהה הגדול, פארק הצבאים, Kasuga Taisha."},
           {d:"21.9", t:"שביל הפילוסוף", x:"Nanzen-ji, Philosopher's Path, Ginkaku-ji, שוק Nishiki, או סדנת צביעת משי Kyō-Yūzen."},
-          {d:"22.9", t:"יום גמיש", x:"Ryōan-ji / Ninna-ji, סדנת מלאכה, או טיול יום ל-Uji (Byōdō-in ותה מאצ׳ה)."}
+          {d:"22.9", t:"סדנת סכינים ביאסה", x:"10:00–13:00: סדנת יצירת סכין אותנטית אצל חרש מתכת ב-Studio Shinobi YASE (יאסה, צפון קיוטו) — 3 שעות, באנגלית, ל-2 מבוגרים. הגעה ברכבת Eizan עד Yase-Hieizanguchi (דקה הליכה), להגיע 10 דק׳ מוקדם ולהביא גרביים (אלכוהול אסור באתר). ביטול חינם עד 21.9 בשעה 10:00. אחה״צ: Kinkaku-ji ו/או Ryōan-ji / Ninna-ji בדרך חזרה מצפון העיר."}
         ],
         note:"בתוך קיוטו — רכבות ומטרו עדיפים על אוטובוסים העמוסים.",
         transfer:{t:"קיוטו ← אוסקה", x:"רכבת Special Rapid · ~15–30 דק׳"}
       },
       {
         city:"אוסקה", region:"Osaka Namba Japan", dates:"23.9–24.9", nights:1,
-        hotel:"Red Roof Inn & Suites Osaka Namba Nipponbashi", hotelNote:"נמבה — נוח לאיטמי", booking:true, cancel:"22.9", hotelQuery:"Red Roof Inn Suites Osaka Namba Nipponbashi",
+        hotel:"Red Roof Inn & Suites Osaka Namba Nipponbashi", hotelNote:"נמבה — נוח לאיטמי", booking:true, cancel:"22.9",
+        bookingUrl:"https://www.booking.com/hotel/jp/retudoruhuin-suituri-ben-qiao.he.html", hotelQuery:"Red Roof Inn Suites Osaka Namba Nipponbashi",
+        access:"כ-5 דק׳ הליכה מתחנות Namba / Nippombashi (מטרו/סאבווי אוסקה).",
         highlights:OSAKA_HL,
         days:[{d:"23.9", t:"אוכל ואורות", x:"אחה״צ: טירת אוסקה / שוק Kuromon / Shinsaibashi. ערב Dotonbori בניאון ואוכל רחוב. למחרת בבוקר — טיסה מאיטמי לקיושו."}],
         transfer:{t:"אוסקה ← קיושו", x:"טיסה ~1:15 · רישיון בינלאומי נדרש ✈️"}
       },
       {
-        city:"קיושו — אסו + קורוקאווה", region:"Aso Kumamoto Japan", dates:"24.9–29.9", nights:5,
-        hotel:"Fairfield by Marriott Aso → Kurokawa-So", hotelNote:"לימי הטיולים → ריוקאן לסיום הרומנטי", booking:true, hotelQuery:"Fairfield by Marriott Aso", pending:true,
-        highlights:["הר Aso (Nakadake)","Daikanbo","Kusasenri","מפל Nabegataki","Takachiho","Beppu","Kurokawa Onsen"],
+        city:"קיושו — אסו", region:"Aso Kumamoto Japan", dates:"24.9–26.9", nights:2,
+        hotel:"Fairfield by Marriott Kumamoto Aso", hotelNote:"בסיס לטיולי אסו וטאקאצ׳יהו", booking:true,
+        bookingUrl:"https://www.booking.com/hotel/jp/fairfield-by-marriott-kumamoto-aso.he.html", hotelQuery:"Fairfield by Marriott Kumamoto Aso",
+        access:"מומלץ רכב שכור — כ-1 שעה נסיעה משדה התעופה קומאמוטו (רישיון בינלאומי נדרש). תחבורה ציבורית מוגבלת מאוד באזור.",
+        highlights:["הר Aso (Nakadake)","Daikanbo","Kusasenri","Takachiho"],
         days:[
-          {d:"24.9", t:"הגעה לאסו", x:"טיסה בבוקר, רכב, נסיעה לאסו (~1ש). תצפית Daikanbo, Komezuka, מישורי Kusasenri."},
-          {d:"25.9", t:"הר הגעש", x:"לוע Nakadake (אם פתוח), מסלול Sunasenri/Sensuikyo, מקדש Aso, מפלים."},
-          {d:"26.9", t:"טיול יום Takachiho", x:"קניון Takachiho עם שיט סירות בין המצוקים — אחד הנופים היפים באזור."},
-          {d:"27.9", t:"טיול יום Beppu", x:"ה״גיהנומים״ הצבעוניים של Beppu (Umi Jigoku, Chinoike Jigoku) ועצירה ביופואין (Lake Kinrin)."},
-          {d:"28.9", t:"מעבר לקורוקאווה", x:"נסיעה קצרה דרך מפל Nabegataki. צ׳ק-אין ריוקאן Kurokawa-So, אונסן וסיום רומנטי."}
+          {d:"24.9", t:"הגעה לאסו", x:"טיסה בבוקר לקומאמוטו, איסוף רכב שכור, נסיעה לאסו (~1ש). תצפית Daikanbo, מישורי Kusasenri."},
+          {d:"25.9", t:"הר הגעש + Takachiho", x:"בוקר: לוע Nakadake (אם פתוח) ומסלול Sunasenri/Sensuikyo. אחה״צ: נסיעה לקניון Takachiho (~1.5ש) לשיט סירות בין המצוקים."}
         ],
-        transfer:{t:"קיושו ← טוקיו", x:"רכב לשדה ~1.5ש · טיסה ~1:40 ✈️"}
+        transfer:{t:"אסו ← קורוקאווה", x:"נסיעה ~40 דק׳ דרך מפל Nabegataki"}
+      },
+      {
+        city:"קיושו — קורוקאווה", region:"Kurokawa Onsen Kumamoto Japan", dates:"26.9–28.9", nights:2,
+        hotel:"Ryokan Wakaba", hotelNote:"כפר אונסן קורוקאווה", booking:true, cancel:"21.9",
+        bookingUrl:"https://www.booking.com/hotel/jp/ryokan-wakaba.he.html", hotelQuery:"Ryokan Wakaba Kurokawa Onsen",
+        access:"נגיש רק ברכב — כ-40 דק׳ נסיעה מאסו. חניה בריוקאן, ובתוך הכפר הולכים ברגל.",
+        warn:"יש לנו גם הזמנה נפרדת ב-<a href=\"https://www.booking.com/hotel/jp/kurokawa-so.he.html\" target=\"_blank\" rel=\"noopener\">Kurokawa-So</a> (ריוקאן אחר בקורוקאווה) לתאריכים 27–29.9, ביטול חינם עד 18.9, צ׳ק-אין בשעה 15:00 — כנראה כפילות מול ההזמנה כאן ב-Ryokan Wakaba. צריך לבדוק מול ההזמנות ולבטל את המיותרת בזמן.",
+        highlights:["Kurokawa Onsen","כרטיס דילוג אונסנים (Tegata)","מפל Nabegataki"],
+        days:[
+          {d:"26.9", t:"מעבר לקורוקאווה", x:"נסיעה קצרה מאסו דרך מפל Nabegataki. צ׳ק-אין בריוקאן Wakaba, אונסן וערב רגוע."},
+          {d:"27.9", t:"קורוקאווה נינוח", x:"כרטיס דילוג (Tegata) בין 3 אונסנים, סיבוב בכפר ולאורך נהר Tanoharu, קניות מזכרות."}
+        ],
+        transfer:{t:"קורוקאווה ← בפו", x:"נסיעה ~1 שעה"}
+      },
+      {
+        city:"קיושו — בפו", region:"Beppu Oita Japan", dates:"28.9–29.9", nights:1,
+        hotel:"SEKIYA RESORT Galleria Midobaru", hotelNote:"אזור מיובאן (Myoban) בבפו", booking:true, cancel:"23.9",
+        bookingUrl:"https://www.booking.com/hotel/jp/galleria-midobaru.he.html", hotelQuery:"SEKIYA RESORT Galleria Midobaru Beppu",
+        access:"ברכב מקורוקאווה כ-1 שעה. יש גם אוטובוס מתחנת בפו לאזור מיובאן, אך רכב נוח יותר.",
+        highlights:["Umi Jigoku","Chinoike Jigoku","Lake Kinrin (יופואין)"],
+        days:[
+          {d:"28.9", t:"טיול יום בפו", x:"נסיעה מקורוקאווה, צ׳ק-אין. אחה״צ: ה״גיהנומים״ הצבעוניים (Umi Jigoku, Chinoike Jigoku), ועצירה ביופואין (Lake Kinrin) בדרך."},
+          {d:"29.9", t:"חזרה לטוקיו", x:"בוקר חופשי / אונסן אחרון באזור מיובאן, נסיעה לשדה קומאמוטו/אויטה, וטיסה לטוקיו."}
+        ],
+        transfer:{t:"קיושו ← טוקיו", x:"רכב לשדה ~1.5–2 שעות · טיסה ~1:40 ✈️"}
       },
       {
         city:"טוקיו — סיום", region:"Shibuya Jingumae Tokyo Japan", dates:"29.9–3.10", nights:4,
         hotel:"Dormy Inn Premium Shibuya-jingumae", hotelNote:"שיבויה / ג׳ינגומאה", booking:true, cancel:"27.9", hotelQuery:"Dormy Inn Premium Shibuya Jingumae",
+        access:"כ-10 דק׳ הליכה מתחנת שיבויה, קרוב יותר לתחנת Meiji-Jingumae (מטרו טוקיו / פוקוטושין).",
         highlights:["teamLab","שוק Tsukiji","גני Hamarikyu","Shibuya","Tokyo Tower"],
         days:[
           {d:"29.9", t:"חזרה לטוקיו", x:"טיסה מקיושו, צ׳ק-אין ב-Dormy Inn שיבויה-ג׳ינגומאה, אונסן במלון וערב רגוע בשיבויה."},
           {d:"30.9", t:"מרכז טוקיו", x:"teamLab (כרטיס בשעה מתוזמנת מראש), Tokyo Tower / Roppongi, וערב באזור."},
           {d:"1.10", t:"טוקיו קלאסית", x:"השוק החיצוני של Tsukiji בבוקר, גני Hamarikyu, ושיטוט בגינזה."},
           {d:"2.10", t:"יום חופשי", x:"קניות ומקומות אהובים, או מה שפספסתם (Shimokitazawa / טיול יום לקמאקורה). ארוחת סיום."},
-          {d:"3.10", t:"חזרה הביתה", x:"בוקר חופשי, ואז לשדה התעופה לטיסה ב-21:00."}
+          {d:"3.10", t:"יום אחרון + טיסה בלילה", x:"צ׳ק-אאוט בבוקר ולהשאיר מזוודות בקבלת המלון — יש לנו יום שלם פנוי. לאסוף את המזוודות סביב 19:15, לצאת לשדה משיבויה ב-19:45–20:00 (רכבת ~30–40 דק׳ להנדה), ולהיות בטרמינל 3 ב-20:45. הצ׳ק-אין נפתח ב-21:05, וההמראה ב-00:05 — כלומר כבר אחרי חצות, בתאריך 4.10."}
         ],
         transfer:null
       }
@@ -841,10 +930,38 @@ const OPTIONS = [
   }
 ];
 
+/* ===================== FLIGHTS (international) ===================== */
+const FLIGHTS = [
+  {
+    dir:"הלוך", label:"תל אביב ← טוקיו", cls:"Economy Flex · כבודה 30 ק״ג",
+    leaveHome:{t:"יציאה לנתב״ג", x:"להיות בשדה ב-17:45 (3 שעות לפני ההמראה) — טיסה בין-לאומית בשיא העונה. יציאה מהבית סביב 16:30–17:00."},
+    legs:[
+      {no:"EK 2346 / FZ1808", op:"flydubai", from:"תל אביב (TLV)", fromT:"נתב״ג · טרמינל 3",
+       dep:"ג׳ 8.9 · 20:45", to:"דובאי (DXB)", toT:"טרמינל 3", arr:"ד׳ 9.9 · 01:05", dur:"3ש 20דק׳"},
+      {no:"EK 312", op:"Emirates", from:"דובאי (DXB)", fromT:"טרמינל 3 · צ׳ק-אין 04:40",
+       dep:"ד׳ 9.9 · 07:40", to:"טוקיו (HND)", toT:"הנדה · טרמינל 3", arr:"ד׳ 9.9 · 22:20", dur:"9ש 40דק׳"}
+    ],
+    layover:"המתנה בדובאי: 6 שעות 35 דקות (01:05 → 07:40)",
+    note:"נוחתים בהנדה ב-22:20. עם ביקורת דרכונים וכבודה — יציאה מהשדה בערך 23:15, והגעה למלון בשיבויה סביב 00:00–00:30. הרכבות האחרונות מהנדה יוצאות ~00:00, אז אם מתעכבים — מונית (~7,000–9,000 ¥)."
+  },
+  {
+    dir:"חזור", label:"טוקיו ← תל אביב", cls:"Economy Flex · כבודה 30 ק״ג · מושב 42A",
+    leaveHome:{t:"יציאה לשדה הנדה", x:"ההמראה ב-00:05 בלילה שבין 3.10 ל-4.10, וצ׳ק-אין נפתח ב-21:05 ב-3.10. לצאת משיבויה סביב 19:45–20:00 (רכבת ~30–40 דק׳) ולהיות בשדה ב-20:45."},
+    legs:[
+      {no:"EK 313", op:"Emirates", from:"טוקיו (HND)", fromT:"הנדה · טרמינל 3 · צ׳ק-אין 3.10 ב-21:05",
+       dep:"א׳ 4.10 · 00:05", to:"דובאי (DXB)", toT:"טרמינל 3", arr:"א׳ 4.10 · 06:25", dur:"11ש 20דק׳"},
+      {no:"EK 2345 / FZ1807", op:"flydubai", from:"דובאי (DXB)", fromT:"טרמינל 3 · צ׳ק-אין 14:00",
+       dep:"א׳ 4.10 · 17:00", to:"תל אביב (TLV)", toT:"נתב״ג · טרמינל 3", arr:"א׳ 4.10 · 19:30", dur:"3ש 30דק׳"}
+    ],
+    layover:"המתנה בדובאי: 10 שעות 35 דקות (06:25 → 17:00)",
+    note:"המתנה ארוכה בדובאי — שווה לבדוק כניסה ללאונג׳, או אפילו יציאה קצרה לעיר (ישראלים פטורים מויזה; צריך ~4 שעות פנויות אחרי ביקורת דרכונים)."
+  }
+];
+
 const DIFF = [
   {n:"1", x:"עשירה בטבע ואתרים (קמיקוצ׳י, טירת מצומוטו) — במחיר יום נסיעה ארוך אחד."},
   {n:"2", x:"רגועה וזורמת, בלי מצומוטו, עם 5 לילות בקיוטו ו-3 בקנזאווה."},
-  {n:"3", x:"בלי מצומוטו, 5 לילות בקיוטו ו-5 בקיושו (יום ל-Takachiho ויום ל-Beppu) — הכי נינוחה בקצה הדרומי. זה המסלול שסגרנו."}
+  {n:"3", x:"בלי מצומוטו, 5 לילות בקיוטו ו-5 בקיושו על פני 3 בסיסים (אסו, קורוקאווה, בפו) — הכי נינוחה בקצה הדרומי. זה המסלול שסגרנו."}
 ];
 
 const TIPS = [
@@ -885,33 +1002,39 @@ const CITY_XY={
   "קנזאווה":{x:391,y:98,dx:-8,dy:-11,a:"end",s:"קנזאווה"},
   "קיוטו + נארה":{x:350,y:211,dx:-13,dy:-2,a:"end",s:"קיוטו"},
   "אוסקה":{x:338,y:233,dx:-13,dy:16,a:"end",s:"אוסקה"},
-  "קיושו — אסו + קורוקאווה":{x:140,y:345,dx:0,dy:30,a:"middle",s:"קיושו"}
+  "קיושו — אסו + קורוקאווה":{x:140,y:345,dx:0,dy:30,a:"middle",s:"קיושו"},
+  "קיושו — אסו":{x:145,y:352,dx:-14,dy:20,a:"end",s:"אסו"},
+  "קיושו — קורוקאווה":{x:168,y:322,dx:14,dy:-8,a:"start",s:"קורוקאווה"},
+  "קיושו — בפו":{x:192,y:298,dx:14,dy:6,a:"start",s:"בפו"}
 };
 const CITY_COLOR={
   "טוקיו":"#c2402e","טוקיו — סיום":"#c2402e","האקונה":"#1b6b3a",
   "טאקאיאמה":"#d98324","קנזאווה":"#1e3a5f","קיוטו + נארה":"#7b4397",
-  "אוסקה":"#c2185b","קיושו — אסו + קורוקאווה":"#0f766e","מצומוטו":"#5b7dbe"
+  "אוסקה":"#c2185b","קיושו — אסו + קורוקאווה":"#0f766e","מצומוטו":"#5b7dbe",
+  "קיושו — אסו":"#0f766e","קיושו — קורוקאווה":"#059669","קיושו — בפו":"#0891b2"
 };
 const CITY_SHORT={
   "טוקיו":"טוקיו","טוקיו — סיום":"טוקיו","האקונה":"האקונה","טאקאיאמה":"טאקאיאמה",
   "קנזאווה":"קנזאווה","קיוטו + נארה":"קיוטו","אוסקה":"אוסקה",
-  "קיושו — אסו + קורוקאווה":"קיושו","מצומוטו":"מצומוטו"
+  "קיושו — אסו + קורוקאווה":"קיושו","מצומוטו":"מצומוטו",
+  "קיושו — אסו":"אסו","קיושו — קורוקאווה":"קורוקאווה","קיושו — בפו":"בפו"
 };
 const JAPAN_LAND=`
   <path class="rmap-land" d="M300 250 C298 205 322 150 372 112 C412 82 470 84 520 108 C572 128 604 120 620 150 C610 176 566 186 520 192 C476 184 434 170 402 192 C372 212 352 238 332 256 C318 264 302 264 300 250 Z"/>
   <path class="rmap-land" d="M250 258 C268 250 306 252 320 266 C316 282 278 288 256 278 C244 272 244 262 250 258 Z"/>
   <path class="rmap-land" d="M96 322 C92 296 132 284 168 300 C204 314 208 352 182 378 C156 402 110 398 96 366 C86 350 94 336 96 322 Z"/>
 `;
-function routeMapSVG(opt, accent){
-  const pts=opt.segments.map(s=>CITY_XY[s.city]).filter(Boolean);
+function routeMapSVG(opt, accent, cityColored){
+  const pts=opt.segments.map(s=>{const xy=CITY_XY[s.city]; return xy?{...xy, city:s.city}:null;}).filter(Boolean);
   if(pts.length<2) return "";
   const dPath="M "+pts.map(p=>`${p.x} ${p.y}`).join(" L ");
   const seen={}; let n=0; const dots=[];
   pts.forEach(p=>{const k=p.x+","+p.y; if(seen[k])return; seen[k]=++n; dots.push({p,n});});
   const dotsSVG=dots.map(({p,n})=>{
     const anchor=p.a==="end"?"end":p.a==="start"?"start":"middle";
+    const dotColor = cityColored ? (CITY_COLOR[p.city]||accent) : accent;
     return `<g>
-      <circle class="rmap-dot" cx="${p.x}" cy="${p.y}" r="11" fill="${accent}"/>
+      <circle class="rmap-dot" cx="${p.x}" cy="${p.y}" r="11" fill="${dotColor}"/>
       <text class="rmap-num" x="${p.x}" y="${p.y+4}" text-anchor="middle">${n}</text>
       <text class="rmap-label" x="${p.x+p.dx}" y="${p.y+p.dy}" text-anchor="${anchor}">${p.s}</text>
     </g>`;
@@ -964,25 +1087,73 @@ const featuredOpt = OPTIONS.find(o=>o.id==="opt3");
 const altOpts = OPTIONS.filter(o=>o.id!=="opt3");
 document.getElementById("ov-featured").innerHTML = overviewCard(featuredOpt, true);
 document.getElementById("ov-alts").innerHTML = altOpts.map(o=>overviewCard(o, false)).join("");
-document.getElementById("ov-map").innerHTML = `<div class="map-wrap">${routeMapSVG(featuredOpt, ACCENT.opt3)}</div>`;
+document.getElementById("ov-map").innerHTML = `<div class="map-wrap">${routeMapSVG(featuredOpt, ACCENT.opt3, true)}</div>`;
 document.getElementById("ov-cal").innerHTML = calendarHTML();
+/* כרטיסים אישיים נטענים מ-tickets.js (קיים רק ב-repo הפרטי). אם אין — לא מוצג כלום. */
+const TIX = (typeof window!=="undefined" && window.TRIP_TICKETS) || {};
+function flightsHTML(){
+  const flTix = TIX.flights;
+  return `<div class="fl-grid">` + FLIGHTS.map(f=>`
+    <div class="fl-card ${f.dir==="הלוך"?"out":"back"}">
+      <div class="fl-head">
+        <span class="fl-dir">${f.dir}</span>
+        <div class="fl-title">${f.label}</div>
+        <span class="fl-cls">${f.cls}</span>
+      </div>
+      <div class="fl-body">
+        ${f.legs.map(l=>`
+          <div class="fl-leg">
+            <div class="fl-no"><b>${l.no}</b><span>${l.op}</span></div>
+            <div class="fl-route">
+              <div class="fl-pt"><span class="fl-time">${l.dep}</span><span class="fl-place">${l.from}</span><span class="fl-term">${l.fromT}</span></div>
+              <div class="fl-arrow"><span class="fl-dur">${l.dur}</span><span class="fl-ln">✈</span></div>
+              <div class="fl-pt"><span class="fl-time">${l.arr}</span><span class="fl-place">${l.to}</span><span class="fl-term">${l.toT}</span></div>
+            </div>
+          </div>`).join("")}
+        <div class="fl-layover">⏱ ${f.layover}</div>
+        ${flTix?`<div class="fl-tix">
+          ${flTix.ref?`<span class="fl-ref">מס׳ הזמנה ${flTix.ref}</span>`:''}
+          ${(flTix.docs||[]).map(t=>`<a class="btn-ticket fl-tk" target="_blank" rel="noopener" href="${t.url}">🎟️ ${t.label} <span class="ext">↗</span></a>`).join("")}
+        </div>`:''}
+        <div class="fl-leave"><span class="fl-lv-ic">מתי לצאת</span><div><b>${f.leaveHome.t}</b><span>${f.leaveHome.x}</span></div></div>
+        ${f.note?`<div class="fl-note">${f.note}</div>`:''}
+      </div>
+    </div>`).join("") + `</div>`;
+}
+document.getElementById("ov-flights").innerHTML = flightsHTML();
 document.getElementById("ov-diff").innerHTML =
   `<h3>ההבדל בקצרה</h3>` + DIFF.map(d=>`<div class="dl"><span class="dnum">אופציה ${d.n}</span><span>${d.x}</span></div>`).join("");
 document.getElementById("ov-tips").innerHTML =
   TIPS.map(t=>`<div class="tip"><h4>${t.h}</h4><p>${t.x}</p></div>`).join("");
 
 /* ===================== RENDER: option detail ===================== */
-function segHTML(s, idx){
+function tint(hex, amt){
+  const n = parseInt(hex.replace('#',''),16);
+  const r = Math.round(((n>>16)&255) + (255-((n>>16)&255))*amt);
+  const g = Math.round(((n>>8)&255) + (255-((n>>8)&255))*amt);
+  const b = Math.round((n&255) + (255-(n&255))*amt);
+  return `rgb(${r},${g},${b})`;
+}
+function segHTML(s, idx, cityColored, isOurs){
+  const dayTix = isOurs ? (TIX.days||{}) : {};
+  const cc = cityColored ? CITY_COLOR[s.city] : null;
+  const segStyle = cc ? ` style="--accent:${cc};--accent-light:${tint(cc,0.85)};--accent-bright:${cc}"` : "";
   const hls = s.highlights.map(h=>`
     <span class="hl">${h}
       <a class="mini" target="_blank" rel="noopener" title="Google Maps" href="${gmap(h.replace(/\(.*?\)/g,'').trim()+' '+s.region)}">↗</a>
     </span>`).join("");
-  const days = s.days.map(d=>`
+  const days = s.days.map(d=>{
+    const tix = (dayTix[d.d]||[]).map(t=>
+      `<a class="btn-ticket" target="_blank" rel="noopener" href="${t.url}">🎟️ ${t.label}${t.time?` · ${t.time}`:''} <span class="ext">↗</span></a>`
+    ).join("");
+    return `
     <div class="tl-day">
       <div class="tl-date">${d.d}</div>
-      <div class="tl-c"><h5>${d.t}</h5><p>${d.x}</p></div>
-    </div>`).join("");
-  const hotelLinks = (s.booking ? bookBtn(s.hotelQuery || s.hotel) : "") +
+      <div class="tl-c"><h5>${d.t}</h5><p>${d.x}</p>${tix?`<div class="tix-row">${tix}</div>`:''}</div>
+    </div>`;
+  }).join("");
+  const directBook = q => `<a class="btn-book" target="_blank" rel="noopener" href="${q}">Booking <span class="ext">↗</span></a>`;
+  const hotelLinks = (s.booking ? (s.bookingUrl ? directBook(s.bookingUrl) : bookBtn(s.hotelQuery || s.hotel)) : "") +
                      mapBtn(s.hotelQuery || s.hotel, s.region);
   const statusChip = s.cancel ? `<span class="cancel-badge">✓ ביטול חינם עד ${s.cancel}</span>`
     : s.pending ? `<span class="cancel-badge pending">● טרם נסגר</span>`
@@ -992,7 +1163,7 @@ function segHTML(s, idx){
       ${s.choose.map(o=>`<div class="cb-opt"><b>${o.name}</b>${o.note?`<span class="cb-note">${o.note}</span>`:''}<span class="cancel-badge">✓ ביטול חינם עד ${o.cancel}</span></div>`).join("")}
     </div>` : '';
   const bookLine = (!s.choose && (s.cancel || s.pending)) ? `<div class="book-line">${statusChip}</div>` : '';
-  return `<details class="seg" ${idx===0?'open':''}>
+  return `<details class="seg" ${idx===0?'open':''}${segStyle}>
     <summary class="seg-sum">
       <div class="seg-day"><b>${s.nights}</b><span>לילות</span></div>
       <div class="seg-meta">
@@ -1009,6 +1180,8 @@ function segHTML(s, idx){
         <div class="hb-txt"><b>${s.hotel}</b><span>${s.hotelNote}</span></div>
         ${hotelLinks}
       </div>
+      ${s.access?`<div class="access-line"><span class="ac-ic">הגעה</span><span>${s.access}</span></div>`:''}
+      ${s.warn?`<div class="warn-box"><span class="wb-ic">לתשומת לב</span><span>${s.warn}</span></div>`:''}
       ${chooseBox}${bookLine}
       <div class="tl">${days}</div>
       ${s.note?`<div class="note-inline">${s.note}</div>`:''}
@@ -1024,20 +1197,25 @@ function renderOption(opt){
     <span class="oh-tag">${opt.segments.length} יעדים · 24 לילות</span>
     <p>${opt.summary}</p>
   </div>`;
+  const cityColored = opt.id==="opt3";
   const table = `<div class="mtable">
     <div class="mt-row head"><span>יעד</span><span>תאריכים</span><span>לילות</span><span>לינה</span></div>
-    ${opt.segments.map(s=>`<div class="mt-row">
+    ${opt.segments.map(s=>{
+      const cc = cityColored ? CITY_COLOR[s.city] : null;
+      const nStyle = cc ? ` style="background:${tint(cc,0.85)};color:${cc};border-color:${cc}"` : "";
+      return `<div class="mt-row">
       <span class="mt-city">${s.city}</span>
       <span class="mt-dates">${s.dates}</span>
-      <span class="mt-n">${s.nights} ל׳</span>
+      <span class="mt-n"${nStyle}>${s.nights} ל׳</span>
       <span class="mt-hotel">${s.hotel}</span>
-    </div>`).join("")}
+    </div>`;
+    }).join("")}
   </div>`;
-  const segs = opt.segments.map(segHTML).join("");
+  const segs = opt.segments.map((s,i)=>segHTML(s,i,cityColored,cityColored)).join("");
   document.getElementById("pane-"+opt.id).innerHTML =
     `<div class="section-head"><h2>${opt.num}</h2></div>`
     + hero
-    + `<div class="section-head"><h2>מפת המסלול</h2></div><div class="map-wrap">${routeMapSVG(opt, ACCENT[opt.id]||"#111113")}</div>`
+    + `<div class="section-head"><h2>מפת המסלול</h2></div><div class="map-wrap">${routeMapSVG(opt, ACCENT[opt.id]||"#111113", cityColored)}</div>`
     + table + segs;
 }
 OPTIONS.forEach(renderOption);
