@@ -274,6 +274,55 @@
         border:1px solid var(--fl);border-radius:999px;padding:4px 11px;direction:ltr;}
   .btn-ticket.fl-tk{background:var(--fl);border-color:var(--fl);}
 
+  /* car rental box */
+  .car-box{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin:12px 0 2px;}
+  .cr-t{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin-bottom:11px;}
+  .cr-ic{font-size:15px;}
+  .cr-t b{font-size:14px;}
+  .cr-sub{font-size:11.5px;font-weight:700;color:var(--accent);background:var(--accent-light);
+        border:1px solid var(--accent);border-radius:999px;padding:2px 10px;}
+  .cr-legs{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .cr-leg{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 12px;}
+  .cr-leg.active{border:1.5px solid var(--accent);box-shadow:var(--shadow-sm);}
+  .cr-hd{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-bottom:4px;}
+  .cr-tag{font-size:10px;font-weight:800;letter-spacing:.4px;color:#fff;background:var(--muted);border-radius:999px;padding:2px 9px;}
+  .cr-leg.active .cr-tag{background:var(--accent);}
+  .cr-hd b{font-size:13.5px;}
+  .cr-when{font-size:13px;font-weight:800;margin-bottom:5px;}
+  .cr-meta{font-size:11.5px;color:var(--muted);line-height:1.5;}
+  .cr-meta a{color:var(--accent);text-decoration:none;font-weight:700;}
+  .cr-map{margin-top:9px;}
+  .cr-jp{font-size:11px;color:var(--muted);opacity:.9;}
+  .cr-ref{font-size:11px;font-weight:800;letter-spacing:.4px;color:var(--accent);background:var(--accent-light);
+        border:1px solid var(--accent);border-radius:999px;padding:2px 10px;direction:ltr;}
+  .cr-info{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+  .cr-kv{font-size:11.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);
+        border-radius:999px;padding:4px 11px;}
+  .cr-kv b{color:var(--ink);font-weight:800;}
+  .cr-warn{display:flex;gap:9px;align-items:flex-start;background:#fdf3e0;border:1px solid #f0d9a8;
+        border-radius:10px;padding:9px 11px;margin-top:11px;font-size:12px;color:#7a5500;line-height:1.55;}
+  .cr-notes{margin:10px 0 0;padding:0 16px 0 0;}
+  .cr-notes li{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:3px;}
+
+  /* transport options on a day */
+  .tr-box{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin:11px 0 2px;}
+  .tr-t{font-size:12.5px;font-weight:800;color:var(--accent);margin-bottom:9px;}
+  .tr-opt{padding:9px 0;border-top:1px dashed var(--line);}
+  .tr-opt:first-of-type{border-top:none;padding-top:2px;}
+  .tr-opt.best{background:#eaf6ee;border:1.5px solid #1b6b3a;border-radius:10px;padding:9px 11px;margin-bottom:4px;}
+  .tr-opt.risk{opacity:.82;}
+  .tr-hd{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:3px;}
+  .tr-hd b{font-size:13.5px;}
+  .tr-tag{font-size:10.5px;font-weight:800;letter-spacing:.3px;border-radius:999px;padding:2px 9px;
+        background:var(--surface);border:1px solid var(--line);color:var(--muted);white-space:nowrap;}
+  .tr-opt.best .tr-tag{background:#1b6b3a;border-color:#1b6b3a;color:#fff;}
+  .tr-opt.risk .tr-tag{background:#fdf3e0;border-color:#f0d9a8;color:#9a6a00;}
+  .tr-opt p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.55;}
+  .tr-opt.best p{color:var(--ink);}
+  .tr-src{font-size:11px;color:var(--muted);margin-top:10px;padding-top:9px;border-top:1px dashed var(--line);}
+  .tr-src a{color:var(--muted);text-decoration:underline;}
+  .tr-src a:hover{color:var(--ink);}
+
   /* ticket buttons on a day */
   .tix-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px;}
   .btn-ticket{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:12.5px;font-weight:700;
@@ -422,6 +471,7 @@
   @media (max-width:880px){
     .opt-grid{grid-template-columns:1fr;}
     .fl-grid{grid-template-columns:1fr;}
+    .cr-legs{grid-template-columns:1fr;}
     .opt-card.featured .oc-list{grid-template-columns:1fr;}
     .files-grid{grid-template-columns:1fr;}
     .budget-grid{grid-template-columns:1fr;}
@@ -631,6 +681,63 @@ const mapBtn = (name, region) =>
 const bookBtn = q =>
   `<a class="btn-book" target="_blank" rel="noopener" href="${gbook(q)}">Booking <span class="ext">↗</span></a>`;
 
+/* ===================== CAR RENTAL (Takayama → Kanazawa) ===================== */
+const CAR_RENTAL = {
+  t:"רכב שכור · טאקאיאמה ← קנזאווה",
+  sub:"4 ימים — מ-14.9 עד 18.9",
+  pickup:{
+    label:"איסוף", place:"Takayama Rr", when:"ב׳ 14.9.2026 · 12:30",
+    addr:"Showamachi Takayama 1-319, Takayamashi, Gifu, JP 506-0026",
+    hours:"א׳–ש׳ 10:00–19:00", tel:"0577-36-6110", telRaw:"0577366110",
+    q:"1-319 Showamachi, Takayama, Gifu 506-0026, Japan"
+  },
+  dropoff:{
+    label:"החזרה", place:"Kanazawa Shinkansen East Exit", when:"ו׳ 18.9.2026 · 11:00",
+    addr:"Honnmachi 2-15-1, Kanazawashi, Ishikawa, JP 920-0021",
+    hours:"א׳–ש׳ 08:00–20:00", tel:"076-223-0100", telRaw:"0762230100",
+    q:"2-15-1 Honmachi, Kanazawa, Ishikawa 920-0021, Japan"
+  },
+  notes:[
+    "רישיון נהיגה בין-לאומי (IDP) חובה — להנפיק בארץ לפני הטיסה. ביפן נוהגים בצד שמאל.",
+    "הרכב מאפשר לעצור בשירקאווה-גו בדרך מטאקאיאמה לקנזאווה (16.9) — הרבה יותר גמיש מאוטובוס.",
+    "בקנזאווה: לוודא חניה במלון SOKI או חניון סמוך, ולהחזיר את הרכב ב-18.9 עד 11:00 לפני הרכבת לקיוטו."
+  ],
+  warn:"האיסוף בטאקאיאמה ב-12:30, אבל ב-14.9 מגיעים מהאקונה ברכבת (~5 שעות דרך נגויה). כדי להספיק צריך לצאת מהאקונה מוקדם מאוד בבוקר (בערך 7:00–7:30) — כדאי לוודא מול חברת ההשכרה שאפשר לאחר, או להזיז את שעת האיסוף."
+};
+
+/* ===================== CAR RENTAL (Kyushu, one-way) ===================== */
+const CAR_KYUSHU = {
+  t:"רכב שכור · קיושו — TOYOTA Rent a Car",
+  sub:"5 ימים · חד-כיווני, קומאמוטו ← אויטה",
+  refKey:"carKyushu",
+  pickup:{
+    label:"איסוף", place:"Kumamoto Airport Shop (שדה קומאמוטו)", when:"ה׳ 24.9.2026 · 11:00",
+    addr:"1751 Oyatsudomen, Mashiki-machi, Kamimashiki-gun, Kumamoto 861-2204",
+    addrJp:"上益城郡益城町大字小谷字堂面1751番",
+    hours:"בתוך שדה התעופה", tel:"096-232-0100", telRaw:"0962320100",
+    q:"Toyota Rent a Car Kumamoto Airport, 1751 Oyatsudomen, Mashiki, Kumamoto 861-2204, Japan"
+  },
+  dropoff:{
+    label:"החזרה", place:"Oita Airport Shop (שדה אויטה)", when:"ג׳ 29.9.2026 · 11:30",
+    addr:"684-1 Shimobaru, Aki-machi, Kunisaki-shi, Oita 873-0231",
+    addrJp:"国東市安岐町下原684-1",
+    hours:"בתוך שדה התעופה", tel:null, telRaw:null,
+    q:"Toyota Rent a Car Oita Airport, 684-1 Shimobaru, Aki-machi, Kunisaki, Oita 873-0231, Japan"
+  },
+  info:[
+    {k:"דגם", v:"YARIS CROSS · SUV1 · אוטומט · ללא עישון"},
+    {k:"כלול", v:"Full Package (ביטוח מלא) + בחירת דגם"},
+    {k:"תשלום", v:"שולם מראש אונליין · 94,930 ¥ סה״כ"}
+  ],
+  notes:[
+    "להביא לאיסוף: <b>רישיון בין-לאומי (IDP) + הרישיון הישראלי + דרכון</b>. בלי דרכון עם חותמת כניסה לא ימסרו את הרכב.",
+    "השכרה חד-כיוונית — אוספים בשדה קומאמוטו ומחזירים בשדה אויטה (תוספת של 15,400 ¥ כבר כלולה במחיר).",
+    "ביטול בחינם עד 7 ימים לפני (עד 17.9). מ-3–6 ימים לפני — 20%, 1–2 ימים — 30%, ביום עצמו — 50% (תקרה 17,000 ¥ ל-SUV).",
+    "ביפן נוהגים בצד שמאל. כדאי לוודא שקיבלתם כרטיס ETC לכבישי האגרה."
+  ],
+  warn:"ההחזרה ב-29.9 היא בשדה <b>אויטה</b> ולא בקומאמוטו — מבפו (מיובאן) זו נסיעה של כ-50–60 דק׳. כדי להחזיר ב-11:30 צריך לצאת מהמלון בערך ב-10:15, ולתדלק בדרך."
+};
+
 /* ===================== SHARED SEGMENTS ===================== */
 const TOKYO_START = {
   city:"טוקיו", region:"Tokyo Japan", dates:"9–11.9", nights:3,
@@ -816,7 +923,24 @@ const OPTIONS = [
         access:"כ-10 דק׳ הליכה מתחנת שיבויה, קרוב יותר לתחנת Meiji-Jingumae (מטרו טוקיו / פוקוטושין).",
         highlights:["Sensō-ji","Meiji Jingu","Shibuya Sky","Omoide Yokocho","Akihabara"],
         days:[
-          {d:"9.9", t:"נחיתה בהנדה 22:20", x:"נוחתים ב-22:20 (טרמינל 3). עם ביקורת דרכונים וכבודה — יציאה מהשדה סביב 23:15, ומהאנדה לשיבויה כ-30–40 דק׳. הגעה למלון בערך 00:00–00:30. שימו לב: הרכבות האחרונות מהנדה יוצאות בסביבות חצות — אם מתעכבים, מונית (~7,000–9,000 ¥). היום הזה הוא רק צ׳ק-אין ושינה."},
+          {d:"9.9", t:"נחיתה בהנדה 22:20", x:"נוחתים ב-22:20 (טרמינל 3). הנקודה הקריטית היא ביקורת הדרכונים והמכס — בטיסה בין-לאומית זה לוקח בדרך כלל 30–60 דק׳, כך שנצא מהטרמינל בסביבות 23:00–23:30. זה משנה לגמרי את התמונה מבחינת התחבורה. היום הזה הוא רק מעבר למלון, צ׳ק-אין ושינה.",
+           transport:{
+             t:"איך מגיעים למלון בשעה הזו?",
+             opts:[
+               {n:"טרנספר מוזמן מראש (Klook / Viator)", tag:"הכי מומלץ", best:true,
+                x:"טרנספר פרטי או משותף שמזמינים מראש לשעת הנחיתה — מתחיל בסביבות 5,600 ¥, זול ממונית ובלי תוספת לילה. נהג מחכה עם שלט עם השם, בלי תור ובלי אי-ודאות. בנחיתה ראשונה ביפן, עייפים ועם מזוודות — זה שקט נפשי אמיתי."},
+               {n:"מונית", tag:"בטוח",
+                x:"זמינה תמיד, ~30–40 דק׳ נסיעה, ישר עד דלת המלון. עלות כ-8,000 ¥ ומעלה, בתוספת 20% תעריף לילה (22:00–05:00)."},
+               {n:"רכבת — מונורייל / קייקיו", tag:"מסוכן לתזמון הזה", risk:true,
+                x:"מונורייל אחרונה 23:44; קייקיו בין 23:48 ל-00:08 (תלוי בשירות). גם אם נספיק — עדיין צריך להחליף לקו יאמאנוטה כדי להגיע לשיבויה, ולא בטוח שהקו המחבר עדיין פעיל. אם נפספס, ניתקע."},
+               {n:"אוטובוס לימוזין", tag:"מוגבל", risk:true,
+                x:"האחרונים יוצאים בדרך כלל בין 21:00 ל-23:30 (תלוי ביעד) — סיכון ממשי שנפספס את האחרון עד שנצא מהמכס."}
+             ],
+             sources:[
+               {t:"Tokyo Cheapo — Haneda late-night transfer", u:"https://tokyocheapo.com/travel/haneda-to-tokyo-late-night-transfer/"},
+               {t:"Haneda Airport Access — Night & Morning", u:"https://www.haneda-tokyo-access.com/en/haneda-airport/nightandmorning.html"}
+             ]
+           }},
           {d:"10.9", t:"מזרח ישן", x:"Sensō-ji מוקדם לפני הקבוצות, רחוב Nakamise, נהר סומידה, Ueno ושוק Ameyoko, ואקיהברה לערב."},
           {d:"11.9", t:"מערב מודרני", x:"Meiji Jingu, הרג׳וקו (Takeshita), Omotesando, הליכה ל-Shibuya דרך Cat Street, ו-Shibuya Sky שעה לפני השקיעה."}
         ],
@@ -833,23 +957,26 @@ const OPTIONS = [
         city:"טאקאיאמה", region:"Takayama Japan", dates:"14.9–16.9", nights:2,
         hotel:"Takayama Green Hotel (Keio Group)", hotelNote:"Hida Takayama Onsen", booking:true, cancel:"9.8", hotelQuery:"Takayama Green Hotel",
         access:"כ-10 דק׳ הליכה מתחנת JR טאקאיאמה, ולמלון גם שאטל חינם מהתחנה.",
+        car:CAR_RENTAL, carSide:"pickup",
         highlights:["Sanmachi Suji","שוק Miyagawa","Takayama Jinya","Hida Folk Village"],
         days:[
-          {d:"14.9", t:"הגעה ועיר עתיקה", x:"יום נסיעה ארוך מהאקונה דרך נגויה. ערב ברחובות Sanmachi וסטייק Hida beef."},
-          {d:"15.9", t:"עיר וכפר", x:"שוק Miyagawa בבוקר, Takayama Jinya, רחובות Sanmachi, אחה״צ Hida Folk Village."}
+          {d:"14.9", t:"הגעה + איסוף הרכב 12:30", x:"יום נסיעה ארוך מהאקונה דרך נגויה (רכבת Hida). איסוף הרכב השכור בתחנת טאקאיאמה ב-12:30, צ׳ק-אין במלון, וערב ברחובות Sanmachi עם סטייק Hida beef."},
+          {d:"15.9", t:"עיר וכפר", x:"שוק Miyagawa בבוקר, Takayama Jinya, רחובות Sanmachi, אחה״צ Hida Folk Village. עם הרכב אפשר גם לצאת לסביבה."}
         ],
-        transfer:{t:"טאקאיאמה ← קנזאווה", x:"אוטובוס · ~50–75 דק׳ · הזמנה מראש"}
+        transfer:{t:"טאקאיאמה ← קנזאווה", x:"ברכב השכור · ~2–2.5ש עם עצירה בשירקאווה-גו"}
       },
       {
         city:"קנזאווה", region:"Kanazawa Japan", dates:"16.9–18.9", nights:2,
         hotel:"SOKI Kanazawa", hotelNote:"ליד תחנת קנזאווה", booking:true, cancel:"14.9", hotelQuery:"SOKI Kanazawa",
         access:"צמוד לתחנת קנזאווה (יציאה מזרחית) — כמה דקות הליכה בלבד.",
+        car:CAR_RENTAL, carSide:"dropoff",
         highlights:["Kenroku-en","Higashi Chaya","שוק Ōmichō","מוזיאון המאה ה-21","Nagamachi","שירקאווה-גו"],
         days:[
-          {d:"16.9", t:"הגעה דרך שירקאווה-גו", x:"עצירת ביקור בכפרי ה-Gassho בדרך, ואחה״צ/ערב ברובע Higashi Chaya ו-Kazue-machi."},
-          {d:"17.9", t:"לב העיר", x:"שוק Ōmichō, גן Kenroku-en, טירת קנזאווה, רובע הסמוראים Nagamachi, ומוזיאון המאה ה-21."}
+          {d:"16.9", t:"הגעה ברכב דרך שירקאווה-גו", x:"נסיעה מטאקאיאמה עם עצירה בכפרי ה-Gassho של שירקאווה-גו (כ-50 דק׳ מטאקאיאמה), והמשך לקנזאווה. אחה״צ/ערב ברובע Higashi Chaya ו-Kazue-machi. לוודא מראש חניה במלון או בחניון סמוך."},
+          {d:"17.9", t:"לב העיר", x:"שוק Ōmichō, גן Kenroku-en, טירת קנזאווה, רובע הסמוראים Nagamachi, ומוזיאון המאה ה-21. העיר נוחה להליכה — אפשר להשאיר את הרכב חונה."},
+          {d:"18.9", t:"החזרת הרכב 11:00 ← קיוטו", x:"החזרת הרכב עד 11:00 בסניף שביציאה המזרחית של תחנת קנזאווה (צמוד לתחנה), ומשם רכבת Thunderbird לקיוטו."}
         ],
-        transfer:{t:"קנזאווה ← קיוטו", x:"רכבת Thunderbird · ~2:15"}
+        transfer:{t:"קנזאווה ← קיוטו", x:"החזרת רכב 11:00 · רכבת Thunderbird · ~2:15"}
       },
       {
         city:"קיוטו + נארה", region:"Kyoto Japan", dates:"18.9–23.9", nights:5,
@@ -879,10 +1006,11 @@ const OPTIONS = [
         city:"קיושו — אסו", region:"Aso Kumamoto Japan", dates:"24.9–26.9", nights:2,
         hotel:"Fairfield by Marriott Kumamoto Aso", hotelNote:"בסיס לטיולי אסו וטאקאצ׳יהו", booking:true,
         bookingUrl:"https://www.booking.com/hotel/jp/fairfield-by-marriott-kumamoto-aso.he.html", hotelQuery:"Fairfield by Marriott Kumamoto Aso",
-        access:"מומלץ רכב שכור — כ-1 שעה נסיעה משדה התעופה קומאמוטו (רישיון בינלאומי נדרש). תחבורה ציבורית מוגבלת מאוד באזור.",
+        access:"כ-1 שעה נסיעה ברכב השכור משדה התעופה קומאמוטו. תחבורה ציבורית מוגבלת מאוד באזור.",
+        car:CAR_KYUSHU, carSide:"pickup",
         highlights:["הר Aso (Nakadake)","Daikanbo","Kusasenri","Takachiho"],
         days:[
-          {d:"24.9", t:"הגעה לאסו", x:"טיסה בבוקר לקומאמוטו, איסוף רכב שכור, נסיעה לאסו (~1ש). תצפית Daikanbo, מישורי Kusasenri."},
+          {d:"24.9", t:"נחיתה + איסוף הרכב 11:00", x:"טיסה בבוקר מאיטמי לקומאמוטו, ואיסוף הרכב (YARIS CROSS) בסניף שבשדה התעופה ב-11:00. משם נסיעה לאסו (~1ש). אחה״צ: תצפית Daikanbo ומישורי Kusasenri."},
           {d:"25.9", t:"הר הגעש + Takachiho", x:"בוקר: לוע Nakadake (אם פתוח) ומסלול Sunasenri/Sensuikyo. אחה״צ: נסיעה לקניון Takachiho (~1.5ש) לשיט סירות בין המצוקים."}
         ],
         transfer:{t:"אסו ← קורוקאווה", x:"נסיעה ~40 דק׳ דרך מפל Nabegataki"}
@@ -905,12 +1033,13 @@ const OPTIONS = [
         hotel:"SEKIYA RESORT Galleria Midobaru", hotelNote:"אזור מיובאן (Myoban) בבפו", booking:true, cancel:"23.9",
         bookingUrl:"https://www.booking.com/hotel/jp/galleria-midobaru.he.html", hotelQuery:"SEKIYA RESORT Galleria Midobaru Beppu",
         access:"ברכב מקורוקאווה כ-1 שעה. יש גם אוטובוס מתחנת בפו לאזור מיובאן, אך רכב נוח יותר.",
+        car:CAR_KYUSHU, carSide:"dropoff",
         highlights:["Umi Jigoku","Chinoike Jigoku","Lake Kinrin (יופואין)"],
         days:[
           {d:"28.9", t:"טיול יום בפו", x:"נסיעה מקורוקאווה, צ׳ק-אין. אחה״צ: ה״גיהנומים״ הצבעוניים (Umi Jigoku, Chinoike Jigoku), ועצירה ביופואין (Lake Kinrin) בדרך."},
-          {d:"29.9", t:"חזרה לטוקיו", x:"בוקר חופשי / אונסן אחרון באזור מיובאן, נסיעה לשדה קומאמוטו/אויטה, וטיסה לטוקיו."}
+          {d:"29.9", t:"החזרת הרכב 11:30 ← טוקיו", x:"אונסן אחרון במיובאן ויציאה מהמלון בערך ב-10:15. נסיעה לשדה התעופה אויטה (~50–60 דק׳), תדלוק בדרך, והחזרת הרכב עד 11:30. משם טיסה לטוקיו (~1:40)."}
         ],
-        transfer:{t:"קיושו ← טוקיו", x:"רכב לשדה ~1.5–2 שעות · טיסה ~1:40 ✈️"}
+        transfer:{t:"קיושו ← טוקיו", x:"החזרת רכב בשדה אויטה 11:30 · טיסה ~1:40 ✈️"}
       },
       {
         city:"טוקיו — סיום", region:"Shibuya Jingumae Tokyo Japan", dates:"29.9–3.10", nights:4,
@@ -942,7 +1071,7 @@ const FLIGHTS = [
        dep:"ד׳ 9.9 · 07:40", to:"טוקיו (HND)", toT:"הנדה · טרמינל 3", arr:"ד׳ 9.9 · 22:20", dur:"9ש 40דק׳"}
     ],
     layover:"המתנה בדובאי: 6 שעות 35 דקות (01:05 → 07:40)",
-    note:"נוחתים בהנדה ב-22:20. עם ביקורת דרכונים וכבודה — יציאה מהשדה בערך 23:15, והגעה למלון בשיבויה סביב 00:00–00:30. הרכבות האחרונות מהנדה יוצאות ~00:00, אז אם מתעכבים — מונית (~7,000–9,000 ¥)."
+    note:"נוחתים בהנדה ב-22:20, ואחרי ביקורת דרכונים ומכס (30–60 דק׳) נצא מהטרמינל ב-23:00–23:30. בשעה הזו הרכבות והלימוזין כבר על הקצה — מומלץ להזמין מראש טרנספר (Klook/Viator, מ-~5,600 ¥) או לקחת מונית. הפירוט המלא בעמוד המסלול, ביום 9.9."
   },
   {
     dir:"חזור", label:"טוקיו ← תל אביב", cls:"Economy Flex · כבודה 30 ק״ג · מושב 42A",
@@ -1134,6 +1263,31 @@ function tint(hex, amt){
   const b = Math.round((n&255) + (255-(n&255))*amt);
   return `rgb(${r},${g},${b})`;
 }
+function carLegHTML(l, active){
+  const tel = l.tel ? ` · טל׳ <a href="tel:${l.telRaw}" dir="ltr">${l.tel}</a>` : '';
+  return `<div class="cr-leg${active?' active':''}">
+    <div class="cr-hd"><span class="cr-tag">${l.label}</span><b>${l.place}</b></div>
+    <div class="cr-when">${l.when}</div>
+    <div class="cr-meta">${l.addr}</div>
+    ${l.addrJp?`<div class="cr-meta cr-jp" lang="ja" dir="ltr">${l.addrJp}</div>`:''}
+    <div class="cr-meta">${l.hours}${tel}</div>
+    <a class="btn-map cr-map" target="_blank" rel="noopener" href="${gmap(l.q)}">Google&nbsp;Maps <span class="ext">↗</span></a>
+  </div>`;
+}
+function carBoxHTML(c, side){
+  const ref = c.refKey && TIX.cars && TIX.cars[c.refKey];
+  return `<div class="car-box">
+    <div class="cr-t"><span class="cr-ic">🚗</span><b>${c.t}</b><span class="cr-sub">${c.sub}</span>
+      ${ref?`<span class="cr-ref">מס׳ הזמנה ${ref}</span>`:''}</div>
+    <div class="cr-legs">
+      ${carLegHTML(c.pickup, side==="pickup")}
+      ${carLegHTML(c.dropoff, side==="dropoff")}
+    </div>
+    ${(c.info||[]).length?`<div class="cr-info">${c.info.map(i=>`<span class="cr-kv"><b>${i.k}</b> ${i.v}</span>`).join("")}</div>`:''}
+    ${c.warn?`<div class="cr-warn"><span class="wb-ic">לבדוק</span><span>${c.warn}</span></div>`:''}
+    ${(c.notes||[]).length?`<ul class="cr-notes">${c.notes.map(n=>`<li>${n}</li>`).join("")}</ul>`:''}
+  </div>`;
+}
 function segHTML(s, idx, cityColored, isOurs){
   const dayTix = isOurs ? (TIX.days||{}) : {};
   const cc = cityColored ? CITY_COLOR[s.city] : null;
@@ -1146,10 +1300,18 @@ function segHTML(s, idx, cityColored, isOurs){
     const tix = (dayTix[d.d]||[]).map(t=>
       `<a class="btn-ticket" target="_blank" rel="noopener" href="${t.url}">🎟️ ${t.label}${t.time?` · ${t.time}`:''} <span class="ext">↗</span></a>`
     ).join("");
+    const tr = d.transport ? `<div class="tr-box">
+      <div class="tr-t">${d.transport.t}</div>
+      ${d.transport.opts.map(o=>`<div class="tr-opt${o.best?' best':''}${o.risk?' risk':''}">
+        <div class="tr-hd"><b>${o.n}</b>${o.tag?`<span class="tr-tag">${o.best?'★ ':''}${o.risk?'⚠ ':''}${o.tag}</span>`:''}</div>
+        <p>${o.x}</p>
+      </div>`).join("")}
+      ${(d.transport.sources||[]).length?`<div class="tr-src">מקורות: ${d.transport.sources.map(s=>`<a href="${s.u}" target="_blank" rel="noopener">${s.t} ↗</a>`).join(" · ")}</div>`:''}
+    </div>` : '';
     return `
     <div class="tl-day">
       <div class="tl-date">${d.d}</div>
-      <div class="tl-c"><h5>${d.t}</h5><p>${d.x}</p>${tix?`<div class="tix-row">${tix}</div>`:''}</div>
+      <div class="tl-c"><h5>${d.t}</h5><p>${d.x}</p>${tr}${tix?`<div class="tix-row">${tix}</div>`:''}</div>
     </div>`;
   }).join("");
   const directBook = q => `<a class="btn-book" target="_blank" rel="noopener" href="${q}">Booking <span class="ext">↗</span></a>`;
@@ -1181,6 +1343,7 @@ function segHTML(s, idx, cityColored, isOurs){
         ${hotelLinks}
       </div>
       ${s.access?`<div class="access-line"><span class="ac-ic">הגעה</span><span>${s.access}</span></div>`:''}
+      ${s.car?carBoxHTML(s.car, s.carSide):''}
       ${s.warn?`<div class="warn-box"><span class="wb-ic">לתשומת לב</span><span>${s.warn}</span></div>`:''}
       ${chooseBox}${bookLine}
       <div class="tl">${days}</div>
