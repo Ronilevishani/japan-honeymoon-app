@@ -27,8 +27,6 @@
     --radius:20px;
     --accent:#e74c3c;
   }
-  #pane-opt1{--accent:#c2402e;--accent-light:#f5e5e0;--accent-bright:#e74c3c;}
-  #pane-opt2{--accent:#1b4d2b;--accent-light:#f0f8e0;--accent-bright:#c8ff00;}
   #pane-opt3{--accent:#001f5e;--accent-light:#e5eef8;--accent-bright:#5b7dbe;}
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
@@ -70,11 +68,6 @@
   nav.tabs button .ti{font-size:16px;}
   nav.tabs button:hover{border-color:var(--ink);}
   nav.tabs button.active{color:#fff;background:var(--ink);border-color:var(--ink);}
-  .tab-div{flex:0 0 auto;width:1px;align-self:center;height:22px;background:var(--line);margin:0 4px;}
-  nav.tabs button.tab-alt{font-size:13px;font-weight:600;color:var(--muted);border-color:var(--line-2);
-    background:var(--surface-2);padding:8px 14px;}
-  nav.tabs button.tab-alt:hover{color:var(--ink);border-color:var(--muted);}
-  nav.tabs button.tab-alt.active{color:#fff;background:var(--muted);border-color:var(--muted);}
 
   /* ---------- Panes ---------- */
   main{padding:22px 0 60px;}
@@ -121,15 +114,6 @@
   .opt-card.featured .oc-go{font-size:15.5px;padding:15px;margin:6px 20px 18px;}
 
   /* alternatives (minor, de-emphasized) */
-  .opt-grid-2{grid-template-columns:1fr 1fr;}
-  .alt-head h2{font-size:22px;color:var(--muted);}
-  .alt-head .jp{color:var(--muted)!important;}
-  .opt-card.alt{border-color:var(--line);box-shadow:none;}
-  .opt-card.alt .oc-head{background:var(--surface-2);border-bottom:1px solid var(--line);}
-  .opt-card.alt .oc-num{color:var(--muted);}
-  .opt-card.alt .oc-title{font-size:20px;color:var(--muted);}
-  .opt-card.alt .oc-go{background:var(--surface-2);color:var(--ink);border:1.5px solid var(--line);}
-  .opt-card.alt .oc-go:hover{background:var(--surface);border-color:var(--ink);transform:none;}
 
   /* ---------- Tips ---------- */
   .tips-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:8px;}
@@ -138,12 +122,6 @@
   .tip h4{margin:0 0 6px;font-size:16px;display:flex;align-items:center;gap:8px;}
   .tip p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55;}
 
-  .diff{background:var(--surface-2);border:1px solid var(--line);
-        border-radius:var(--radius);padding:18px 18px 6px;margin-top:26px;}
-  .diff h3{margin:0 0 10px;font-size:20px;}
-  .diff .dl{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--line-2);font-size:14px;}
-  .diff .dl:first-of-type{border-top:none;}
-  .diff .dnum{font-weight:800;color:var(--vermilion);flex:0 0 auto;}
 
   /* ---------- Option detail ---------- */
   .opt-hero{background:var(--accent-light);border:2px solid var(--accent);border-radius:var(--radius);
@@ -515,7 +493,7 @@
       <div class="stat"><b>24</b><span>לילות</span></div>
       <div class="stat"><b>9</b><span>יעדים</span></div>
       <div class="stat"><b>2</b><span>טיסות פנים</span></div>
-      <div class="stat"><b>3</b><span>אפשרויות</span></div>
+      <div class="stat"><b>2</b><span>רכבים שכורים</span></div>
     </div>
   </div>
 </header>
@@ -526,16 +504,13 @@
     <button data-tab="opt3">המסלול שלנו</button>
     <button data-tab="budget">תקציב</button>
     <button data-tab="files">הקבצים שלנו</button>
-    <span class="tab-div"></span>
-    <button data-tab="opt1" class="tab-alt">אופציה 1</button>
-    <button data-tab="opt2" class="tab-alt">אופציה 2</button>
   </div>
 </nav>
 
 <main class="wrap">
   <section class="tab-pane active" id="pane-overview">
     <div class="section-head"><h2>המסלול שלנו</h2></div>
-    <p class="lead">בחרנו במסלול <b>"בלי מצומוטו"</b> — לילה נוסף בקיוטו ובקיושו, עם יום נפרד ל-Takachiho ויום ל-Beppu. הנה הוא במלואו. שתי החלופות שמורות למטה לעיון בלבד.</p>
+    <p class="lead">24 לילות ביפן — מטוקיו והאקונה, דרך האלפים היפניים וקיוטו, ועד קיושו וחזרה. כאן הכל במבט אחד: הטיסות, המפה, לוח המסע והמלונות.</p>
     <div id="ov-featured"></div>
 
     <div class="section-head" style="margin-top:30px"><h2>הטיסות שלנו</h2></div>
@@ -547,17 +522,10 @@
     <div class="section-head" style="margin-top:30px"><h2>לוח המסע</h2></div>
     <div id="ov-cal"></div>
 
-    <div class="section-head alt-head" style="margin-top:34px"><h2>מסלולים חלופיים</h2><span class="jp">לעיון בלבד</span></div>
-    <div class="opt-grid opt-grid-2" id="ov-alts"></div>
-
-    <div class="diff" id="ov-diff"></div>
-
     <div class="section-head" style="margin-top:30px"><h2>לפני שיוצאים</h2></div>
     <div class="tips-grid" id="ov-tips"></div>
   </section>
 
-  <section class="tab-pane" id="pane-opt1"></section>
-  <section class="tab-pane" id="pane-opt2"></section>
   <section class="tab-pane" id="pane-opt3"></section>
 
   <section class="tab-pane" id="pane-budget">
@@ -738,180 +706,16 @@ const CAR_KYUSHU = {
   warn:"ההחזרה ב-29.9 היא בשדה <b>אויטה</b> ולא בקומאמוטו — מבפו (מיובאן) זו נסיעה של כ-50–60 דק׳. כדי להחזיר ב-11:30 צריך לצאת מהמלון בערך ב-10:15, ולתדלק בדרך."
 };
 
-/* ===================== SHARED SEGMENTS ===================== */
-const TOKYO_START = {
-  city:"טוקיו", region:"Tokyo Japan", dates:"9–11.9", nights:3,
-  hotel:"Sotetsu Fresa Inn Higashi-Shinjuku", hotelNote:"שינג׳וקו — נוח להמשך", booking:true,
-  highlights:["Sensō-ji","Meiji Jingu","Shibuya Sky","Omoide Yokocho","Akihabara"],
-  days:[
-    {d:"9.9", t:"נחיתה", x:"מהאנדה למרכז כ-40 דק׳. בלי תוכניות — צ׳ק-אין ושינה."},
-    {d:"10.9", t:"מזרח ישן", x:"Sensō-ji מוקדם לפני הקבוצות, רחוב Nakamise, נהר סומידה, Ueno ושוק Ameyoko, ואקיהברה לערב. יום רגוע בכוונה בגלל הג׳ט-לג."},
-    {d:"11.9", t:"מערב מודרני", x:"Meiji Jingu, הרג׳וקו (Takeshita), Omotesando, הליכה ל-Shibuya דרך Cat Street, ו-Shibuya Sky שעה לפני השקיעה."}
-  ],
-  transfer:{t:"טוקיו ← האקונה", x:"רכבת Romancecar משינג׳וקו · ~1:25 + 30–50 דק׳ לגורה"}
-};
-
+/* ===================== SHARED LISTS ===================== */
 const HAKONE_HL = ["Owakudani Ropeway","אגם Ashi","Hakone-jinja","Open-Air Museum","Hakone-Yumoto"];
 const HAKONE_DAYS = [
   {d:"12.9", t:"הגעה ומסלול", x:"התחלת הלולאה (אם הגעתם מוקדם) או ישר לריוקאן בגורה — אונסן וארוחת קאיסקי."},
   {d:"13.9", t:"הלולאה המעגלית", x:"רכבת הרים ל-Gora, רכבל ל-Sounzan, רופוויי מעל Owakudani הגעשי, שיט באגם Ashi, שער הטורי של Hakone-jinja. בבוקר — ניסיון נוף להר פוג׳י."}
 ];
-const hakone = transfer => ({
-  city:"האקונה", region:"Hakone Japan", dates:"12–13.9", nights:2,
-  hotel:"ריוקאן באזור Gora", hotelNote:"אונסן + חצי-פנסיון", booking:true, hotelQuery:"ryokan Gora Hakone onsen",
-  highlights:HAKONE_HL, days:HAKONE_DAYS, transfer
-});
-
 const OSAKA_HL = ["Dotonbori","שוק Kuromon","טירת אוסקה","Shinsaibashi"];
-const osaka = date => ({
-  city:"אוסקה", region:"Osaka Japan", dates:date, nights:1,
-  hotel:"Red Roof Inn Osaka Namba Nipponbashi", hotelNote:"נמבה — נוח לאיטמי", booking:true,
-  highlights:OSAKA_HL,
-  days:[{d:date, t:"אוכל ואורות", x:"אחה״צ: טירת אוסקה / שוק Kuromon / Shinsaibashi. ערב Dotonbori בניאון ואוכל רחוב. למחרת בבוקר — טיסה מאיטמי לקיושו."}],
-  transfer:{t:"אוסקה ← קיושו", x:"טיסה ~1:15 · רישיון בינלאומי נדרש ✈️"}
-});
-
-const TOKYO_END = {
-  city:"טוקיו — סיום", region:"Ginza Tokyo Japan", dates:"30.9–2.10", nights:3,
-  hotel:"Hotel Monterey La Soeur Ginza", hotelNote:"גינזה", booking:true,
-  highlights:["teamLab Borderless","שוק Tsukiji","גני Hamarikyu","Ginza","Tokyo Tower"],
-  days:[
-    {d:"30.9", t:"הגעה לגינזה", x:"נחיתה אחה״צ, צ׳ק-אין, וערב בגינזה."},
-    {d:"1.10", t:"טוקיו מודרנית", x:"השוק החיצוני של Tsukiji בבוקר, גני Hamarikyu, אחה״צ teamLab Borderless (כרטיס בשעה מתוזמנת מראש), וערב ב-Tokyo Tower / Roppongi."},
-    {d:"2.10", t:"יום חופשי", x:"קניות ומקומות אהובים, או מה שפספסתם (Shimokitazawa / טיול יום לקמאקורה). ארוחת סיום."},
-    {d:"3.10", t:"חזרה הביתה", x:"בוקר חופשי, ואז לשדה התעופה לטיסה ב-21:00."}
-  ],
-  transfer:null
-};
-
-const KYUSHU_HL = ["הר Aso (Nakadake)","Daikanbo","Kusasenri","מפל Nabegataki","Takachiho","Kurokawa Onsen"];
 
 /* ===================== OPTIONS ===================== */
 const OPTIONS = [
-  {
-    id:"opt1", num:"אופציה 1", tag:"כולל מצומוטו",
-    summary:"עשיר בטבע ואתרים — קמיקוצ׳י וטירת מצומוטו. לילה אחד באוסקה ביום המעבר לקיושו.",
-    segments:[
-      TOKYO_START,
-      hakone({t:"האקונה ← מצומוטו", x:"רכבת Azusa · ~4–4.5ש · הקטע הארוך — לצאת מוקדם"}),
-      {
-        city:"מצומוטו", region:"Matsumoto Japan", dates:"14–15.9", nights:2,
-        hotel:"Onsen Hotel OMOTO", hotelNote:"אונסן", booking:true,
-        highlights:["טירת מצומוטו","Nakamachi","Kamikōchi","Nawate"],
-        days:[
-          {d:"14.9", t:"הגעה ועיר", x:"רחובות Nakamachi ו-Nawate, וטירת מצומוטו (מקורית, יפה מוארת בערב)."},
-          {d:"15.9", t:"קמיקוצ׳י", x:"יום טבע מרכזי: Kappa Bridge → Taisho Pond → (אופ׳ Myojin). מגיעים ברכבת Alpico ל-Shin-Shimashima ואז אוטובוס; רכבים פרטיים אסורים בשמורה."}
-        ],
-        transfer:{t:"מצומוטו ← טאקאיאמה", x:"אוטובוס Hirayu · ~2.5ש · הזמנה מראש"}
-      },
-      {
-        city:"טאקאיאמה", region:"Takayama Japan", dates:"16–17.9", nights:2,
-        hotel:"Takayama Green Hotel", hotelNote:"אונסן", booking:true,
-        highlights:["Sanmachi Suji","שוק Miyagawa","Takayama Jinya","Hida Folk Village","שירקאווה-גו"],
-        days:[
-          {d:"16.9", t:"עיר עתיקה", x:"שוק Miyagawa בבוקר, Takayama Jinya, רחובות Sanmachi ומבשלות סאקה, אחה״צ Hida Folk Village. ערב: סטייק Hida beef."},
-          {d:"17.9", t:"שירקאווה-גו", x:"בדרך לקנזאווה: תצפית Shiroyama, בתי Gassho-zukuri, בית Wada."}
-        ],
-        transfer:{t:"טאקאיאמה ← קנזאווה", x:"אוטובוס · ~50–75 דק׳ · הזמנה מראש"}
-      },
-      {
-        city:"קנזאווה", region:"Kanazawa Japan", dates:"18–19.9", nights:2,
-        hotel:"מלון ליד תחנת קנזאווה / Higashi Chaya", hotelNote:"להזמנה לפי אזור", booking:true, hotelQuery:"hotel Kanazawa Station",
-        highlights:["Kenroku-en","Higashi Chaya","שוק Ōmichō","טירת קנזאווה","Nagamachi"],
-        days:[
-          {d:"18.9", t:"לב העיר", x:"שוק Ōmichō, רובע הגיישות Higashi Chaya, גן Kenroku-en, טירת קנזאווה, ורובע הסמוראים Nagamachi. הליכה נוחה (+Loop Bus)."},
-          {d:"19.9", t:"נינוח", x:"מוזיאון המאה ה-21, רובע Kazue-machi, או סדנת עלי זהב."}
-        ],
-        transfer:{t:"קנזאווה ← קיוטו", x:"רכבת Thunderbird · ~2:15"}
-      },
-      {
-        city:"קיוטו + נארה", region:"Kyoto Japan", dates:"20–23.9", nights:4,
-        hotel:"KABIN Kyoto", hotelNote:"נארה כטיול יום", booking:true,
-        highlights:["Kiyomizu-dera","Fushimi Inari","יער הבמבוק","Kinkaku-ji","Gion","Philosopher's Path","שוק Nishiki","Tōdai-ji (נארה)"],
-        days:[
-          {d:"20.9", t:"מזרח קיוטו (Higashiyama)", x:"Kiyomizu-dera מוקדם, Sannenzaka/Ninenzaka, פגודת Yasaka, Yasaka Shrine, Kōdai-ji, ו-Gion בערב."},
-          {d:"21.9", t:"אראשיאמה ו-Kinkaku-ji", x:"יער הבמבוק עד 8:00, Tenryū-ji, גן Okōchi Sansō, גשר Togetsukyō, אחה״צ Kinkaku-ji."},
-          {d:"22.9", t:"פושימי אינארי + נארה", x:"Fushimi Inari מוקדם עד Yotsutsuji, רכבת לנארה, Tōdai-ji והבודהה הגדול, פארק הצבאים, Kasuga Taisha."},
-          {d:"23.9", t:"שביל הפילוסוף", x:"Nanzen-ji, Philosopher's Path, Ginkaku-ji, שוק Nishiki, או סדנת צביעת משי Kyō-Yūzen."}
-        ],
-        note:"בתוך קיוטו — רכבות ומטרו עדיפים על אוטובוסים העמוסים (Keihan, JR Sagano לאראשיאמה).",
-        transfer:{t:"קיוטו ← אוסקה", x:"רכבת Special Rapid · ~15–30 דק׳"}
-      },
-      osaka("24.9"),
-      {
-        city:"קיושו — אסו + קורוקאווה", region:"Aso Kumamoto Japan", dates:"25–29.9", nights:5,
-        hotel:"Fairfield by Marriott Aso → Kurokawa-So", hotelNote:"לימי הטיולים → ריוקאן לסיום הרומנטי", booking:true, hotelQuery:"Fairfield by Marriott Aso",
-        highlights:KYUSHU_HL,
-        days:[
-          {d:"25.9", t:"הגעה לאסו", x:"טיסה בבוקר, רכב, נסיעה לאסו (~1ש). תצפית Daikanbo, Komezuka, מישורי Kusasenri."},
-          {d:"26.9", t:"הר הגעש", x:"לוע Nakadake (אם פתוח), מסלול Sunasenri/Sensuikyo, מקדש Aso, מפלים."},
-          {d:"27.9", t:"טיול יום", x:"קניון Takachiho עם שיט סירות (מרהיב), או ה״גיהנומים״ הצבעוניים של Beppu + יופואין."},
-          {d:"28.9", t:"מעבר לקורוקאווה", x:"נסיעה קצרה (~40 דק׳) דרך מפל Nabegataki וקניון Kikuchi. צ׳ק-אין Kurokawa-So, אונסן."},
-          {d:"29.9", t:"קורוקאווה נינוח", x:"כרטיס דילוג בין 3 אונסנים, סיבוב בכפר, והליכה ברמות Kuju."}
-        ],
-        transfer:{t:"קיושו ← טוקיו", x:"רכב לשדה ~1.5ש · טיסה ~1:40 ✈️"}
-      },
-      TOKYO_END
-    ]
-  },
-  {
-    id:"opt2", num:"אופציה 2", tag:"בלי מצומוטו",
-    summary:"רגוע יותר וזורם טוב יותר בתחבורה. 5 לילות בקיוטו, 3 בקנזאווה.",
-    segments:[
-      TOKYO_START,
-      hakone({t:"האקונה ← טאקאיאמה", x:"רכבת Hida · ~5ש · יום ארוך אך יפה"}),
-      {
-        city:"טאקאיאמה", region:"Takayama Japan", dates:"14–16.9", nights:3,
-        hotel:"Takayama Green Hotel", hotelNote:"אונסן", booking:true,
-        highlights:["Sanmachi Suji","שוק Miyagawa","Takayama Jinya","Hida Folk Village","שירקאווה-גו"],
-        days:[
-          {d:"14.9", t:"הגעה", x:"ערב בעיר העתיקה Sanmachi, סאקה ו-Hida beef."},
-          {d:"15.9", t:"עיר וכפר", x:"שוק Miyagawa, Takayama Jinya, Hida Folk Village; אחה״צ נינוח."},
-          {d:"16.9", t:"שירקאווה-גו (טיול יום)", x:"הלוך-ושוב רגוע (~50 דק׳ לכל כיוון), כפרי ה-Gassho, בלי לחץ של יום מעבר."}
-        ],
-        transfer:{t:"טאקאיאמה ← קנזאווה", x:"אוטובוס · ~2:15 · הזמנה מראש"}
-      },
-      {
-        city:"קנזאווה", region:"Kanazawa Japan", dates:"17–19.9", nights:3,
-        hotel:"מלון ליד תחנת קנזאווה / Higashi Chaya", hotelNote:"להזמנה לפי אזור", booking:true, hotelQuery:"hotel Kanazawa Station",
-        highlights:["Kenroku-en","Higashi Chaya","שוק Ōmichō","מוזיאון המאה ה-21","Nagamachi"],
-        days:[
-          {d:"17.9", t:"לב העיר", x:"שוק Ōmichō, Higashi Chaya, Kenroku-en, טירת קנזאווה, Nagamachi."},
-          {d:"18.9", t:"נינוח", x:"מוזיאון המאה ה-21, Nishi Chaya, Kazue-machi, מוזיאון D.T. Suzuki, סדנת עלי זהב."},
-          {d:"19.9", t:"יום פתוח", x:"טיול יום (Noto / Kaga Onsen) או יום עצלן בעיר."}
-        ],
-        transfer:{t:"קנזאווה ← קיוטו", x:"רכבת Thunderbird · ~2:15"}
-      },
-      {
-        city:"קיוטו + נארה", region:"Kyoto Japan", dates:"20–24.9", nights:5,
-        hotel:"KABIN Kyoto", hotelNote:"נארה כטיול יום", booking:true,
-        highlights:["Kiyomizu-dera","Fushimi Inari","יער הבמבוק","Kinkaku-ji","Gion","Philosopher's Path","שוק Nishiki","Tōdai-ji (נארה)"],
-        days:[
-          {d:"20.9", t:"מזרח קיוטו (Higashiyama)", x:"Kiyomizu-dera מוקדם, Sannenzaka/Ninenzaka, פגודת Yasaka, Yasaka Shrine, Kōdai-ji, ו-Gion בערב."},
-          {d:"21.9", t:"אראשיאמה ו-Kinkaku-ji", x:"יער הבמבוק עד 8:00, Tenryū-ji, גן Okōchi Sansō, גשר Togetsukyō, אחה״צ Kinkaku-ji."},
-          {d:"22.9", t:"פושימי אינארי + נארה", x:"Fushimi Inari מוקדם עד Yotsutsuji, רכבת לנארה, Tōdai-ji והבודהה הגדול, פארק הצבאים, Kasuga Taisha."},
-          {d:"23.9", t:"שביל הפילוסוף", x:"Nanzen-ji, Philosopher's Path, Ginkaku-ji, שוק Nishiki, או סדנת צביעת משי Kyō-Yūzen."},
-          {d:"24.9", t:"יום גמיש", x:"Ryōan-ji / Ninna-ji, סדנת מלאכה, או טיול יום ל-Uji (Byōdō-in ותה מאצ׳ה)."}
-        ],
-        note:"בתוך קיוטו — רכבות ומטרו עדיפים על אוטובוסים העמוסים.",
-        transfer:{t:"קיוטו ← אוסקה", x:"רכבת Special Rapid · ~15–30 דק׳"}
-      },
-      osaka("25.9"),
-      {
-        city:"קיושו — אסו + קורוקאווה", region:"Aso Kumamoto Japan", dates:"26–29.9", nights:4,
-        hotel:"Fairfield by Marriott Aso → Kurokawa-So", hotelNote:"לימי הטיולים → ריוקאן לסיום הרומנטי", booking:true, hotelQuery:"Fairfield by Marriott Aso",
-        highlights:KYUSHU_HL,
-        days:[
-          {d:"26.9", t:"הגעה לאסו", x:"טיסה, רכב. Daikanbo, Kusasenri."},
-          {d:"27.9", t:"הר געש / Takachiho", x:"Nakadake ומסלולים, או קניון Takachiho."},
-          {d:"28.9", t:"מעבר לקורוקאווה", x:"דרך מפל Nabegataki. צ׳ק-אין Kurokawa-So, אונסן."},
-          {d:"29.9", t:"קורוקאווה נינוח", x:"דילוג בין 3 אונסנים והכפר."}
-        ],
-        transfer:{t:"קיושו ← טוקיו", x:"רכב לשדה ~1.5ש · טיסה ~1:40 ✈️"}
-      },
-      TOKYO_END
-    ]
-  },
   {
     id:"opt3", num:"המסלול שלנו", tag:"בלי מצומוטו",
     summary:"המסלול שסגרנו — בלי מצומוטו: 5 לילות בקיוטו+נארה, קיושו על פני 3 בסיסים (אסו, קורוקאווה, בפו), וסיום של 4 לילות בטוקיו.",
@@ -1087,12 +891,6 @@ const FLIGHTS = [
   }
 ];
 
-const DIFF = [
-  {n:"1", x:"עשירה בטבע ואתרים (קמיקוצ׳י, טירת מצומוטו) — במחיר יום נסיעה ארוך אחד."},
-  {n:"2", x:"רגועה וזורמת, בלי מצומוטו, עם 5 לילות בקיוטו ו-3 בקנזאווה."},
-  {n:"3", x:"בלי מצומוטו, 5 לילות בקיוטו ו-5 בקיושו על פני 3 בסיסים (אסו, קורוקאווה, בפו) — הכי נינוחה בקצה הדרומי. זה המסלול שסגרנו."}
-];
-
 const TIPS = [
   {ic:"🎫", h:"להזמין מוקדם", x:"רכבות (Romancecar / Azusa / Thunderbird / Hida / שינקנסן), אוטובוסי האלפים (Alpico · Nohi · Hokutetsu — נמכרים מהר), טיסות ANA/JAL לקיושו, והריוקאנים בהאקונה וב-Kurokawa-So."},
   {ic:"🚗", h:"רכב בקיושו", x:"רישיון בינלאומי (IDP) חובה — להנפיק בארץ לפני הטיסה. איסוף והחזרה בשדה קומאמוטו. נוהגים משמאל."},
@@ -1102,8 +900,7 @@ const TIPS = [
 
 /* ===================== RENDER: overview ===================== */
 function overviewCard(opt, featured){
-  const colors = {opt1:{accent:'#c2402e',light:'#f5e5e0',bright:'#e74c3c'},opt2:{accent:'#1b4d2b',light:'#f0f8e0',bright:'#c8ff00'},opt3:{accent:'#001f5e',light:'#e5eef8',bright:'#5b7dbe'}};
-  const c = colors[opt.id] || colors.opt1;
+  const c = {accent:'#001f5e', light:'#e5eef8', bright:'#5b7dbe'};
   const lis = opt.segments.map(s=>`
     <li>
       <span class="oc-city">${s.city}</span>
@@ -1121,7 +918,7 @@ function overviewCard(opt, featured){
   </div>`;
 }
 /* ===================== MAP + CALENDAR ===================== */
-const ACCENT={opt1:"#c2402e",opt2:"#1b4d2b",opt3:"#001f5e"};
+const ACCENT={opt3:"#001f5e"};
 const CITY_XY={
   "טוקיו":{x:543,y:158,dx:15,dy:5,a:"start",s:"טוקיו"},
   "טוקיו — סיום":{x:543,y:158,dx:15,dy:5,a:"start",s:"טוקיו"},
@@ -1213,9 +1010,7 @@ function calendarHTML(){
 }
 
 const featuredOpt = OPTIONS.find(o=>o.id==="opt3");
-const altOpts = OPTIONS.filter(o=>o.id!=="opt3");
 document.getElementById("ov-featured").innerHTML = overviewCard(featuredOpt, true);
-document.getElementById("ov-alts").innerHTML = altOpts.map(o=>overviewCard(o, false)).join("");
 document.getElementById("ov-map").innerHTML = `<div class="map-wrap">${routeMapSVG(featuredOpt, ACCENT.opt3, true)}</div>`;
 document.getElementById("ov-cal").innerHTML = calendarHTML();
 /* כרטיסים אישיים נטענים מ-tickets.js (קיים רק ב-repo הפרטי). אם אין — לא מוצג כלום. */
@@ -1250,8 +1045,6 @@ function flightsHTML(){
     </div>`).join("") + `</div>`;
 }
 document.getElementById("ov-flights").innerHTML = flightsHTML();
-document.getElementById("ov-diff").innerHTML =
-  `<h3>ההבדל בקצרה</h3>` + DIFF.map(d=>`<div class="dl"><span class="dnum">אופציה ${d.n}</span><span>${d.x}</span></div>`).join("");
 document.getElementById("ov-tips").innerHTML =
   TIPS.map(t=>`<div class="tip"><h4>${t.h}</h4><p>${t.x}</p></div>`).join("");
 
