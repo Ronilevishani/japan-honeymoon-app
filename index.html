@@ -68,6 +68,12 @@
   nav.tabs button .ti{font-size:16px;}
   nav.tabs button:hover{border-color:var(--ink);}
   nav.tabs button.active{color:#fff;background:var(--ink);border-color:var(--ink);}
+  .sync-badge{align-self:center;font-size:11px;font-weight:700;border-radius:999px;padding:4px 11px;
+        white-space:nowrap;margin-inline-start:auto;transition:.2s;}
+  .sync-badge:empty{display:none;}
+  .sync-badge.ok{color:#1b6b3a;background:#eaf6ee;border:1px solid #b8ddc4;}
+  .sync-badge.busy{color:#9a6a00;background:#fdf3e0;border:1px solid #f0d9a8;}
+  .sync-badge.err{color:#8a8a90;background:var(--surface-2);border:1px solid var(--line);}
 
   /* ---------- Panes ---------- */
   main{padding:22px 0 60px;}
@@ -504,6 +510,7 @@
     <button data-tab="opt3">המסלול שלנו</button>
     <button data-tab="budget">תקציב</button>
     <button data-tab="files">הקבצים שלנו</button>
+    <span class="sync-badge" id="syncStatus"></span>
   </div>
 </nav>
 
@@ -613,7 +620,153 @@
 <!-- כרטיסים אישיים — קובץ אופציונלי, קיים רק בגרסה הפרטית -->
 <script src="tickets.js" onerror="this.dataset.missing=1"></script>
 
+<!-- Supabase — סנכרון בין המכשירים. אם לא נטען, האפליקציה עובדת מקומית כרגיל. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" onerror="this.dataset.missing=1"></script>
+
 <script>
+/* ===================== CLOUD SYNC (Supabase) =====================
+   ה-URL וה-anon key מיועדים להיות ציבוריים. ההגנה היא Row Level Security
+   בצד השרת: בלי התחברות עם הסיסמה אי אפשר לקרוא או לכתוב כלום.
+   כל עוד השדות ריקים — האפליקציה עובדת מקומית בדיוק כמו קודם.        */
+const SUPA = {
+  url:   "https://vgeutbqqjswkepvhhdre.supabase.co",
+  key:   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnZXV0YnFxanN3a2VwdmhoZHJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1Mjg2NzMsImV4cCI6MjEwNDEwNDY3M30.5gu9JN3gTVod-FoaJl7d07_Pqoxdan7I0beI1EokHc4",
+  email: "trip@japan2026.app",     /* המשתמש המשותף */
+  row:   "shared"
+};
+let sb = null, cloudOn = false;
+
+/* מצב האפליקציה — מקור אמת אחד לתקציב, ללינקים ולהערות */
+const LS_STATE = "japanTrip_state";
+let STATE = { expenses:[], budget:0, rates:{JPY:0.025,USD:3.7,ILS:1}, links:[], notes:"", fileNames:{}, migrated:false };
+
+const loadLocal = ()=>{ try{ const s=JSON.parse(localStorage.getItem(LS_STATE)); if(s) STATE={...STATE,...s}; }catch{} };
+const saveLocal = ()=>{ try{ localStorage.setItem(LS_STATE, JSON.stringify(STATE)); }catch{} };
+loadLocal();   /* המצב השמור זמין מיד, עוד לפני שהענן מתחבר */
+
+function syncBadge(kind, text){
+  const el=document.getElementById("syncStatus"); if(!el) return;
+  el.className="sync-badge "+kind; el.textContent=text;
+}
+let pushTimer=null;
+/* נקרא אחרי כל שינוי: שומר מקומית, מרנדר, ודוחף לענן */
+function persist(){
+  saveLocal(); renderAll();
+  if(!cloudOn) return;
+  clearTimeout(pushTimer);
+  pushTimer=setTimeout(async()=>{
+    try{
+      syncBadge("busy","מסנכרן…");
+      lastPushAt=Date.now();
+      const {error}=await sb.from("trip_state").upsert({id:SUPA.row, data:STATE, updated_at:new Date().toISOString()});
+      if(error) throw error;
+      lastPushAt=Date.now();
+      syncBadge("ok","מסונכרן ✓");
+    }catch(e){ syncBadge("err","נשמר מקומית — אין חיבור"); }
+  }, 400);
+}
+function renderAll(){
+  try{ renderLinks(); }catch{}
+  try{ renderNotes(); }catch{}
+  try{ renderBudget(); }catch{}
+}
+
+/* מושך מהענן ומחיל, כולל האזנה לשינויים של בן/בת הזוג */
+async function cloudInit(){
+  if(!SUPA.url || !SUPA.key || !window.supabase) return false;
+  try{
+    sb = window.supabase.createClient(SUPA.url, SUPA.key);
+    return true;
+  }catch{ return false; }
+}
+async function cloudSignIn(password){
+  if(!sb) return false;
+  const {error}=await sb.auth.signInWithPassword({email:SUPA.email, password});
+  return !error;
+}
+let lastPushAt=0;
+/* מושך מהענן ומחיל — רק אם באמת השתנה משהו, וכשאין דחיפה שלנו באוויר */
+async function pullCloud(){
+  if(!cloudOn) return;
+  if(Date.now()-lastPushAt < 2500) return;      /* הרגע שמרנו — לא לדרוס */
+  try{
+    const {data,error}=await sb.from("trip_state").select("data").eq("id",SUPA.row).maybeSingle();
+    if(error || !data || !data.data) return;
+    if(JSON.stringify(data.data)===JSON.stringify(STATE)) return;   /* זהה — אין מה לעדכן */
+    STATE={...STATE,...data.data}; saveLocal(); renderAll();
+    syncBadge("ok","מסונכרן ✓");
+  }catch{}
+}
+
+async function cloudStart(){
+  cloudOn = true;
+  syncBadge("busy","מסנכרן…");
+  try{
+    const {data,error}=await sb.from("trip_state").select("data").eq("id",SUPA.row).maybeSingle();
+    if(error) throw error;
+    if(data && data.data && Object.keys(data.data).length){
+      STATE={...STATE,...data.data}; saveLocal(); renderAll();
+    }else{
+      await migrateLocalToCloud();           /* פעם ראשונה — מעלים את מה שכבר קיים */
+    }
+    syncBadge("ok","מסונכרן ✓");
+  }catch(e){ syncBadge("err","נשמר מקומית — אין חיבור"); }
+
+  /* עדכון מיידי (עובד אחרי שמפעילים Realtime על הטבלה) */
+  sb.channel("trip_state_live")
+    .on("postgres_changes",{event:"*",schema:"public",table:"trip_state"},p=>{
+      if(p.new && p.new.data && Date.now()-lastPushAt>2500){
+        STATE={...STATE,...p.new.data}; saveLocal(); renderAll(); syncBadge("ok","מסונכרן ✓");
+      }
+    }).subscribe();
+
+  /* רשת ביטחון: משיכה כשחוזרים לאפליקציה וכל 20 שניות ברקע.
+     כך הסנכרון עובד גם בלי Realtime, וגם מתאושש אחרי ניתוק רשת. */
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden){ pullCloud(); renderFiles(); } });
+  window.addEventListener("focus", pullCloud);
+  window.addEventListener("online", ()=>{ pullCloud(); persistNow(); });
+  setInterval(()=>{ if(!document.hidden) pullCloud(); }, 20000);
+
+  renderFiles();
+}
+/* מעביר נתונים שנשמרו בגרסה הישנה (localStorage/IndexedDB) אל המצב המשותף */
+async function migrateLocalToCloud(){
+  if(STATE.migrated) { await persistNow(); return; }
+  try{
+    const oldLinks=JSON.parse(localStorage.getItem("japanTrip_links")||"[]");
+    const oldNotes=localStorage.getItem("japanTrip_notes")||"";
+    const oldRates=JSON.parse(localStorage.getItem("japanTrip_rates")||"null");
+    const oldBudget=parseFloat(localStorage.getItem("japanTrip_budget"));
+    if(oldLinks.length && !STATE.links.length) STATE.links=oldLinks;
+    if(oldNotes && !STATE.notes) STATE.notes=oldNotes;
+    if(oldRates) STATE.rates={...STATE.rates,...oldRates};
+    if(isFinite(oldBudget)&&oldBudget>0 && !STATE.budget) STATE.budget=oldBudget;
+    const oldExp=await idbExpenses();
+    if(oldExp.length && !STATE.expenses.length){
+      STATE.expenses=oldExp.map(e=>({id:e.id,desc:e.desc,amount:e.amount,curr:e.curr,cat:e.cat,date:e.date,ts:e.ts}));
+    }
+  }catch{}
+  STATE.migrated=true; saveLocal(); renderAll(); await persistNow();
+}
+async function persistNow(){
+  if(!cloudOn) return;
+  try{ await sb.from("trip_state").upsert({id:SUPA.row, data:STATE, updated_at:new Date().toISOString()}); }catch{}
+}
+/* קורא הוצאות מהאחסון הישן בדפדפן, לצורך ההעברה החד-פעמית */
+function idbExpenses(){
+  return new Promise(res=>{
+    try{
+      const r=indexedDB.open("japanTrip",2);
+      r.onsuccess=()=>{ const db=r.result;
+        if(!db.objectStoreNames.contains("expenses")) return res([]);
+        const rq=db.transaction("expenses","readonly").objectStore("expenses").getAll();
+        rq.onsuccess=()=>res(rq.result||[]); rq.onerror=()=>res([]);
+      };
+      r.onerror=()=>res([]);
+    }catch{ res([]); }
+  });
+}
+
 /* ===================== LOCK / PASSWORD GATE ===================== */
 /* SHA-256 hash of the access password (the plain password is never stored in the code). */
 const PASS_HASH="786ef5f4ac56701f2ced65100140e01f036b20b6f932033fb96ea6dbe279992b";
@@ -623,16 +776,34 @@ async function sha256(str){
   return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
 }
 function unlock(){ document.body.classList.remove("locked"); }
+const LS_PW="japanTrip_pw";   /* נשמר רק כדי להתחבר מחדש לענן אחרי רענון */
+
+/* מתחבר לענן עם הסיסמה. נכשל בשקט אם אין רשת — האפליקציה תעבוד מקומית. */
+async function tryCloud(password){
+  if(!(await cloudInit())) return;
+  try{ if(await cloudSignIn(password)) await cloudStart(); }
+  catch{ syncBadge("err","נשמר מקומית — אין חיבור"); }
+}
+
 (function initLock(){
-  if(localStorage.getItem(LOCK_KEY)==="1" || sessionStorage.getItem(LOCK_KEY)==="1"){ unlock(); return; }
+  const remembered = localStorage.getItem(LOCK_KEY)==="1" || sessionStorage.getItem(LOCK_KEY)==="1";
+  if(remembered){
+    unlock();
+    const pw=localStorage.getItem(LS_PW)||sessionStorage.getItem(LS_PW);
+    if(pw) tryCloud(pw);
+    return;
+  }
   const form=document.getElementById("lockForm"), pass=document.getElementById("lockPass"), err=document.getElementById("lockErr");
   setTimeout(()=>pass.focus(),100);
   form.addEventListener("submit", async e=>{
     e.preventDefault();
-    const h=await sha256(pass.value.trim());
+    const pw=pass.value.trim();
+    const h=await sha256(pw);
     if(h===PASS_HASH){
-      (document.getElementById("lockRemember").checked ? localStorage : sessionStorage).setItem(LOCK_KEY,"1");
+      const store = document.getElementById("lockRemember").checked ? localStorage : sessionStorage;
+      store.setItem(LOCK_KEY,"1"); store.setItem(LS_PW,pw);
       unlock();
+      tryCloud(pw);
     } else {
       err.textContent="סיסמה שגויה, נסו שוב";
       pass.value=""; pass.focus();
@@ -1189,23 +1360,8 @@ document.getElementById("pane-overview").addEventListener("click", e=>{
   if(go) activate(go.dataset.go);
 });
 
-/* ===================== FILES: IndexedDB ===================== */
-const DB_NAME="japanTrip", STORE="files";
-function openDB(){
-  return new Promise((res,rej)=>{
-    const r=indexedDB.open(DB_NAME,2);
-    r.onupgradeneeded=()=>{
-      const db=r.result;
-      if(!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE,{keyPath:"id"});
-      if(!db.objectStoreNames.contains("expenses")) db.createObjectStore("expenses",{keyPath:"id"});
-    };
-    r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);
-  });
-}
-async function dbAdd(rec){ const db=await openDB(); return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(rec);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);}); }
-async function dbAll(){ const db=await openDB(); return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readonly");const rq=tx.objectStore(STORE).getAll();rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);}); }
-async function dbDel(id){ const db=await openDB(); return new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).delete(id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);}); }
-
+/* ===================== FILES: Supabase Storage ===================== */
+const BUCKET="trip-files";
 const fmtSize = b => b<1024?b+" B":b<1048576?(b/1024).toFixed(0)+" KB":(b/1048576).toFixed(1)+" MB";
 const fileIcon = (type,name="") => {
   const ext=(name.split('.').pop()||'').toUpperCase();
@@ -1218,23 +1374,59 @@ const fileIcon = (type,name="") => {
 
 async function renderFiles(){
   const list=document.getElementById("fileList");
-  const items=(await dbAll()).sort((a,b)=>b.ts-a.ts);
-  if(!items.length){ list.innerHTML=`<li class="empty" style="border:none;background:none">עדיין לא הועלו קבצים</li>`; return; }
+  if(!cloudOn){
+    list.innerHTML=`<li class="empty" style="border:none;background:none">הקבצים מסתנכרנים בענן — נדרש חיבור לאינטרנט</li>`;
+    return;
+  }
+  const {data,error}=await sb.storage.from(BUCKET).list("",{limit:200,sortBy:{column:"created_at",order:"desc"}});
+  const items=(data||[]).filter(f=>f.name && f.name!==".emptyFolderPlaceholder");
+  if(error || !items.length){
+    list.innerHTML=`<li class="empty" style="border:none;background:none">עדיין לא הועלו קבצים</li>`; return;
+  }
   list.innerHTML="";
-  items.forEach(it=>{
-    const url=URL.createObjectURL(it.blob);
+  for(const it of items){
+    const nice=(STATE.fileNames&&STATE.fileNames[it.name]) || it.name.replace(/^\d+-/,"");
+    const size=it.metadata&&it.metadata.size ? fmtSize(it.metadata.size) : "";
     const li=document.createElement("li");
-    li.innerHTML=`<span class="fl-ic">${fileIcon(it.type,it.name)}</span>
-      <div class="fl-info"><b>${it.name}</b><span>${fmtSize(it.size)} · </span><a href="${url}" target="_blank" rel="noopener">פתיחה / הורדה</a></div>
+    li.innerHTML=`<span class="fl-ic">${fileIcon((it.metadata&&it.metadata.mimetype)||"",nice)}</span>
+      <div class="fl-info"><b>${nice}</b><span>${size} · </span><a href="#" rel="noopener">פתיחה / הורדה</a></div>
       <button class="icon-btn" title="מחיקה">×</button>`;
-    li.querySelector(".icon-btn").onclick=async()=>{ await dbDel(it.id); renderFiles(); };
+    li.querySelector("a").onclick=async ev=>{
+      ev.preventDefault();
+      const {data:s}=await sb.storage.from(BUCKET).createSignedUrl(it.name,3600);
+      if(s&&s.signedUrl) window.open(s.signedUrl,"_blank","noopener");
+    };
+    li.querySelector(".icon-btn").onclick=async()=>{
+      if(!confirm(`למחוק את "${nice}"? הקובץ יימחק גם אצל בן/בת הזוג.`)) return;
+      await sb.storage.from(BUCKET).remove([it.name]);
+      if(STATE.fileNames && STATE.fileNames[it.name]){ delete STATE.fileNames[it.name]; persist(); }
+      renderFiles();
+    };
     list.appendChild(li);
-  });
+  }
+}
+/* Supabase מקבל רק מפתחות באנגלית, ולכן הקובץ נשמר תחת שם בטוח
+   ואילו השם המקורי (למשל בעברית) נשמר במצב המשותף — כך שניכם רואים אותו. */
+function safeKey(name){
+  const dot=name.lastIndexOf(".");
+  const ext=(dot>0?name.slice(dot+1):"").replace(/[^A-Za-z0-9]/g,"").slice(0,8);
+  return `${Date.now()}-${Math.random().toString(36).slice(2,8)}${ext?"."+ext:""}`;
 }
 async function addFiles(fileList){
+  if(!cloudOn){ alert("אין כרגע חיבור לענן — נסו שוב כשיש אינטרנט."); return; }
+  let ok=0;
   for(const f of fileList){
-    await dbAdd({id:crypto.randomUUID(), name:f.name, type:f.type, size:f.size, ts:Date.now(), blob:f});
+    try{
+      syncBadge("busy","מעלה קובץ…");
+      const key=safeKey(f.name);
+      const {error}=await sb.storage.from(BUCKET).upload(key,f,{upsert:false,contentType:f.type||undefined});
+      if(error) throw error;
+      STATE.fileNames={...(STATE.fileNames||{}), [key]:f.name};
+      ok++;
+    }catch(e){ alert(`ההעלאה של "${f.name}" נכשלה: ${e.message||e}`); }
   }
+  if(ok) persist();            /* שם הקובץ מסונכרן יחד עם שאר המצב */
+  syncBadge("ok","מסונכרן ✓");
   renderFiles();
 }
 const drop=document.getElementById("drop"), fileInput=document.getElementById("fileInput");
@@ -1244,13 +1436,9 @@ fileInput.onchange=()=>{ if(fileInput.files.length) addFiles(fileInput.files); f
 ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
 drop.addEventListener("drop",e=>{ if(e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
 
-/* ===================== LINKS + NOTES: localStorage ===================== */
-const LS_LINKS="japanTrip_links", LS_NOTES="japanTrip_notes";
-const getLinks=()=>{ try{return JSON.parse(localStorage.getItem(LS_LINKS))||[];}catch{return [];} };
-const setLinks=v=>localStorage.setItem(LS_LINKS,JSON.stringify(v));
-
+/* ===================== LINKS + NOTES: מסונכרנים ===================== */
 function renderLinks(){
-  const list=document.getElementById("linkList"); const links=getLinks();
+  const list=document.getElementById("linkList"); const links=STATE.links||[];
   if(!links.length){ list.innerHTML=`<li class="empty" style="border:none;background:none">אין לינקים שמורים</li>`; return; }
   list.innerHTML="";
   links.forEach((l,i)=>{
@@ -1258,7 +1446,7 @@ function renderLinks(){
     li.innerHTML=`<span class="fl-ic">URL</span>
       <div class="fl-info"><b>${l.title||l.url}</b><a href="${l.url}" target="_blank" rel="noopener" dir="ltr">${l.url}</a></div>
       <button class="icon-btn" title="מחיקה">×</button>`;
-    li.querySelector(".icon-btn").onclick=()=>{ const a=getLinks(); a.splice(i,1); setLinks(a); renderLinks(); };
+    li.querySelector(".icon-btn").onclick=()=>{ STATE.links.splice(i,1); persist(); };
     list.appendChild(li);
   });
 }
@@ -1266,13 +1454,13 @@ document.getElementById("addLink").onclick=()=>{
   const t=document.getElementById("linkTitle"), u=document.getElementById("linkUrl");
   let url=u.value.trim(); if(!url) return;
   if(!/^https?:\/\//i.test(url)) url="https://"+url;
-  const a=getLinks(); a.push({title:t.value.trim(), url}); setLinks(a);
-  t.value=""; u.value=""; renderLinks();
+  STATE.links=[...(STATE.links||[]),{title:t.value.trim(), url}];
+  t.value=""; u.value=""; persist();
 };
 const notes=document.getElementById("notes");
-notes.value=localStorage.getItem(LS_NOTES)||"";
+function renderNotes(){ if(document.activeElement!==notes) notes.value=STATE.notes||""; }
 document.getElementById("saveNotes").onclick=()=>{
-  localStorage.setItem(LS_NOTES, notes.value);
+  STATE.notes=notes.value; persist();
   const f=document.getElementById("notesFlash"); f.classList.add("show"); setTimeout(()=>f.classList.remove("show"),1500);
 };
 
@@ -1289,18 +1477,17 @@ const CATS=[
 const catById = id => CATS.find(c=>c.id===id) || CATS[CATS.length-1];
 const CURSYM = {ILS:"₪", JPY:"¥", USD:"$"};
 
-const LS_RATES="japanTrip_rates", LS_BUDGET="japanTrip_budget";
 const defRates={JPY:0.025, USD:3.7, ILS:1};
-const getRates=()=>{ try{return {...defRates,...(JSON.parse(localStorage.getItem(LS_RATES))||{})};}catch{return {...defRates};} };
-const setRates=r=>localStorage.setItem(LS_RATES,JSON.stringify(r));
-const getBudget=()=>{ const v=parseFloat(localStorage.getItem(LS_BUDGET)); return isFinite(v)&&v>0?v:0; };
+const getRates=()=>({...defRates, ...(STATE.rates||{})});
+const setRates=r=>{ STATE.rates=r; };
+const getBudget=()=>{ const v=parseFloat(STATE.budget); return isFinite(v)&&v>0?v:0; };
 const toILS=(amount,curr)=>amount*(getRates()[curr]||1);
 const ils = n => "₪"+Math.round(n).toLocaleString("en-US");
 
 /* expenses store (DB v2) */
-async function expAdd(rec){ const db=await openDB(); return new Promise((res,rej)=>{const tx=db.transaction("expenses","readwrite");tx.objectStore("expenses").put(rec);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);}); }
-async function expAll(){ const db=await openDB(); return new Promise((res,rej)=>{const tx=db.transaction("expenses","readonly");const rq=tx.objectStore("expenses").getAll();rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);}); }
-async function expDel(id){ const db=await openDB(); return new Promise((res,rej)=>{const tx=db.transaction("expenses","readwrite");tx.objectStore("expenses").delete(id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error);}); }
+const expAll=()=>[...(STATE.expenses||[])];
+const expAdd=rec=>{ STATE.expenses=[...(STATE.expenses||[]), rec]; };
+const expDel=id=>{ STATE.expenses=(STATE.expenses||[]).filter(e=>e.id!==id); };
 
 /* init form defaults */
 (function initBudgetForm(){
@@ -1330,12 +1517,23 @@ document.getElementById("xAdd").onclick=async()=>{
   const date=document.getElementById("xDate").value || new Date().toISOString().slice(0,10);
   if(!desc || !isFinite(amount) || amount<=0){ alert("נא למלא תיאור וסכום תקין"); return; }
   const rec={id:crypto.randomUUID(), desc, amount, curr, cat, date, ts:Date.now()};
-  if(xReceiptFile){ rec.rName=xReceiptFile.name; rec.rType=xReceiptFile.type; rec.rBlob=xReceiptFile; }
-  await expAdd(rec);
+  if(xReceiptFile){
+    if(!cloudOn){ alert("אין חיבור לענן — ההוצאה תישמר, אבל הקבלה לא. אפשר לצרף אותה מאוחר יותר."); }
+    else{
+      try{
+        syncBadge("busy","מעלה קבלה…");
+        const path=`receipts/${safeKey(xReceiptFile.name)}`;
+        const {error}=await sb.storage.from(BUCKET).upload(path,xReceiptFile,{upsert:false,contentType:xReceiptFile.type||undefined});
+        if(error) throw error;
+        rec.rPath=path; rec.rName=xReceiptFile.name;
+      }catch(e){ alert("העלאת הקבלה נכשלה: "+(e.message||e)); }
+    }
+  }
+  expAdd(rec);
   document.getElementById("xDesc").value="";
   document.getElementById("xAmount").value="";
   setReceipt(null); xFile.value="";
-  renderBudget();
+  persist();
 };
 
 /* save settings */
@@ -1345,7 +1543,7 @@ document.getElementById("saveSettings").onclick=()=>{
   r.USD=parseFloat(document.getElementById("rateUSD").value)||defRates.USD;
   setRates(r);
   const f=document.getElementById("setFlash"); f.classList.add("show"); setTimeout(()=>f.classList.remove("show"),1500);
-  renderBudget();
+  persist();
 };
 
 /* live-editable target inside the stat card */
@@ -1355,8 +1553,10 @@ function bindTargetInput(){
   if(!ti) return;
   ti.oninput=()=>{
     const v=parseFloat(ti.value.replace(/[^\d.]/g,""));
-    if(isFinite(v)&&v>0) localStorage.setItem(LS_BUDGET,v); else localStorage.removeItem(LS_BUDGET);
+    STATE.budget = (isFinite(v)&&v>0) ? v : 0;
     updateTargetDerived();
+    saveLocal();
+    clearTimeout(pushTimer); pushTimer=setTimeout(persistNow,600);
   };
 }
 function updateTargetDerived(){
@@ -1374,8 +1574,8 @@ function updateTargetDerived(){
   }
 }
 
-async function renderBudget(){
-  const items=(await expAll()).sort((a,b)=> b.date.localeCompare(a.date) || (b.ts-a.ts));
+function renderBudget(){
+  const items=expAll().sort((a,b)=> b.date.localeCompare(a.date) || (b.ts-a.ts));
   const total=items.reduce((s,it)=>s+toILS(it.amount,it.curr),0);
   const count=items.length;
   const avg=count?total/count:0;
@@ -1412,7 +1612,7 @@ async function renderBudget(){
     const orig=`${CURSYM[it.curr]||''}${it.amount.toLocaleString("en-US")}`;
     const conv=it.curr!=="ILS"?`<small>${ils(toILS(it.amount,it.curr))}</small>`:"";
     let rcpt=`<span class="xrcpt none">—</span>`;
-    if(it.rBlob){ const u=URL.createObjectURL(it.rBlob); rcpt=`<a class="xrcpt" href="${u}" target="_blank" rel="noopener">צפייה ↗</a>`; }
+    if(it.rPath){ rcpt=`<a class="xrcpt" href="#" data-rcpt="${it.rPath}">צפייה ↗</a>`; }
     return `<tr>
       <td dir="ltr" style="text-align:right;color:var(--muted);white-space:nowrap">${it.date}</td>
       <td><span class="xcat" style="background:${c.color}">${c.name}</span></td>
@@ -1423,10 +1623,21 @@ async function renderBudget(){
     </tr>`;
   }).join("");
   t.innerHTML=`<thead><tr><th>תאריך</th><th>קטגוריה</th><th>תיאור</th><th>סכום</th><th>קבלה</th><th></th></tr></thead><tbody>${rows}</tbody>`;
-  t.querySelectorAll("[data-del]").forEach(btn=>btn.onclick=async()=>{ if(confirm("למחוק את ההוצאה?")){ await expDel(btn.dataset.del); renderBudget(); } });
+  t.querySelectorAll("[data-del]").forEach(btn=>btn.onclick=()=>{
+    if(!confirm("למחוק את ההוצאה? היא תימחק גם אצל בן/בת הזוג.")) return;
+    const it=(STATE.expenses||[]).find(e=>e.id===btn.dataset.del);
+    if(it && it.rPath && cloudOn) sb.storage.from(BUCKET).remove([it.rPath]).catch(()=>{});
+    expDel(btn.dataset.del); persist();
+  });
+  t.querySelectorAll("[data-rcpt]").forEach(a=>a.onclick=async ev=>{
+    ev.preventDefault();
+    if(!cloudOn){ alert("נדרש חיבור לאינטרנט כדי לפתוח את הקבלה."); return; }
+    const {data}=await sb.storage.from(BUCKET).createSignedUrl(a.dataset.rcpt,3600);
+    if(data&&data.signedUrl) window.open(data.signedUrl,"_blank","noopener");
+  });
 }
 
-renderFiles(); renderLinks(); renderBudget();
+renderFiles(); renderLinks(); renderNotes(); renderBudget();
 </script>
 </body>
 </html>
