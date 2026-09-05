@@ -333,6 +333,34 @@
         background:#fff;border:1px solid #f0d9a8;border-radius:6px;padding:3px 7px;flex:0 0 auto;margin-top:1px;}
   .warn-box a{color:#7a5300;font-weight:700;}
 
+  /* ---------- Saved places (from our Google Maps list) ---------- */
+  .sp{margin-top:14px;border:1.5px solid var(--accent);border-radius:14px;background:var(--surface);overflow:hidden;}
+  .sp>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;gap:9px;
+        background:var(--accent-light);font-weight:800;font-size:14px;}
+  .sp>summary::-webkit-details-marker{display:none;}
+  .sp>summary::marker{content:"";}
+  .sp-ic{font-size:16px;}
+  .sp-n{margin-inline-start:auto;font-size:11.5px;font-weight:700;color:var(--accent);
+        background:var(--surface);border:1px solid var(--accent);border-radius:999px;padding:2px 9px;}
+  .sp-chev{font-size:12px;color:var(--accent);transition:.2s;}
+  .sp[open] .sp-chev{transform:rotate(180deg);}
+  .sp-body{padding:2px 12px 14px;}
+  .sp-cat{margin-top:14px;}
+  .sp-ct{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--ink);
+        padding:0 2px 7px;border-bottom:1px dashed var(--line);}
+  .sp-ct .sp-cn{margin-inline-start:auto;color:var(--muted);font-weight:700;font-size:11px;}
+  .sp-list{display:grid;gap:7px;margin-top:9px;}
+  .sp-item{display:flex;align-items:flex-start;gap:10px;text-decoration:none;color:inherit;
+        background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:9px 12px;transition:.16s;}
+  .sp-item:hover{border-color:var(--accent);background:var(--surface);}
+  .sp-em{font-size:15px;line-height:1.4;flex:0 0 auto;}
+  .sp-tx{min-width:0;flex:1;}
+  .sp-tx b{display:block;font-size:13.5px;font-weight:700;line-height:1.35;unicode-bidi:plaintext;text-align:start;}
+  .sp-tx span{display:block;font-size:12px;color:var(--muted);line-height:1.5;margin-top:3px;}
+  .sp-go{flex:0 0 auto;font-size:11px;color:var(--accent);font-weight:800;margin-top:3px;opacity:.6;}
+  .sp-item:hover .sp-go{opacity:1;}
+  @media(max-width:520px){ .sp-body{padding:2px 9px 12px;} }
+
   /* ---------- Route map ---------- */
   .map-wrap{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);
         box-shadow:var(--shadow-sm);padding:10px;margin-bottom:22px;overflow:hidden;}
@@ -1275,6 +1303,182 @@ function carBoxHTML(c, side){
     ${(c.notes||[]).length?`<ul class="cr-notes">${c.notes.map(n=>`<li>${n}</li>`).join("")}</ul>`:''}
   </div>`;
 }
+/* ===================== SAVED PLACES (מהמפה השמורה שלנו) ===================== */
+const SP_CATS = [
+  ["food",   "🍜", "אוכל"],
+  ["cafe",   "☕", "קפה ומאפים"],
+  ["bar",    "🍸", "ברים"],
+  ["sight",  "📸", "אטרקציות ושכונות"],
+  ["temple", "⛩️", "מקדשים"],
+  ["culture","🎭", "תרבות"],
+  ["shop",   "🛍️", "קניות ועיצוב"],
+  ["stay",   "🏨", "לינה"]
+];
+/* n = שם · c = קטגוריה · x = ההערה שלנו · q = חיפוש מדויק בגוגל (כשיש כתובת) */
+const SAVED_PLACES = {
+  hakone: { area:"Hakone", list:[
+    {n:"The Hakone Open-Air Museum", c:"culture", x:"מוזיאון פתוח יפה ממש חובה!"},
+    {n:"NARAYA CAFE", c:"cafe", x:"קפה מגניב שאפשר לטבול בו את הרגליים בזמן ששותים"},
+    {n:"Rice Field Original Stone Spa Land", c:"stay",
+      x:"מקום מומלץ לישון בו — אבל לקחת את חוויית האוכל המערבית כי האוכל היפני אסון · גוגל מסווג את זה כמשרד נדל״ן בסנגוקוהארה, לוודא שזה באמת המקום",
+      q:"俵石温泉土地 Sengokuhara Hakone"}
+  ]},
+  osaka: { area:"Osaka", list:[
+    {n:"Kuromon Market", c:"sight", x:"שוק אוכל מומלץ — יובל רוזן"},
+    {n:"Nakazakichō Station", c:"sight", x:"שכונה עם בתי קפה ליד הרכבת שמגיעה או נוסעת לקיוטו"}
+  ]},
+  kanazawa: { area:"Kanazawa", list:[
+    {n:"Omicho Market", c:"sight", x:"שוק אוכל טרי"},
+    {n:"Kenroku-en", c:"sight", x:"גן יפה ממש לטיול"},
+    {n:"Ramen Taiga", c:"food", x:"ראמן מומלץ"},
+    {n:"townsfolk coffee", c:"cafe", x:"קפה טוב"},
+    {n:"Nonstop Coffee Stand & Roastery", c:"cafe", x:"קפה"},
+    {n:"kakurezato coffee", c:"cafe", x:"קפה מומלץ"}
+  ]},
+  takayama: { area:"Takayama Gifu", list:[
+    {n:"Takayama Old Town", c:"sight", x:"העיר העתיקה"},
+    {n:"Aji-no-Yohei", c:"food", x:"מסעדת בקר הידה ידועה"},
+    {n:"Matsuki-Ushi", c:"food", x:"מסעדה עם בשר הידה ממש מומלצת! לא זולה"},
+    {n:"EVILTEX Hamburgers & Tex-Mex", c:"food", x:"מסעדה מקסיקנית עם המבורגר מומלץ",
+      q:"EVILTEX Hamburgers 6 Chome-19 Hanasatomachi Takayama Gifu"},
+    {n:"pizzeria SERICO", c:"food", x:"פיצה מומלצת — יש תנור לבנים",
+      q:"pizzeria SERICO 38 Fuyutomachi Takayama Gifu"},
+    {n:"Le Pain Mujo", c:"cafe", x:"מאפייה מומלצת",
+      q:"Le Pain Mujo 2 Chome-22 Oshinmachi Takayama Gifu"},
+    {n:"Falò Coffee Brewers", c:"cafe", x:"קפה טוב"},
+    {n:"haiz coffee roastery", c:"cafe", x:"בית קפה ובית קלייה מומלץ"}
+  ]},
+  tokyo: { area:"Tokyo", list:[
+    {n:"מקדש מייג'י", c:"temple", x:"מקדש ממש יפה — יפה להגיע בערב כשכל האורות נדלקים",
+      q:"Meiji Jingu Shrine Tokyo"},
+    {n:"Nakameguro", c:"sight", x:"שכונה ממש מגניבה בטוקיו עם חנויות יפות — חובה"},
+    {n:"Nakano City", c:"sight", x:"שכונה ממש מגניבה לטיול"},
+    {n:"Kichijōji", c:"sight", x:"שכונה נעימה ורגועה שכיף להסתובב בה", q:"Kichijoji Musashino Tokyo"},
+    {n:"Shoin-jinja-mae Station", c:"sight", x:"שכונה חמודה לחצי יום טיול"},
+    {n:"Fish Market Tsukiji Outer Market", c:"sight",
+      x:"שוק אוכל ממש טוב — נהיה עמוס מוקדם אז כדאי להגיע בבוקר. מוכרים שם סכינים יפניות טובות"},
+    {n:"Hotel Chinzan-sō Tokyo Garden", c:"sight", x:"גן יפה שמעניין איך הוא בלילה — לבדוק"},
+    {n:"DE FRITES STAAN HARAJUKU", c:"food", x:"מסעדה עם סטייק ממש מומלץ!"},
+    {n:"Wagyu to Worldwide Tokyo Asakusa", c:"food", x:"המבורגר ואגיו ממש שווה — המלצה של עדן קולר"},
+    {n:"Godaime Hanayama Udon Ginza", c:"food", x:"מסעדת אודון ממש מומלצת"},
+    {n:"Ramen Kamo to Negi Ueno Okachimachi", c:"food", x:"ראמן מומלץ בתוך מרכז קניות"},
+    {n:"pizza marumo", c:"food", x:"פיצה מומלצת · שיבויה", q:"pizza marumo Shibuya Tokyo"},
+    {n:"Fujiiya", c:"food", x:"מסעדת כיסונים מומלצת · ג׳ימבוצ׳ו",
+      q:"Fujiiya 2 Chome-21-11 Misakicho Chiyoda City Tokyo"},
+    {n:"Tsukiji Kitaro", c:"food", x:"סושי ממש מומלץ — יובל רוזן"},
+    {n:"Glitch Coffee and Roasters GINZA", c:"cafe", x:"קפה טוב אך חמוץ"},
+    {n:"Coffee Wrights Kuramae", c:"cafe", x:"קפה טוב"},
+    {n:"Sol's Coffee Roastery", c:"cafe", x:"קפה שווה מומלץ", q:"Sol's Coffee Roastery Tokyo"},
+    {n:"Brooklyn Roasting Company Shimo-Kitazawa", c:"cafe", x:"קפה מומלץ"},
+    {n:"Cafe&Store SeedsWellness", c:"cafe", x:"קערות אסאי ממש טובות — עדן קולר · גינזה",
+      q:"Cafe&Store SeedsWellness Ginza Tokyo"},
+    {n:"Koan", c:"cafe", x:"בית קפה טוב · גוגל מציין ״סגור זמנית״ — לבדוק לפני שהולכים",
+      q:"Koan cafe Tokyo"},
+    {n:"Ad Museum Tokyo", c:"culture", x:"מוזיאון פרסומות — המלצה של עדן קולר"},
+    {n:"Tokyo Midtown Design Hub", c:"culture", x:"בניין עם הרבה גלריות ומוזיאונים קטנים — עדן קולר"},
+    {n:"Ginza Itoya", c:"shop", x:"חנות למוצרי נייר ואומנות, כמה קומות — עדן קולר"},
+    {n:"Tokyo Kyukyodo Shibuyaten", c:"shop", x:"חנות מוצרי כתיבה ממש טובה ויפה"},
+    {n:"KONCENT", c:"shop", x:"חנות עיצוב ממש שווה — עדן קולר · קורמאה",
+      q:"KONCENT 2 Chome-6-10 Komagata Taito City Tokyo"},
+    {n:"The Harvest Kitchen General Store", c:"shop", x:"חנות קרמיקה וכלי בית שווה · שיבויה",
+      q:"The Harvest Kitchen General Store Shibuya Tokyo"},
+    {n:"Nakano Broadway", c:"shop", x:"מרכז קניות — חנויות"},
+    {n:"Trefac Style Koenji Store No. 3", c:"shop", x:"חנות יד שנייה מטריפה — איזור ממש שווה, 25 דק׳ ממרכז טוקיו"},
+    {n:"Zoff Grand Tokyo Shibuya Store", c:"shop", x:"חנות אופטיקה — ממש זולה ובמקום"},
+    {n:"Uniqlo Ginza Flagship Store", c:"shop", x:"יוניקלו בגינזה — יחסית גדולה ושווה"},
+    {n:"UNIQLO Takashimaya Shinjuku", c:"shop", x:"יוניקלו גדול"}
+  ]},
+  kyoto: { area:"Kyoto", list:[
+    {n:"Philosopher's Path", c:"sight", x:"שביל הפילוסוף — להגיע ממש מוקדם או יחסית מאוחר כדי להימנע מעומס",
+      q:"Philosopher's Path Tetsugaku no Michi Kyoto"},
+    {n:"Sannenzaka", c:"sight", x:"רחוב ממש יפה להסתובב בו"},
+    {n:"Ninenzaka", c:"sight", x:"רחוב ממש יפה להסתובב בו"},
+    {n:"Nishiki Market", c:"sight", x:"שוק אוכל מומלץ ומוכר"},
+    {n:"Fushimi Otesuji Shopping Street", c:"sight", x:"פושימי אינארי — מקום ממש שווה לקניות ועיצוב"},
+    {n:"Kamigamo Handicraft Market", c:"sight", x:"יריד מלאכת יד שפתוח מדי פעם — לבדוק מראש"},
+    {n:"Arashiyama Yusai-Tei Gallery", c:"culture", x:"גלריית אומנות — אולי צריך להזמין כרטיסים"},
+    {n:"Sushitetsu", c:"food", x:"מסעדת סושי מעולה! מומלץ ממש — יובל רוזן",
+      q:"Sushitetsu Pontocho Sanjo Nakagyo Ward Kyoto"},
+    {n:"Iso Stand", c:"food", x:"מסעדה סופר מומלצת! להזמין מקום מראש · איזקאיה",
+      q:"Iso Stand 四方食店 Ubayanagicho Nakagyo Ward Kyoto"},
+    {n:"Bingo", c:"food", x:"איזקאיה מומלצת עם אווירה מקומית ממש מגניבה — להזמין מקום ולא לבנות על האוכל",
+      q:"酒呑気 びんご Nishinishikikojicho Nakagyo Ward Kyoto"},
+    {n:"Kyoto Wamen Yukichi Honpo", c:"food", x:"ראמן מומלץ שיש בו מנה אחת עם סטייק — יובל רוזן"},
+    {n:"גיוזה · Uradeyamacho", c:"food", x:"גיוזה ממש טעימה — יובל רוזן · בבניין ＫＡＹＺ",
+      q:"604-8155 Kyoto Nakagyo Ward Uradeyamacho 314-1"},
+    {n:"Monk", c:"food", x:"מסעדה שווה ודי יקרה שמומלצת", q:"Monk restaurant Kyoto"},
+    {n:"Yamamoto Menzou", c:"food", x:"מסעדת אודון טובה — להזמין מקום מראש אם יכולים!"},
+    {n:"Sonoba", c:"food", x:"מסעדה מומלצת שמגישה אטריות סובה", q:"Sonoba soba Kyoto"},
+    {n:"Tonkatsu Shimizu", c:"food", x:"מקום שווה", q:"Tonkatsu Shimizu Kyoto"},
+    {n:"Mihana", c:"food", x:"מסעדת יאקיטורי שמגישה בעיקר עוף — מומלץ",
+      q:"Mihana 14 Kamanzacho Nakagyo Ward Kyoto"},
+    {n:"L'Escamoteur", c:"bar", x:"בר קוקטיילים שווה מומלץ",
+      q:"L'Escamoteur Bar 138-9 Saitocho Shimogyo Ward Kyoto"},
+    {n:"Cavalier", c:"bar", x:"בר קוקטיילים מומלץ",
+      q:"Cavalier bar 188-3 Zaimokucho Nakagyo Ward Kyoto"},
+    {n:"Cafe/Bar OIL", c:"bar", x:"בר קוקטיילים ממש שווה",
+      q:"Cafe Bar OIL 532-20 Kamiosakacho Nakagyo Ward Kyoto"},
+    {n:"RECORD BAR YAMADA", c:"bar", x:"בר קוקטיילים שמנגנים בו תקליטים — מקום של מקומיים יחסית",
+      q:"RECORD BAR YAMADA Kyoto"},
+    {n:"SUMI WINE COFFEE", c:"bar", x:"בית קפה ובר יין ממש שווה ומקומי", q:"SUMI WINE COFFEE Kyoto"},
+    {n:"WEEKENDERS COFFEE ROASTERY", c:"cafe", x:"בית קפה ממש טוב"},
+    {n:"Sanwa Coffee Works Kyoto", c:"cafe", x:"קפה מומלץ"},
+    {n:"uru coffee", c:"cafe", x:"קפה טוב ומומלץ", q:"uru coffee Higashigawacho Nakagyo Ward Kyoto"},
+    {n:"% ARABICA Kyoto Arashiyama", c:"cafe", x:"קפה טוב, נוף יפה"},
+    {n:"eXcafe Kyoto Arashiyama", c:"cafe", x:"בית קפה מומלץ"},
+    {n:"HARIO CAFE Kyoto Store", c:"cafe", x:"קפה מומלץ"},
+    {n:"Le Labo Cafe Kyoto Machiya", c:"cafe", x:"קפה שקשור לחנות בשנים"},
+    {n:"2050 coffee 新京極店", c:"cafe", x:"קפה ממש מומלץ", q:"2050 coffee Shinkyogoku Kyoto"},
+    {n:"itoyufu", c:"cafe", x:"בית קפה יפה שיש בו פרטי אומנות", q:"itoyufu Kyoto"},
+    {n:"Kotoro Coffee", c:"cafe", x:"בית קפה חמוד ומרגיע בגן יפה — יש תור לפעמים", q:"Kotoro Coffee Kyoto"},
+    {n:"Cafe Kawataro", c:"cafe", x:"קפה מומלץ", q:"Cafe Kawataro 505 Washiocho Higashiyama Ward Kyoto"},
+    {n:"GOKAGO", c:"cafe", x:"קפה מומלץ", q:"GOKAGO 2 Chome-258 Kiyomizu Higashiyama Ward Kyoto"},
+    {n:"Amam Dacotan Kyoto", c:"cafe", x:"מאפייה וקפה שנראה שווה"},
+    {n:"Flip up!", c:"cafe", x:"מאפייה ממש שווה", q:"Flip up! bakery Kyoto"},
+    {n:"Lion Bakery", c:"cafe", x:"מאפייה שווה וזולה ששווה לבקר בה",
+      q:"Lion Bakery Nishinokyo Kyoshokushicho Nakagyo Ward Kyoto"},
+    {n:"Shintou 真刀", c:"shop", x:"חנות סכינים יפנית מומלצת!!!",
+      q:"Shintou 真刀 knife store Rokurocho Higashiyama Ward Kyoto"},
+    {n:"KYO AMAHARE", c:"shop", x:"חנות קרמיקה יפה"},
+    {n:"Kamiji Kakimoto", c:"shop", x:"חנות לקנות בה מוצרי נייר טובים"},
+    {n:"Saiun-do", c:"shop", x:"חנות מוצרי אומנות ממש שווה",
+      q:"Saiun-do 552 Anedaitocho Nakagyo Ward Kyoto"},
+    {n:"creative studio & shop ooo", c:"shop", x:"חנות איור ועיצוב חמודה",
+      q:"creative studio shop ooo 53-1 Shioyacho Nakagyo Ward Kyoto"},
+    {n:"Face House", c:"shop", x:"חנות חמודה של מוצרי אומנות — המלצה של עדן קולר", q:"Face House Kyoto"},
+    {n:"SOWGEN", c:"shop", x:"חנות עתיקות שווה", q:"SOWGEN 573 Takamiyacho Nakagyo Ward Kyoto"},
+    {n:"Cross Hotel Kyoto", c:"stay", x:"מלון מומלץ ומרכזי — שמור למקרה שנצטרך"}
+  ]}
+};
+/* אילו יעדים במסלול מקבלים אילו מקומות */
+const SEG_PLACES = {
+  "טוקיו":"tokyo", "טוקיו — סיום":"tokyo", "האקונה":"hakone",
+  "טאקאיאמה":"takayama", "קנזאווה":"kanazawa", "קיוטו + נארה":"kyoto",
+  "אוסקה":"osaka"
+};
+function savedPlacesHTML(city){
+  const key = SEG_PLACES[city]; if(!key) return "";
+  const grp = SAVED_PLACES[key];  if(!grp || !grp.list.length) return "";
+  const cats = SP_CATS.map(([id, em, label])=>{
+    const items = grp.list.filter(p=>p.c===id);
+    if(!items.length) return "";
+    return `<div class="sp-cat">
+      <div class="sp-ct"><span>${em}</span><span>${label}</span><span class="sp-cn">${items.length}</span></div>
+      <div class="sp-list">${items.map(p=>`
+        <a class="sp-item" target="_blank" rel="noopener" href="${gmap(p.q || (p.n+' '+grp.area))}">
+          <span class="sp-em">${em}</span>
+          <span class="sp-tx"><b>${p.n}</b>${p.x?`<span>${p.x}</span>`:''}</span>
+          <span class="sp-go">↗</span>
+        </a>`).join("")}</div>
+    </div>`;
+  }).join("");
+  return `<details class="sp">
+    <summary><span class="sp-ic">📍</span><span>המקומות ששמרנו במפה</span>
+      <span class="sp-n">${grp.list.length}</span><span class="sp-chev">▾</span></summary>
+    <div class="sp-body">${cats}</div>
+  </details>`;
+}
+
 function segHTML(s, idx, cityColored, isOurs){
   const dayTix = isOurs ? (TIX.days||{}) : {};
   const cc = cityColored ? CITY_COLOR[s.city] : null;
@@ -1335,6 +1539,7 @@ function segHTML(s, idx, cityColored, isOurs){
       ${s.warn?`<div class="warn-box"><span class="wb-ic">לתשומת לב</span><span>${s.warn}</span></div>`:''}
       ${chooseBox}${bookLine}
       <div class="tl">${days}</div>
+      ${isOurs?savedPlacesHTML(s.city):''}
       ${s.note?`<div class="note-inline">${s.note}</div>`:''}
       ${s.transfer?`<div class="transfer"><span class="tr-ic">מעבר</span><div><b>${s.transfer.t}</b> <span>· ${s.transfer.x}</span></div></div>`:''}
     </div>
