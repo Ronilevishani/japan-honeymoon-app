@@ -1538,8 +1538,8 @@ function segHTML(s, idx, cityColored, isOurs){
       ${s.car?carBoxHTML(s.car, s.carSide):''}
       ${s.warn?`<div class="warn-box"><span class="wb-ic">לתשומת לב</span><span>${s.warn}</span></div>`:''}
       ${chooseBox}${bookLine}
-      <div class="tl">${days}</div>
       ${isOurs?savedPlacesHTML(s.city):''}
+      <div class="tl">${days}</div>
       ${s.note?`<div class="note-inline">${s.note}</div>`:''}
       ${s.transfer?`<div class="transfer"><span class="tr-ic">מעבר</span><div><b>${s.transfer.t}</b> <span>· ${s.transfer.x}</span></div></div>`:''}
     </div>
