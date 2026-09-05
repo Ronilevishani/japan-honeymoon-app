@@ -780,30 +780,41 @@ const LS_PW="japanTrip_pw";   /* נשמר רק כדי להתחבר מחדש לע
 
 /* מתחבר לענן עם הסיסמה. נכשל בשקט אם אין רשת — האפליקציה תעבוד מקומית. */
 async function tryCloud(password){
-  if(!(await cloudInit())) return;
-  try{ if(await cloudSignIn(password)) await cloudStart(); }
-  catch{ syncBadge("err","נשמר מקומית — אין חיבור"); }
+  const configured = !!(SUPA.url && SUPA.key);
+  if(!configured) return;
+  if(!(await cloudInit())){ syncBadge("err","נשמר מקומית"); return; }
+  try{
+    if(await cloudSignIn(password)) await cloudStart();
+    else syncBadge("err","נשמר מקומית — התחברות נכשלה");
+  }catch{ syncBadge("err","נשמר מקומית — אין חיבור"); }
 }
 
 (function initLock(){
   const remembered = localStorage.getItem(LOCK_KEY)==="1" || sessionStorage.getItem(LOCK_KEY)==="1";
-  if(remembered){
-    unlock();
-    const pw=localStorage.getItem(LS_PW)||sessionStorage.getItem(LS_PW);
-    if(pw) tryCloud(pw);
-    return;
-  }
+  const pw = localStorage.getItem(LS_PW)||sessionStorage.getItem(LS_PW);
+
+  /* נכנסנו כבר בעבר וגם הסיסמה שמורה — ישר פנימה, והענן מתחבר ברקע */
+  if(remembered && pw){ unlock(); tryCloud(pw); return; }
+
   const form=document.getElementById("lockForm"), pass=document.getElementById("lockPass"), err=document.getElementById("lockErr");
+
+  /* מי שהיה מחובר עוד לפני שהסנכרון נוסף — צריך להקליד את הסיסמה פעם אחת
+     כדי שנוכל להתחבר לענן. בלי זה הנתונים היו נשארים רק על המכשיר הזה. */
+  if(remembered && !pw){
+    const note=document.querySelector(".lk-sub");
+    if(note) note.innerHTML="הוספנו סנכרון בין המכשירים 🎉<br>הזינו את הסיסמה פעם אחת כדי להפעיל אותו.";
+  }
+
   setTimeout(()=>pass.focus(),100);
   form.addEventListener("submit", async e=>{
     e.preventDefault();
-    const pw=pass.value.trim();
-    const h=await sha256(pw);
+    const typed=pass.value.trim();
+    const h=await sha256(typed);
     if(h===PASS_HASH){
       const store = document.getElementById("lockRemember").checked ? localStorage : sessionStorage;
-      store.setItem(LOCK_KEY,"1"); store.setItem(LS_PW,pw);
+      store.setItem(LOCK_KEY,"1"); store.setItem(LS_PW,typed);
       unlock();
-      tryCloud(pw);
+      tryCloud(typed);
     } else {
       err.textContent="סיסמה שגויה, נסו שוב";
       pass.value=""; pass.focus();
