@@ -148,6 +148,13 @@
   .mt-dates{color:var(--muted);direction:ltr;text-align:right;font-size:12.5px;}
   .mt-n{justify-self:start;background:var(--accent-light);color:var(--accent);font-weight:700;border:1px solid var(--accent);border-radius:8px;padding:1px 9px;font-size:12px;white-space:nowrap;}
   .mt-hotel{color:var(--muted);}
+  .mt-price{color:var(--ink);font-weight:800;white-space:nowrap;direction:ltr;display:inline-block;}
+  .mt-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:13px 16px;
+        background:var(--surface-2);border-top:2px solid var(--line);font-size:13.5px;font-weight:700;}
+  .mt-sum b{font-size:16px;direction:ltr;margin-inline-start:auto;}
+  .mt-sum-note{flex-basis:100%;font-size:11.5px;font-weight:600;color:var(--muted);}
+  .hb-price{font-size:13.5px;font-weight:800;direction:ltr;background:var(--surface);
+        border:1px solid var(--line);border-radius:999px;padding:4px 11px;flex:0 0 auto;}
 
   /* segment cards */
   details.seg{background:var(--surface);border:1px solid var(--accent-light);border-radius:var(--radius);
@@ -903,7 +910,7 @@ const OPTIONS = [
     summary:"המסלול שסגרנו — בלי מצומוטו: 5 לילות בקיוטו+נארה, קיושו על פני 3 בסיסים (אסו, קורוקאווה, בפו), וסיום של 4 לילות בטוקיו.",
     segments:[
       {
-        city:"טוקיו", region:"Shibuya Jingumae Tokyo Japan", dates:"9.9–12.9", nights:3,
+        city:"טוקיו", region:"Shibuya Jingumae Tokyo Japan", dates:"9.9–12.9", nights:3, price:1661,
         hotel:"Dormy Inn Premium Shibuya-jingumae", hotelNote:"שיבויה / ג׳ינגומאה", booking:true, cancel:"4.9",
         hotelQuery:"Dormy Inn Premium Shibuya Jingumae",
         access:"כ-10 דק׳ הליכה מתחנת שיבויה, קרוב יותר לתחנת Meiji-Jingumae (מטרו טוקיו / פוקוטושין).",
@@ -933,14 +940,14 @@ const OPTIONS = [
         transfer:{t:"טוקיו ← האקונה", x:"רכבת Romancecar משינג׳וקו · ~1:25 + 30–50 דק׳ לגורה"}
       },
       {
-        city:"האקונה", region:"Hakone Gora Japan", dates:"12.9–14.9", nights:2,
+        city:"האקונה", region:"Hakone Gora Japan", dates:"12.9–14.9", nights:2, price:2657,
         hotel:"Hotel Indigo Hakone Gora", hotelNote:"אונסן בגורה — זה מה שבחרנו", booking:true, cancel:"13.8", hotelQuery:"Hotel Indigo Hakone Gora",
         access:"כ-5 דק׳ הליכה מתחנת גורה — התחנה האחרונה ברכבל האקונה טוזאן.",
         highlights:HAKONE_HL, days:HAKONE_DAYS,
         transfer:{t:"האקונה ← טאקאיאמה", x:"רכבת Hida · ~5ש · יום ארוך אך יפה"}
       },
       {
-        city:"טאקאיאמה", region:"Takayama Japan", dates:"14.9–16.9", nights:2,
+        city:"טאקאיאמה", region:"Takayama Japan", dates:"14.9–16.9", nights:2, price:804,
         hotel:"Takayama Green Hotel (Keio Group)", hotelNote:"Hida Takayama Onsen", booking:true, cancel:"9.8", hotelQuery:"Takayama Green Hotel",
         access:"כ-10 דק׳ הליכה מתחנת JR טאקאיאמה, ולמלון גם שאטל חינם מהתחנה.",
         car:CAR_RENTAL, carSide:"pickup",
@@ -952,7 +959,7 @@ const OPTIONS = [
         transfer:{t:"טאקאיאמה ← קנזאווה", x:"ברכב השכור · ~2–2.5ש עם עצירה בשירקאווה-גו"}
       },
       {
-        city:"קנזאווה", region:"Kanazawa Japan", dates:"16.9–18.9", nights:2,
+        city:"קנזאווה", region:"Kanazawa Japan", dates:"16.9–18.9", nights:2, price:710,
         hotel:"SOKI Kanazawa", hotelNote:"ליד תחנת קנזאווה", booking:true, cancel:"14.9", hotelQuery:"SOKI Kanazawa",
         access:"צמוד לתחנת קנזאווה (יציאה מזרחית) — כמה דקות הליכה בלבד.",
         car:CAR_RENTAL, carSide:"dropoff",
@@ -965,9 +972,10 @@ const OPTIONS = [
         transfer:{t:"קנזאווה ← קיוטו", x:"החזרת רכב 11:00 · רכבת Thunderbird · ~2:15"}
       },
       {
-        city:"קיוטו + נארה", region:"Kyoto Japan", dates:"18.9–23.9", nights:5,
+        city:"קיוטו + נארה", region:"Kyoto Japan", dates:"18.9–23.9", nights:5, price:2110,
         hotel:"KABIN Kyoto", hotelNote:"נארה כטיול יום", booking:true, cancel:"14.9",
         access:"כ-10 דק׳ הליכה מתחנת קיוטו (יציאה דרומית) או מתחנת המטרו Kyoto/Shichijo.",
+        warn:"<b>כפילות פתוחה בקיוטו.</b> מלבד ההזמנה כאן ב-KABIN Kyoto (₪2,110) קיימת גם הזמנה ל-<b>Hotel M's Est Shijo Karasuma</b> (₪1,713) שחופפת לאותה שהות. צריך להחליט באיזו מהן נשארים ולבטל את השנייה בזמן.",
         highlights:["Kiyomizu-dera","Fushimi Inari","יער הבמבוק","Kinkaku-ji","Gion","Philosopher's Path","שוק Nishiki","Tōdai-ji (נארה)","teamLab Kyoto","Studio Shinobi YASE (סכינים)"],
         days:[
           {d:"18.9", t:"מזרח קיוטו (Higashiyama)", x:"Kiyomizu-dera מוקדם, Sannenzaka/Ninenzaka, פגודת Yasaka, Yasaka Shrine, Kōdai-ji, ו-Gion בערב."},
@@ -980,7 +988,7 @@ const OPTIONS = [
         transfer:{t:"קיוטו ← אוסקה", x:"רכבת Special Rapid · ~15–30 דק׳"}
       },
       {
-        city:"אוסקה", region:"Osaka Namba Japan", dates:"23.9–24.9", nights:1,
+        city:"אוסקה", region:"Osaka Namba Japan", dates:"23.9–24.9", nights:1, price:182,
         hotel:"Red Roof Inn & Suites Osaka Namba Nipponbashi", hotelNote:"נמבה — נוח לאיטמי", booking:true, cancel:"22.9",
         bookingUrl:"https://www.booking.com/hotel/jp/retudoruhuin-suituri-ben-qiao.he.html", hotelQuery:"Red Roof Inn Suites Osaka Namba Nipponbashi",
         access:"כ-5 דק׳ הליכה מתחנות Namba / Nippombashi (מטרו/סאבווי אוסקה).",
@@ -989,7 +997,7 @@ const OPTIONS = [
         transfer:{t:"אוסקה ← קיושו", x:"טיסה ~1:15 · רישיון בינלאומי נדרש ✈️"}
       },
       {
-        city:"קיושו — אסו", region:"Aso Kumamoto Japan", dates:"24.9–26.9", nights:2,
+        city:"קיושו — אסו", region:"Aso Kumamoto Japan", dates:"24.9–26.9", nights:2, price:683,
         hotel:"Fairfield by Marriott Kumamoto Aso", hotelNote:"בסיס לטיולי אסו וטאקאצ׳יהו", booking:true,
         bookingUrl:"https://www.booking.com/hotel/jp/fairfield-by-marriott-kumamoto-aso.he.html", hotelQuery:"Fairfield by Marriott Kumamoto Aso",
         access:"כ-1 שעה נסיעה ברכב השכור משדה התעופה קומאמוטו. תחבורה ציבורית מוגבלת מאוד באזור.",
@@ -1002,11 +1010,10 @@ const OPTIONS = [
         transfer:{t:"אסו ← קורוקאווה", x:"נסיעה ~40 דק׳ דרך מפל Nabegataki"}
       },
       {
-        city:"קיושו — קורוקאווה", region:"Kurokawa Onsen Kumamoto Japan", dates:"26.9–28.9", nights:2,
+        city:"קיושו — קורוקאווה", region:"Kurokawa Onsen Kumamoto Japan", dates:"26.9–28.9", nights:2, price:2982,
         hotel:"Ryokan Wakaba", hotelNote:"כפר אונסן קורוקאווה", booking:true, cancel:"21.9",
         bookingUrl:"https://www.booking.com/hotel/jp/ryokan-wakaba.he.html", hotelQuery:"Ryokan Wakaba Kurokawa Onsen",
         access:"נגיש רק ברכב — כ-40 דק׳ נסיעה מאסו. חניה בריוקאן, ובתוך הכפר הולכים ברגל.",
-        warn:"יש לנו גם הזמנה נפרדת ב-<a href=\"https://www.booking.com/hotel/jp/kurokawa-so.he.html\" target=\"_blank\" rel=\"noopener\">Kurokawa-So</a> (ריוקאן אחר בקורוקאווה) לתאריכים 27–29.9, ביטול חינם עד 18.9, צ׳ק-אין בשעה 15:00 — כנראה כפילות מול ההזמנה כאן ב-Ryokan Wakaba. צריך לבדוק מול ההזמנות ולבטל את המיותרת בזמן.",
         highlights:["Kurokawa Onsen","כרטיס דילוג אונסנים (Tegata)","מפל Nabegataki"],
         days:[
           {d:"26.9", t:"מעבר לקורוקאווה", x:"נסיעה קצרה מאסו דרך מפל Nabegataki. צ׳ק-אין בריוקאן Wakaba, אונסן וערב רגוע."},
@@ -1015,7 +1022,7 @@ const OPTIONS = [
         transfer:{t:"קורוקאווה ← בפו", x:"נסיעה ~1 שעה"}
       },
       {
-        city:"קיושו — בפו", region:"Beppu Oita Japan", dates:"28.9–29.9", nights:1,
+        city:"קיושו — בפו", region:"Beppu Oita Japan", dates:"28.9–29.9", nights:1, price:932,
         hotel:"SEKIYA RESORT Galleria Midobaru", hotelNote:"אזור מיובאן (Myoban) בבפו", booking:true, cancel:"23.9",
         bookingUrl:"https://www.booking.com/hotel/jp/galleria-midobaru.he.html", hotelQuery:"SEKIYA RESORT Galleria Midobaru Beppu",
         access:"ברכב מקורוקאווה כ-1 שעה. יש גם אוטובוס מתחנת בפו לאזור מיובאן, אך רכב נוח יותר.",
@@ -1028,7 +1035,7 @@ const OPTIONS = [
         transfer:{t:"קיושו ← טוקיו", x:"החזרת רכב בשדה אויטה 11:30 · טיסה ~1:40 ✈️"}
       },
       {
-        city:"טוקיו — סיום", region:"Shibuya Jingumae Tokyo Japan", dates:"29.9–3.10", nights:4,
+        city:"טוקיו — סיום", region:"Shibuya Jingumae Tokyo Japan", dates:"29.9–3.10", nights:4, price:2911,
         hotel:"Dormy Inn Premium Shibuya-jingumae", hotelNote:"שיבויה / ג׳ינגומאה", booking:true, cancel:"27.9", hotelQuery:"Dormy Inn Premium Shibuya Jingumae",
         access:"כ-10 דק׳ הליכה מתחנת שיבויה, קרוב יותר לתחנת Meiji-Jingumae (מטרו טוקיו / פוקוטושין).",
         highlights:["teamLab","שוק Tsukiji","גני Hamarikyu","Shibuya","Tokyo Tower"],
@@ -1315,6 +1322,7 @@ function segHTML(s, idx, cityColored, isOurs){
       <div class="hotel-box">
         <span class="hb-ic">לינה</span>
         <div class="hb-txt"><b>${s.hotel}</b><span>${s.hotelNote}</span></div>
+        ${s.price?`<span class="hb-price">₪${s.price.toLocaleString("en-US")}</span>`:''}
         ${hotelLinks}
       </div>
       ${s.access?`<div class="access-line"><span class="ac-ic">הגעה</span><span>${s.access}</span></div>`:''}
@@ -1336,6 +1344,7 @@ function renderOption(opt){
     <p>${opt.summary}</p>
   </div>`;
   const cityColored = opt.id==="opt3";
+  const sumPrice = opt.segments.reduce((a,s)=>a+(s.price||0),0);
   const table = `<div class="mtable">
     <div class="mt-row head"><span>יעד</span><span>תאריכים</span><span>לילות</span><span>לינה</span></div>
     ${opt.segments.map(s=>{
@@ -1345,9 +1354,13 @@ function renderOption(opt){
       <span class="mt-city">${s.city}</span>
       <span class="mt-dates">${s.dates}</span>
       <span class="mt-n"${nStyle}>${s.nights} ל׳</span>
-      <span class="mt-hotel">${s.hotel}</span>
+      <span class="mt-hotel">${s.hotel}${s.price?` <b class="mt-price">₪${s.price.toLocaleString("en-US")}</b>`:''}</span>
     </div>`;
     }).join("")}
+    ${sumPrice?`<div class="mt-sum">
+      <span>סה״כ לינה · ${opt.segments.length} הזמנות</span><b>₪${sumPrice.toLocaleString("en-US")}</b>
+      <span class="mt-sum-note">+ ₪1,713 על ההזמנה הכפולה בקיוטו (M's Est) — אם לא תבוטל, סה״כ ₪${(sumPrice+1713).toLocaleString("en-US")}</span>
+    </div>`:''}
   </div>`;
   const segs = opt.segments.map((s,i)=>segHTML(s,i,cityColored,cityColored)).join("");
   document.getElementById("pane-"+opt.id).innerHTML =
