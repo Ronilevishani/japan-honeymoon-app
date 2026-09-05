@@ -371,10 +371,14 @@
   .sp-mine{display:block;font-size:10.5px;font-weight:800;letter-spacing:.3px;color:var(--accent);
         margin-top:4px;opacity:.85;}
 
-  /* טופס הוספת מקום */
-  .sp-add{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);}
+  .sp-empty{font-size:12.5px;color:var(--muted);padding:14px 2px 4px;}
+
+  /* טופס הוספת מקום — יושב מעל הרשימה, מחוץ לבלוק המתקפל */
+  .sp-add{margin-top:14px;}
+  .sp-add:has(.spf:not([hidden])){background:var(--surface);border:1.5px solid var(--accent);
+        border-radius:14px;padding:14px;}
   .sp-add-btn{appearance:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:800;
-        width:100%;padding:11px 14px;border-radius:11px;color:var(--accent);
+        width:100%;padding:11px 14px;border-radius:14px;color:var(--accent);
         background:var(--surface-2);border:1.5px dashed var(--accent);transition:.16s;}
   .sp-add-btn:hover{background:var(--accent);color:#fff;border-style:solid;}
   .spf{display:grid;gap:9px;}
@@ -398,10 +402,21 @@
   .spf-cancel{background:var(--surface);color:var(--muted);border:1.5px solid var(--line);}
   .spf-cancel:hover{border-color:var(--ink);color:var(--ink);}
 
+  /* הוספת מקום מהבר הראשי */
+  .spa-lbl{font-size:11.5px;font-weight:800;letter-spacing:.4px;color:var(--muted);margin:6px 2px -2px;}
+  .spa-key span{font-weight:800;}
+  .spa-err{background:#fdecec;border:1px solid #e7b6b6;color:#a12a2a;border-radius:10px;
+        padding:9px 12px;font-size:12.5px;font-weight:700;}
+  .spa-done{display:grid;gap:8px;}
+  .spa-done:not(:empty){margin-top:14px;}
+  .spa-ok{background:#eaf6ee;border:1px solid #b8ddc4;color:#1b6b3a;border-radius:11px;
+        padding:10px 13px;font-size:12.5px;line-height:1.6;}
+  .spa-ok a{color:#1b6b3a;font-weight:800;margin-inline-start:8px;white-space:nowrap;}
+
   /* ---------- Search across the saved places ---------- */
-  .psx-open{flex:0 0 auto;font-size:16px;padding:9px 14px !important;
-        position:sticky;inset-inline-start:0;z-index:3;box-shadow:6px 0 10px -8px rgba(0,0,0,.35);}
-  [dir="rtl"] .psx-open{box-shadow:-6px 0 10px -8px rgba(0,0,0,.35);}
+  .psx-open{flex:0 0 auto;font-size:16px;padding:9px 14px !important;}
+  .nav-actions{position:sticky;inset-inline-start:0;z-index:3;display:flex;gap:6px;flex:0 0 auto;
+        background:rgba(255,255,255,.92);box-shadow:-8px 0 10px -8px rgba(0,0,0,.35);}
   .psx-open.on{color:#fff;background:var(--ink);border-color:var(--ink);}
   .psx-ov{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;}
   .psx-ov[hidden]{display:none !important;}
@@ -629,7 +644,10 @@
 
 <nav class="tabs">
   <div class="tabs-inner">
-    <button id="psx-open" class="psx-open" title="חיפוש במקומות ששמרנו" aria-label="חיפוש">🔎</button>
+    <span class="nav-actions">
+      <button id="psx-open" class="psx-open" title="חיפוש במקומות ששמרנו" aria-label="חיפוש">🔎</button>
+      <button id="spa-open" class="psx-open" title="הוספת מקום חדש" aria-label="הוספת מקום">➕</button>
+    </span>
     <button data-tab="overview" class="active">סקירה</button>
     <button data-tab="opt3">המסלול שלנו</button>
     <button data-tab="budget">תקציב</button>
@@ -637,6 +655,11 @@
     <span class="sync-badge" id="syncStatus"></span>
   </div>
 </nav>
+
+<div id="spa-ov" class="psx-ov" hidden>
+  <div class="psx-ov-back" data-close="1"></div>
+  <div class="psx-ov-panel" role="dialog" aria-label="הוספת מקום חדש"></div>
+</div>
 
 <div id="psx-ov" class="psx-ov" hidden>
   <div class="psx-ov-back" data-close="1"></div>
@@ -1584,8 +1607,9 @@ function spBodyHTML(key){
       <div class="sp-list">${items.map(p=>spItemHTML(p, em, area)).join("")}</div>
     </div>`;
   }).join("");
-  return cats + spAddHTML(key);
+  return cats || `<div class="sp-empty">עוד לא שמרנו כאן מקומות.</div>`;
 }
+/* יושב מחוץ לבלוק המתקפל, כדי שיהיה נגיש גם כשהרשימה פתוחה וארוכה */
 function spAddHTML(key){
   const he = SP_CITY_META[key] ? SP_CITY_META[key].he : "";
   return `<div class="sp-add">
@@ -1607,7 +1631,8 @@ function spAddHTML(key){
 }
 function savedPlacesHTML(city){
   const key = SEG_PLACES[city]; if(!key) return "";
-  return `<details class="sp" data-key="${key}">
+  return spAddHTML(key)
+    + `<details class="sp" data-key="${key}">
     <summary><span class="sp-ic">📍</span><span>המקומות ששמרנו במפה</span>
       <span class="sp-n">${spAll(key).length}</span><span class="sp-chev">▾</span></summary>
     <div class="sp-body">${spBodyHTML(key)}</div>
@@ -1648,7 +1673,9 @@ document.addEventListener("click", e=>{
   }
 });
 document.addEventListener("submit", e=>{
-  const f=e.target.closest(".spf"); if(!f) return;
+  const f=e.target.closest(".spf");
+  /* הטופס הגלובלי מהבר הראשי מטופל ב-wireAddPlace — לא כאן */
+  if(!f || f.classList.contains("spa-form") || !f.dataset.key) return;
   e.preventDefault();
   const key=f.dataset.key;
   const n=f.querySelector(".spf-n").value.trim(); if(!n) return;
@@ -1659,6 +1686,14 @@ document.addEventListener("submit", e=>{
   STATE.places=[...(STATE.places||[]), {id:"p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
                                         key, n, c, x, url, at}];
   persist();
+  /* הטופס חי מחוץ לבלוק ולכן לא נבנה מחדש — מנקים אותו כאן */
+  f.reset(); f.hidden=true;
+  const box=f.closest(".sp-add");
+  if(box){
+    const btn=box.querySelector(".sp-add-btn"); if(btn) btn.hidden=false;
+    const det=box.nextElementSibling;                /* פותחים את הרשימה כדי שנראה מה נוסף */
+    if(det && det.classList.contains("sp")) det.open=true;
+  }
 });
 
 /* ===================== SEARCH ACROSS THE SAVED PLACES ===================== */
@@ -1785,6 +1820,70 @@ function searchBoxHTML(){
     <div id="psx-res"></div>
   </div>`;
 }
+/* הוספת מקום מהבר הראשי — כאן בוחרים גם לאיזה יעד המקום משתייך */
+function addBoxHTML(){
+  return `<div class="psx">
+    <div class="psx-head">
+      <span>הוספת מקום חדש</span>
+      <button class="psx-x" data-close="1" aria-label="סגירה">✕</button>
+    </div>
+    <form class="spf spa-form">
+      <div class="spa-lbl">לאיזה יעד?</div>
+      <div class="spf-cats spa-keys">${Object.keys(SP_CITY_META).map(k=>
+        `<label class="spf-cat spa-key"><input type="radio" name="spa-key" value="${k}">
+           <span>${SP_CITY_META[k].he}</span></label>`).join("")}</div>
+      <div class="spa-lbl">מה זה?</div>
+      <input class="spf-n" placeholder="שם המקום" required maxlength="120" autocomplete="off">
+      <div class="spf-cats">${SP_CATS.map(([id,em])=>
+        `<label class="spf-cat"><input type="radio" name="spa-cat" value="${id}"${id==="food"?" checked":""}>
+           <span>${em} ${SP_CAT_CHIP[id]}</span></label>`).join("")}</div>
+      <input class="spf-x" placeholder="הערה — למה שווה ללכת לשם (לא חובה)" maxlength="220" autocomplete="off">
+      <input class="spf-u" placeholder="קישור לגוגל מאפס (לא חובה — אחרת נחפש לפי השם)"
+             inputmode="url" autocomplete="off">
+      <div class="spa-err" hidden></div>
+      <div class="spf-row"><button type="submit" class="spf-save">שמירה</button>
+        <button type="button" class="spf-cancel" data-close="1">סגירה</button></div>
+    </form>
+    <div class="spa-done"></div>
+  </div>`;
+}
+function wireAddPlace(){
+  const ov=document.getElementById("spa-ov"), panel=ov.querySelector(".psx-ov-panel"),
+        openBtn=document.getElementById("spa-open");
+  panel.innerHTML = addBoxHTML();
+  const f=panel.querySelector(".spa-form"), err=panel.querySelector(".spa-err"),
+        done=panel.querySelector(".spa-done");
+  /* בכוונה לא בוחרים יעד מראש — עדיף לבחור כל פעם מאשר לתייק בטעות ליעד הלא נכון */
+  const open=()=>{ ov.hidden=false; openBtn.classList.add("on"); document.body.style.overflow="hidden";
+    setTimeout(()=>f.querySelector(".spf-n").focus(),30); };
+  const close=()=>{ ov.hidden=true; openBtn.classList.remove("on"); document.body.style.overflow="";
+    err.hidden=true; done.innerHTML=""; };
+  openBtn.addEventListener("click", open);
+  ov.addEventListener("click", e=>{ if(e.target.closest("[data-close]")) close(); });
+  document.addEventListener("keydown", e=>{ if(!ov.hidden && e.key==="Escape") close(); });
+  f.addEventListener("submit", e=>{
+    e.preventDefault();
+    const keyEl=f.querySelector('input[name="spa-key"]:checked');
+    const n=f.querySelector(".spf-n").value.trim();
+    if(!keyEl){ err.hidden=false; err.textContent="צריך לבחור יעד."; return; }
+    if(!n){ err.hidden=false; err.textContent="צריך שם למקום."; return; }
+    err.hidden=true;
+    const key=keyEl.value;
+    const c=(f.querySelector('input[name="spa-cat"]:checked')||{}).value||"food";
+    const x=f.querySelector(".spf-x").value.trim();
+    const url=safeUrl(f.querySelector(".spf-u").value);
+    const at=new Date().toLocaleDateString("he-IL",{day:"numeric",month:"numeric"});
+    const p={id:"p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), key, n, c, x, url, at};
+    STATE.places=[...(STATE.places||[]), p];
+    persist();
+    const area=SAVED_PLACES[key] ? SAVED_PLACES[key].area : "Japan";
+    done.innerHTML=`<div class="spa-ok">✓ <b>${esc(n)}</b> נוסף ל<b>${SP_CITY_META[key].he}</b>
+      <a href="${esc(spHref(p,area))}" target="_blank" rel="noopener">פתיחה במפה ↗</a></div>`+done.innerHTML;
+    f.querySelector(".spf-n").value=""; f.querySelector(".spf-x").value=""; f.querySelector(".spf-u").value="";
+    f.querySelector(".spf-n").focus();     /* נשארים פתוחים כדי להוסיף עוד */
+  });
+}
+
 /* החיפוש חי בשכבה מעל האפליקציה, ולכן זמין מכל עמוד */
 function wireSearch(){
   const ov=document.getElementById("psx-ov"), panel=ov.querySelector(".psx-ov-panel"),
@@ -1924,6 +2023,7 @@ function renderOption(opt){
 }
 OPTIONS.forEach(renderOption);
 wireSearch();
+wireAddPlace();
 
 /* ===================== TABS ===================== */
 const btns = document.querySelectorAll("nav.tabs button[data-tab]");
