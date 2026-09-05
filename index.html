@@ -361,6 +361,43 @@
   .sp-item:hover .sp-go{opacity:1;}
   @media(max-width:520px){ .sp-body{padding:2px 9px 12px;} }
 
+  /* מקומות שהוספנו בעצמנו */
+  .sp-row{display:flex;gap:6px;align-items:stretch;}
+  .sp-row .sp-item{flex:1;min-width:0;}
+  .sp-del{appearance:none;cursor:pointer;font-family:inherit;font-size:14px;flex:0 0 auto;
+        width:38px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);
+        color:var(--muted);transition:.16s;}
+  .sp-del:hover{background:#fdecec;border-color:#e7b6b6;color:#a12a2a;}
+  .sp-mine{display:block;font-size:10.5px;font-weight:800;letter-spacing:.3px;color:var(--accent);
+        margin-top:4px;opacity:.85;}
+
+  /* טופס הוספת מקום */
+  .sp-add{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);}
+  .sp-add-btn{appearance:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:800;
+        width:100%;padding:11px 14px;border-radius:11px;color:var(--accent);
+        background:var(--surface-2);border:1.5px dashed var(--accent);transition:.16s;}
+  .sp-add-btn:hover{background:var(--accent);color:#fff;border-style:solid;}
+  .spf{display:grid;gap:9px;}
+  .spf input[type=text],.spf .spf-n,.spf .spf-x,.spf .spf-u{
+        font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--surface);
+        border:1.5px solid var(--line);border-radius:11px;padding:10px 13px;outline:0;width:100%;}
+  .spf .spf-n:focus,.spf .spf-x:focus,.spf .spf-u:focus{border-color:var(--accent);}
+  .spf .spf-u{direction:ltr;text-align:start;font-size:12.5px;}
+  .spf-cats{display:flex;flex-wrap:wrap;gap:6px;}
+  .spf-cat input{position:absolute;opacity:0;pointer-events:none;}
+  .spf-cat span{display:inline-block;cursor:pointer;font-size:12.5px;font-weight:700;
+        border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;background:var(--surface);
+        transition:.16s;}
+  .spf-cat input:checked + span{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .spf-cat input:focus-visible + span{box-shadow:0 0 0 3px var(--accent-light);}
+  .spf-row{display:flex;gap:8px;}
+  .spf-save,.spf-cancel{appearance:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:800;
+        padding:10px 20px;border-radius:999px;transition:.16s;}
+  .spf-save{background:var(--accent);color:#fff;border:1.5px solid var(--accent);}
+  .spf-save:hover{opacity:.88;}
+  .spf-cancel{background:var(--surface);color:var(--muted);border:1.5px solid var(--line);}
+  .spf-cancel:hover{border-color:var(--ink);color:var(--ink);}
+
   /* ---------- Search across the saved places ---------- */
   .psx-open{flex:0 0 auto;font-size:16px;padding:9px 14px !important;
         position:sticky;inset-inline-start:0;z-index:3;box-shadow:6px 0 10px -8px rgba(0,0,0,.35);}
@@ -730,7 +767,7 @@ let sb = null, cloudOn = false;
 
 /* מצב האפליקציה — מקור אמת אחד לתקציב, ללינקים ולהערות */
 const LS_STATE = "japanTrip_state";
-let STATE = { expenses:[], budget:0, rates:{JPY:0.025,USD:3.7,ILS:1}, links:[], notes:"", fileNames:{}, migrated:false };
+let STATE = { expenses:[], budget:0, rates:{JPY:0.025,USD:3.7,ILS:1}, links:[], notes:"", fileNames:{}, places:[], migrated:false };
 
 const loadLocal = ()=>{ try{ const s=JSON.parse(localStorage.getItem(LS_STATE)); if(s) STATE={...STATE,...s}; }catch{} };
 const saveLocal = ()=>{ try{ localStorage.setItem(LS_STATE, JSON.stringify(STATE)); }catch{} };
@@ -761,6 +798,7 @@ function renderAll(){
   try{ renderLinks(); }catch{}
   try{ renderNotes(); }catch{}
   try{ renderBudget(); }catch{}
+  try{ renderPlaces(); }catch{}
 }
 
 /* מושך מהענן ומחיל, כולל האזנה לשינויים של בן/בת הזוג */
@@ -1512,28 +1550,116 @@ const SEG_PLACES = {
   "טאקאיאמה":"takayama", "קנזאווה":"kanazawa", "קיוטו + נארה":"kyoto",
   "אוסקה":"osaka"
 };
-function savedPlacesHTML(city){
-  const key = SEG_PLACES[city]; if(!key) return "";
-  const grp = SAVED_PLACES[key];  if(!grp || !grp.list.length) return "";
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c=>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+/* קישור בטוח: רק http/https, אחרת מתעלמים ממה שהודבק */
+function safeUrl(u){
+  try{ const x=new URL(String(u).trim()); return /^https?:$/.test(x.protocol) ? x.href : ""; }
+  catch{ return ""; }
+}
+/* המקומות שאנחנו מוסיפים מתוך האפליקציה — נשמרים ב-STATE ולכן מסתנכרנים בין שנינו */
+const myPlaces = key => (STATE.places||[]).filter(p=>p.key===key);
+const spAll = key => (SAVED_PLACES[key] ? SAVED_PLACES[key].list : []).concat(myPlaces(key));
+const spHref = (p, area) => p.url ? p.url : gmap(p.q || (p.n+' '+area));
+
+function spItemHTML(p, em, area){
+  const a = `<a class="sp-item" target="_blank" rel="noopener" href="${esc(spHref(p,area))}">
+      <span class="sp-em">${em}</span>
+      <span class="sp-tx"><b>${esc(p.n)}</b>${p.x?`<span>${esc(p.x)}</span>`:''}
+        ${p.id?`<span class="sp-mine">נוסף על ידינו${p.at?` · ${esc(p.at)}`:''}</span>`:''}</span>
+      <span class="sp-go">↗</span>
+    </a>`;
+  return p.id
+    ? `<div class="sp-row">${a}<button class="sp-del" data-del="${esc(p.id)}" title="מחיקה" aria-label="מחיקת ${esc(p.n)}">🗑</button></div>`
+    : a;
+}
+function spBodyHTML(key){
+  const area = SAVED_PLACES[key] ? SAVED_PLACES[key].area : "Japan";
+  const all = spAll(key);
   const cats = SP_CATS.map(([id, em, label])=>{
-    const items = grp.list.filter(p=>p.c===id);
+    const items = all.filter(p=>p.c===id);
     if(!items.length) return "";
     return `<div class="sp-cat">
       <div class="sp-ct"><span>${em}</span><span>${label}</span><span class="sp-cn">${items.length}</span></div>
-      <div class="sp-list">${items.map(p=>`
-        <a class="sp-item" target="_blank" rel="noopener" href="${gmap(p.q || (p.n+' '+grp.area))}">
-          <span class="sp-em">${em}</span>
-          <span class="sp-tx"><b>${p.n}</b>${p.x?`<span>${p.x}</span>`:''}</span>
-          <span class="sp-go">↗</span>
-        </a>`).join("")}</div>
+      <div class="sp-list">${items.map(p=>spItemHTML(p, em, area)).join("")}</div>
     </div>`;
   }).join("");
-  return `<details class="sp">
+  return cats + spAddHTML(key);
+}
+function spAddHTML(key){
+  const he = SP_CITY_META[key] ? SP_CITY_META[key].he : "";
+  return `<div class="sp-add">
+    <button type="button" class="sp-add-btn" data-add="${key}">➕ הוספת מקום ל${he}</button>
+    <form class="spf" data-key="${key}" hidden>
+      <input class="spf-n" name="n" placeholder="שם המקום" required maxlength="120" autocomplete="off">
+      <div class="spf-cats">${SP_CATS.map(([id,em])=>
+        `<label class="spf-cat"><input type="radio" name="c-${key}" value="${id}"${id==="food"?" checked":""}>
+           <span>${em} ${SP_CAT_CHIP[id]}</span></label>`).join("")}</div>
+      <input class="spf-x" name="x" placeholder="הערה — למה שווה ללכת לשם (לא חובה)" maxlength="220" autocomplete="off">
+      <input class="spf-u" name="u" placeholder="קישור לגוגל מאפס (לא חובה — אחרת נחפש לפי השם)"
+             inputmode="url" autocomplete="off">
+      <div class="spf-row">
+        <button type="submit" class="spf-save">שמירה</button>
+        <button type="button" class="spf-cancel">ביטול</button>
+      </div>
+    </form>
+  </div>`;
+}
+function savedPlacesHTML(city){
+  const key = SEG_PLACES[city]; if(!key) return "";
+  return `<details class="sp" data-key="${key}">
     <summary><span class="sp-ic">📍</span><span>המקומות ששמרנו במפה</span>
-      <span class="sp-n">${grp.list.length}</span><span class="sp-chev">▾</span></summary>
-    <div class="sp-body">${cats}</div>
+      <span class="sp-n">${spAll(key).length}</span><span class="sp-chev">▾</span></summary>
+    <div class="sp-body">${spBodyHTML(key)}</div>
   </details>`;
 }
+/* מרענן את כל הבלוקים בלי לסגור אותם, ומעדכן גם את מנוע החיפוש */
+function renderPlaces(){
+  rebuildSpIndex();
+  document.querySelectorAll(".sp[data-key]").forEach(d=>{
+    const key=d.dataset.key;
+    d.querySelector(".sp-n").textContent = spAll(key).length;
+    d.querySelector(".sp-body").innerHTML = spBodyHTML(key);
+  });
+  const q=document.getElementById("psx-q");
+  if(q && q.value.trim()) q.dispatchEvent(new Event("input"));
+}
+/* הוספה ומחיקה — האזנה אחת לכל הדף */
+document.addEventListener("click", e=>{
+  const add=e.target.closest(".sp-add-btn");
+  if(add){
+    const box=add.parentElement, f=box.querySelector(".spf");
+    f.hidden=!f.hidden; add.hidden=!f.hidden;
+    if(!f.hidden) f.querySelector(".spf-n").focus();
+    return;
+  }
+  const cancel=e.target.closest(".spf-cancel");
+  if(cancel){
+    const box=cancel.closest(".sp-add"); box.querySelector(".spf").hidden=true;
+    box.querySelector(".sp-add-btn").hidden=false; return;
+  }
+  const del=e.target.closest(".sp-del");
+  if(del){
+    const id=del.dataset.del;
+    const p=(STATE.places||[]).find(x=>x.id===id); if(!p) return;
+    if(!confirm(`למחוק את ״${p.n}״?`)) return;
+    STATE.places=(STATE.places||[]).filter(x=>x.id!==id);
+    persist();
+  }
+});
+document.addEventListener("submit", e=>{
+  const f=e.target.closest(".spf"); if(!f) return;
+  e.preventDefault();
+  const key=f.dataset.key;
+  const n=f.querySelector(".spf-n").value.trim(); if(!n) return;
+  const c=(f.querySelector(`input[name="c-${key}"]:checked`)||{}).value || "food";
+  const x=f.querySelector(".spf-x").value.trim();
+  const url=safeUrl(f.querySelector(".spf-u").value);
+  const at=new Date().toLocaleDateString("he-IL",{day:"numeric",month:"numeric"});
+  STATE.places=[...(STATE.places||[]), {id:"p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+                                        key, n, c, x, url, at}];
+  persist();
+});
 
 /* ===================== SEARCH ACROSS THE SAVED PLACES ===================== */
 const SP_CITY_META = {   /* לפי סדר המסלול */
@@ -1574,20 +1700,25 @@ const SP_CAT_LABEL = Object.fromEntries(SP_CATS.map(([id,em,label])=>[id,label])
 const SP_CAT_EMOJI = Object.fromEntries(SP_CATS.map(([id,em])=>[id,em]));
 const SP_CAT_CHIP  = {food:"אוכל",cafe:"קפה",bar:"בר",sight:"אטרקציה",temple:"מקדש",culture:"מוזיאון",shop:"חנות",stay:"מלון"};
 
-const SP_INDEX = [];
-Object.keys(SP_CITY_META).forEach(key=>{
-  const g = SAVED_PLACES[key]; if(!g) return;
-  g.list.forEach(p=>SP_INDEX.push(Object.assign({}, p, {key, area:g.area})));
-});
 const spNorm = s => (s||"").toLowerCase().replace(/['"׳״`]/g,"").replace(/[־–—]/g," ")
   .replace(/\s+/g," ").trim()
   .replace(/ב(ת|י)ת?י? ?קפה/g,"קפה")          /* ״בית קפה״ / ״בתי קפה״ ← ״קפה״ */
   .replace(/בת?י ?מלון/g,"מלון");
-SP_INDEX.forEach(p=>{
-  p._hay = spNorm([p.n, p.x, p.q, SP_CAT_LABEL[p.c], SP_CITY_META[p.key].he, p.area].join(" "));
-  p._cat = (SP_SYNONYMS[p.c]||[]).map(spNorm);
-  p._city= (SP_CITY_WORDS[p.key]||[]).map(spNorm);
-});
+const SP_INDEX = [];
+/* נבנה מחדש בכל שינוי, כדי שגם מקומות שהוספנו בעצמנו יימצאו בחיפוש */
+function rebuildSpIndex(){
+  SP_INDEX.length = 0;
+  Object.keys(SP_CITY_META).forEach(key=>{
+    const g = SAVED_PLACES[key]; if(!g) return;
+    spAll(key).forEach(p=>SP_INDEX.push(Object.assign({}, p, {key, area:g.area})));
+  });
+  SP_INDEX.forEach(p=>{
+    p._hay = spNorm([p.n, p.x, p.q, SP_CAT_LABEL[p.c], SP_CITY_META[p.key].he, p.area].join(" "));
+    p._cat = (SP_SYNONYMS[p.c]||[]).map(spNorm);
+    p._city= (SP_CITY_WORDS[p.key]||[]).map(spNorm);
+  });
+}
+rebuildSpIndex();
 /* בעברית מדביקים אותיות שימוש: ״בטוקיו״ ← ״טוקיו״ */
 function spVariants(tok){
   const v=[tok];
