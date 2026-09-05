@@ -151,11 +151,6 @@
   .mt-dates{color:var(--muted);direction:ltr;text-align:right;font-size:12.5px;}
   .mt-n{justify-self:start;background:var(--accent-light);color:var(--accent);font-weight:700;border:1px solid var(--accent);border-radius:8px;padding:1px 9px;font-size:12px;white-space:nowrap;}
   .mt-hotel{color:var(--muted);}
-  .mt-price{color:var(--ink);font-weight:800;white-space:nowrap;direction:ltr;display:inline-block;}
-  .mt-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:13px 16px;
-        background:var(--surface-2);border-top:2px solid var(--line);font-size:13.5px;font-weight:700;}
-  .mt-sum b{font-size:16px;direction:ltr;margin-inline-start:auto;}
-  .mt-sum-note{flex-basis:100%;font-size:11.5px;font-weight:600;color:var(--muted);}
   .warn-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
   .hb-price{font-size:13.5px;font-weight:800;direction:ltr;background:var(--surface);
         border:1px solid var(--line);border-radius:999px;padding:4px 11px;flex:0 0 auto;}
@@ -211,12 +206,15 @@
   .tl-c h5{margin:0 0 2px;font-size:15px;}
   .tl-c p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55;}
 
-  .transfer{display:flex;align-items:center;gap:10px;margin-top:14px;background:var(--surface-2);
-            border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px;}
+  .transfer{display:flex;align-items:flex-start;gap:10px;margin-top:14px;background:var(--surface-2);
+            border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.55;}
   .transfer .tr-ic{font-size:10px;font-weight:800;letter-spacing:.5px;color:var(--muted);
-        background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 7px;flex:0 0 auto;}
+        background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 7px;flex:0 0 auto;
+        margin-top:2px;}
   .transfer b{color:var(--ink);}
   .transfer span{color:var(--muted);}
+  .transfer .tr-date{flex:0 0 auto;font-weight:800;color:var(--accent-bright);font-size:13px;
+        direction:ltr;min-width:42px;text-align:left;}
 
   .note-inline{font-size:12.5px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);
                border-radius:10px;padding:9px 12px;margin-top:12px;}
@@ -1960,6 +1958,12 @@ function wireSearch(){
   });
 }
 
+/* יום המעבר הוא יום היציאה מהיעד — החלק השני של טווח התאריכים ("9.9–12.9" ← "12.9").
+   הוא לא מופיע בלוח הימים, ולכן צריך להציג אותו על שורת המעבר עצמה. */
+function checkoutDate(dates){
+  const m = String(dates||"").split(/[–—-]/);
+  return m.length>1 ? m[1].trim() : "";
+}
 function segHTML(s, idx, cityColored, isOurs){
   const dayTix = isOurs ? (TIX.days||{}) : {};
   const cc = cityColored ? CITY_COLOR[s.city] : null;
@@ -2019,11 +2023,13 @@ function segHTML(s, idx, cityColored, isOurs){
       ${s.car?carBoxHTML(s.car, s.carSide):''}
       ${s.warn?`<div class="warn-box"><span class="wb-ic">לתשומת לב</span><span>${s.warn}</span></div>`:''}
       ${chooseBox}${bookLine}
-      ${isOurs?savedPlacesHTML(s.city):''}
       <div class="tl">${days}</div>
+      ${isOurs?savedPlacesHTML(s.city):''}
       ${isOurs?savedAddHTML(s.city):''}
       ${s.note?`<div class="note-inline">${s.note}</div>`:''}
-      ${s.transfer?`<div class="transfer"><span class="tr-ic">מעבר</span><div><b>${s.transfer.t}</b> <span>· ${s.transfer.x}</span></div></div>`:''}
+      ${s.transfer?`<div class="transfer"><span class="tr-ic">מעבר</span>
+        ${checkoutDate(s.dates)?`<span class="tr-date">${checkoutDate(s.dates)}</span>`:''}
+        <div><b>${s.transfer.t}</b> <span>· ${s.transfer.x}</span></div></div>`:''}
     </div>
   </details>`;
 }
@@ -2036,7 +2042,7 @@ function renderOption(opt){
     <p>${opt.summary}</p>
   </div>`;
   const cityColored = opt.id==="opt3";
-  const sumPrice = opt.segments.reduce((a,s)=>a+(s.price||0),0);
+  /* בלי מחירים — הם מופיעים בכרטיס הלינה של כל יעד ובעמוד התקציב */
   const table = `<div class="mtable">
     <div class="mt-row head"><span>יעד</span><span>תאריכים</span><span>לילות</span><span>לינה</span></div>
     ${opt.segments.map(s=>{
@@ -2046,13 +2052,9 @@ function renderOption(opt){
       <span class="mt-city">${s.city}</span>
       <span class="mt-dates">${s.dates}</span>
       <span class="mt-n"${nStyle}>${s.nights} ל׳</span>
-      <span class="mt-hotel">${s.hotel}${s.price?` <b class="mt-price">₪${s.price.toLocaleString("en-US")}</b>`:''}</span>
+      <span class="mt-hotel">${s.hotel}</span>
     </div>`;
     }).join("")}
-    ${sumPrice?`<div class="mt-sum">
-      <span>סה״כ לינה · ${opt.segments.length} הזמנות</span><b>₪${sumPrice.toLocaleString("en-US")}</b>
-      <span class="mt-sum-note">+ ₪1,713 על ההזמנה הכפולה בקיוטו (M's Est) — אם לא תבוטל, סה״כ ₪${(sumPrice+1713).toLocaleString("en-US")}</span>
-    </div>`:''}
   </div>`;
   const segs = opt.segments.map((s,i)=>segHTML(s,i,cityColored,cityColored)).join("");
   document.getElementById("pane-"+opt.id).innerHTML =
