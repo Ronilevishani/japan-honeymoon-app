@@ -361,6 +361,56 @@
   .sp-item:hover .sp-go{opacity:1;}
   @media(max-width:520px){ .sp-body{padding:2px 9px 12px;} }
 
+  /* ---------- Search across the saved places ---------- */
+  .psx-open{flex:0 0 auto;font-size:16px;padding:9px 14px !important;
+        position:sticky;inset-inline-start:0;z-index:3;box-shadow:6px 0 10px -8px rgba(0,0,0,.35);}
+  [dir="rtl"] .psx-open{box-shadow:-6px 0 10px -8px rgba(0,0,0,.35);}
+  .psx-open.on{color:#fff;background:var(--ink);border-color:var(--ink);}
+  .psx-ov{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;}
+  .psx-ov[hidden]{display:none !important;}
+  .psx-ov-back{position:absolute;inset:0;background:rgba(17,17,19,.42);backdrop-filter:blur(3px);}
+  .psx-ov-panel{position:relative;width:min(720px,100%);max-height:88vh;margin-top:56px;
+        background:var(--bg);border:1px solid var(--line);border-radius:18px;
+        box-shadow:0 24px 60px rgba(0,0,0,.22);overflow-y:auto;overscroll-behavior:contain;
+        padding:16px 18px 22px;}
+  @media(max-width:640px){
+    .psx-ov-panel{margin-top:0;height:100%;max-height:100%;border-radius:0;border:0;padding:14px 14px 20px;}
+  }
+  .psx{margin:0;}
+  .psx-bar{display:flex;align-items:center;gap:9px;background:var(--surface);border:2px solid var(--line);
+        border-radius:14px;padding:11px 14px;transition:.18s;}
+  .psx-bar:focus-within{border-color:var(--ink);box-shadow:0 0 0 4px var(--surface-2);}
+  .psx-head{display:flex;align-items:center;gap:10px;margin:0 2px 12px;
+        font-size:12.5px;font-weight:800;color:var(--muted);letter-spacing:.3px;}
+  .psx-head .psx-x{margin-inline-start:auto;}
+  .psx-ic{font-size:16px;flex:0 0 auto;opacity:.6;}
+  .psx-bar input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-family:inherit;
+        font-size:15px;color:var(--ink);padding:0;}
+  .psx-bar input::placeholder{color:var(--muted);opacity:.85;}
+  .psx-bar input::-webkit-search-cancel-button{display:none;}
+  .psx-clear{appearance:none;border:0;background:var(--surface-2);color:var(--muted);cursor:pointer;
+        width:24px;height:24px;border-radius:50%;font-size:12px;font-family:inherit;flex:0 0 auto;line-height:1;}
+  .psx-clear:hover{background:var(--ink);color:#fff;}
+  .psx-x{appearance:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);
+        cursor:pointer;width:30px;height:30px;border-radius:50%;font-size:14px;font-family:inherit;
+        flex:0 0 auto;line-height:1;transition:.16s;}
+  .psx-x:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .psx-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+  .psx-chip{appearance:none;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;
+        background:var(--surface);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;
+        padding:6px 12px;transition:.16s;}
+  .psx-chip:hover{border-color:var(--ink);}
+  .psx-chip.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .psx-count{margin-top:16px;font-size:12.5px;color:var(--muted);font-weight:700;}
+  .psx-city{margin-top:18px;}
+  .psx-ct{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;padding:0 2px 7px;
+        border-bottom:2px solid currentColor;}
+  .psx-ct .psx-cn{margin-inline-start:auto;font-weight:700;font-size:11px;opacity:.75;}
+  .psx-list{display:grid;gap:7px;margin-top:9px;}
+  .psx-none{margin-top:22px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;
+        padding:18px 16px;font-size:13.5px;color:var(--muted);line-height:1.6;}
+  .psx-none b{color:var(--ink);}
+
   /* ---------- Route map ---------- */
   .map-wrap{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);
         box-shadow:var(--shadow-sm);padding:10px;margin-bottom:22px;overflow:hidden;}
@@ -542,6 +592,7 @@
 
 <nav class="tabs">
   <div class="tabs-inner">
+    <button id="psx-open" class="psx-open" title="חיפוש במקומות ששמרנו" aria-label="חיפוש">🔎</button>
     <button data-tab="overview" class="active">סקירה</button>
     <button data-tab="opt3">המסלול שלנו</button>
     <button data-tab="budget">תקציב</button>
@@ -549,6 +600,11 @@
     <span class="sync-badge" id="syncStatus"></span>
   </div>
 </nav>
+
+<div id="psx-ov" class="psx-ov" hidden>
+  <div class="psx-ov-back" data-close="1"></div>
+  <div class="psx-ov-panel" role="dialog" aria-label="חיפוש במקומות ששמרנו"></div>
+</div>
 
 <main class="wrap">
   <section class="tab-pane active" id="pane-overview">
@@ -1479,6 +1535,162 @@ function savedPlacesHTML(city){
   </details>`;
 }
 
+/* ===================== SEARCH ACROSS THE SAVED PLACES ===================== */
+const SP_CITY_META = {   /* לפי סדר המסלול */
+  tokyo:   {he:"טוקיו",     color:"#c2402e"},
+  hakone:  {he:"האקונה",    color:"#1b6b3a"},
+  takayama:{he:"טאקאיאמה",  color:"#d98324"},
+  kanazawa:{he:"קנזאווה",   color:"#1e3a5f"},
+  kyoto:   {he:"קיוטו",     color:"#7b4397"},
+  osaka:   {he:"אוסקה",     color:"#c2185b"}
+};
+/* שמות ערים בלבד — מרחיבים לכל היעד */
+const SP_CITY_WORDS = {
+  tokyo:["טוקיו","tokyo"], kyoto:["קיוטו","kyoto"], osaka:["אוסקה","osaka"],
+  kanazawa:["קנזאווה","kanazawa"], takayama:["טאקאיאמה","takayama","גיפו","gifu"],
+  hakone:["האקונה","hakone"]
+};
+/* שכונות — מצמצמות, לא מרחיבות. השם בעברית מתורגם לצורה שמופיעה בכתובת באנגלית */
+const SP_HOOD = {
+  "שיבויה":"shibuya","גינזה":"ginza","הראגוקו":"harajuku","שינגוקו":"shinjuku","אסאקוסה":"asakusa",
+  "נקאמגורו":"nakameguro","קורמאה":"kuramae","נקאנו":"nakano","אואנו":"ueno","קיציגוגי":"kichijoji",
+  "צוקיגי":"tsukiji","קואנגי":"koenji","שימוקיטזאווה":"shimo-kitazawa","היגשיאמה":"higashiyama",
+  "ארשיאמה":"arashiyama","גיון":"gion","פושימי":"fushimi","נקאגיו":"nakagyo","פונטוצו":"pontocho",
+  "קמיגמו":"kamigamo","נמבה":"namba","ניפומבאשי":"nipponbashi","קורומון":"kuromon",
+  "נקאזאקיצו":"nakazakicho","גורה":"gora","סנגוקוהארה":"sengokuhara","הידה":"hida"
+};
+/* מילים כלליות שמזהות קטגוריה. מנות ספציפיות (ראמן, סושי…) נתפסות דרך ההערות שלנו */
+const SP_SYNONYMS = {
+  food:   ["אוכל","מסעדה","מסעדות","לאכול","ארוחה","food","restaurant","dinner","lunch"],
+  cafe:   ["קפה","קפייה","מאפייה","מאפיה","בייקרי","coffee","cafe","bakery"],
+  bar:    ["בר","ברים","קוקטייל","קוקטיילים","אלכוהול","שתייה","bar","cocktail","drinks"],
+  shop:   ["קניות","חנות","חנויות","לקנות","שופינג","shop","store","shopping"],
+  sight:  ["אטרקציה","אטרקציות","שכונה","שכונות","טיול","נוף","לטייל","attraction","sight","area"],
+  temple: ["מקדש","מקדשים","שרין","temple","shrine"],
+  culture:["תרבות","מוזיאון","מוזיאונים","גלריה","גלריות","אמנות","אומנות","museum","gallery","art"],
+  stay:   ["מלון","מלונות","לינה","לישון","ללון","hotel","stay"]
+};
+const SP_CAT_LABEL = Object.fromEntries(SP_CATS.map(([id,em,label])=>[id,label]));
+const SP_CAT_EMOJI = Object.fromEntries(SP_CATS.map(([id,em])=>[id,em]));
+const SP_CAT_CHIP  = {food:"אוכל",cafe:"קפה",bar:"בר",sight:"אטרקציה",temple:"מקדש",culture:"מוזיאון",shop:"חנות",stay:"מלון"};
+
+const SP_INDEX = [];
+Object.keys(SP_CITY_META).forEach(key=>{
+  const g = SAVED_PLACES[key]; if(!g) return;
+  g.list.forEach(p=>SP_INDEX.push(Object.assign({}, p, {key, area:g.area})));
+});
+const spNorm = s => (s||"").toLowerCase().replace(/['"׳״`]/g,"").replace(/[־–—]/g," ")
+  .replace(/\s+/g," ").trim()
+  .replace(/ב(ת|י)ת?י? ?קפה/g,"קפה")          /* ״בית קפה״ / ״בתי קפה״ ← ״קפה״ */
+  .replace(/בת?י ?מלון/g,"מלון");
+SP_INDEX.forEach(p=>{
+  p._hay = spNorm([p.n, p.x, p.q, SP_CAT_LABEL[p.c], SP_CITY_META[p.key].he, p.area].join(" "));
+  p._cat = (SP_SYNONYMS[p.c]||[]).map(spNorm);
+  p._city= (SP_CITY_WORDS[p.key]||[]).map(spNorm);
+});
+/* בעברית מדביקים אותיות שימוש: ״בטוקיו״ ← ״טוקיו״ */
+function spVariants(tok){
+  const v=[tok];
+  if(tok.length>3 && "בלמהוש כ".includes(tok[0])) v.push(tok.slice(1));
+  if(tok.length>4 && "בלמהוש כ".includes(tok[0]) && "בלמהוש כ".includes(tok[1])) v.push(tok.slice(2));
+  return v;
+}
+function spTokenHits(tok, p){
+  return spVariants(tok).some(v=>{
+    if(p._hay.includes(v)) return true;
+    const hood = SP_HOOD[v];                       /* ״גינזה״ ← מחפשים ginza בתוך המקום עצמו */
+    if(hood && p._hay.includes(spNorm(hood))) return true;
+    if(p._cat.some(w=>w.startsWith(v)||v.startsWith(w))) return true;
+    return p._city.some(w=>w.startsWith(v)||v.startsWith(w));
+  });
+}
+function spSearch(q){
+  const toks = spNorm(q).split(" ").filter(t=>t.length>1);
+  if(!toks.length) return null;
+  /* מילה שלא מתאימה לאף מקום היא רעש (״אני״, ״מחפשת״, ״בתי״) — מתעלמים ממנה */
+  const live = toks.filter(t=>SP_INDEX.some(p=>spTokenHits(t,p)));
+  if(!live.length) return {toks, live, hits:[]};
+  return {toks, live, hits: SP_INDEX.filter(p=>live.every(t=>spTokenHits(t,p)))};
+}
+function spResultsHTML(q){
+  const r = spSearch(q);
+  if(!r) return "";
+  if(!r.hits.length) return `<div class="psx-none">לא מצאתי כלום ל<b>״${q.trim()}״</b>.<br>
+    אפשר לנסות לפי קטגוריה (קפה, אוכל, בר, מקדש, חנות), לפי עיר (טוקיו, קיוטו, קנזאווה…),
+    לפי שכונה (גינזה, ארשיאמה) או לפי מילה מתוך ההערות שלנו (ראמן, סכינים, קרמיקה).</div>`;
+  const byCity = Object.keys(SP_CITY_META)
+    .map(k=>[k, r.hits.filter(p=>p.key===k)]).filter(([,l])=>l.length);
+  const body = byCity.map(([k,list])=>{
+    const m=SP_CITY_META[k];
+    return `<div class="psx-city" style="color:${m.color}">
+      <div class="psx-ct"><span>${m.he}</span><span class="psx-cn">${list.length}</span></div>
+      <div class="psx-list">${list.map(p=>`
+        <a class="sp-item" target="_blank" rel="noopener" href="${gmap(p.q || (p.n+' '+p.area))}"
+           style="--accent:${m.color}">
+          <span class="sp-em">${SP_CAT_EMOJI[p.c]}</span>
+          <span class="sp-tx"><b>${p.n}</b>${p.x?`<span>${p.x}</span>`:''}</span>
+          <span class="sp-go">↗</span>
+        </a>`).join("")}</div>
+    </div>`;
+  }).join("");
+  const ignored = r.toks.filter(t=>!r.live.includes(t));
+  const n = r.hits.length===1 ? "מקום אחד" : `${r.hits.length} מקומות`;
+  return `<div class="psx-count">${n}${ignored.length?` · התעלמתי מ־${ignored.map(t=>`״${t}״`).join(", ")}`:''}</div>${body}`;
+}
+function searchBoxHTML(){
+  return `<div class="psx">
+    <div class="psx-head">
+      <span>המקומות ששמרנו במפה · ${SP_INDEX.length}</span>
+      <button id="psx-close" class="psx-x" data-close="1" aria-label="סגירת החיפוש">✕</button>
+    </div>
+    <div class="psx-bar">
+      <span class="psx-ic">🔎</span>
+      <input id="psx-q" type="search" autocomplete="off" spellcheck="false"
+             placeholder="חיפוש: קפה בטוקיו · מקדש · סכינים…">
+      <button id="psx-clear" class="psx-clear" hidden aria-label="ניקוי החיפוש">✕</button>
+    </div>
+    <div class="psx-chips">${SP_CATS.filter(([id])=>SP_INDEX.some(p=>p.c===id))
+      .map(([id,em])=>`<button class="psx-chip" data-w="${SP_CAT_CHIP[id]}">${em} ${SP_CAT_CHIP[id]}</button>`).join("")}</div>
+    <div id="psx-res"></div>
+  </div>`;
+}
+/* החיפוש חי בשכבה מעל האפליקציה, ולכן זמין מכל עמוד */
+function wireSearch(){
+  const ov=document.getElementById("psx-ov"), panel=ov.querySelector(".psx-ov-panel"),
+        openBtn=document.getElementById("psx-open");
+  panel.innerHTML = searchBoxHTML();
+  const q=document.getElementById("psx-q"), res=document.getElementById("psx-res"),
+        clr=document.getElementById("psx-clear");
+  const run=()=>{
+    const v=q.value.trim();
+    clr.hidden = !v;
+    res.innerHTML = v ? spResultsHTML(v) : "";
+    const words=spNorm(v).split(" ");
+    panel.querySelectorAll(".psx-chip").forEach(c=>c.classList.toggle("on", words.includes(spNorm(c.dataset.w))));
+  };
+  const open=()=>{ ov.hidden=false; openBtn.classList.add("on");
+    document.body.style.overflow="hidden"; setTimeout(()=>q.focus(),30); };
+  const close=()=>{ ov.hidden=true; openBtn.classList.remove("on"); document.body.style.overflow=""; };
+  openBtn.addEventListener("click", open);
+  ov.addEventListener("click", e=>{ if(e.target.closest("[data-close]")) close(); });
+  q.addEventListener("input", run);
+  q.addEventListener("keydown", e=>{ if(e.key==="Escape"){ if(q.value){ q.value=""; run(); } else close(); } });
+  clr.addEventListener("click", ()=>{ q.value=""; run(); q.focus(); });
+  panel.querySelectorAll(".psx-chip").forEach(c=>c.addEventListener("click",()=>{
+    const w=c.dataset.w;
+    const words=q.value.trim().split(/\s+/).filter(Boolean);
+    const i=words.findIndex(x=>spNorm(x)===spNorm(w));
+    if(i>=0) words.splice(i,1); else words.push(w);
+    q.value=words.join(" "); run(); q.focus();
+  }));
+  /* לחיצה על תוצאה פותחת את גוגל מאפס בלשונית חדשה — סוגרים את השכבה מאחוריה */
+  res.addEventListener("click", e=>{ if(e.target.closest(".sp-item")) close(); });
+  document.addEventListener("keydown", e=>{
+    if(ov.hidden && (e.key==="/" || ((e.metaKey||e.ctrlKey) && e.key==="k")) &&
+       !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)){ e.preventDefault(); open(); }
+  });
+}
+
 function segHTML(s, idx, cityColored, isOurs){
   const dayTix = isOurs ? (TIX.days||{}) : {};
   const cc = cityColored ? CITY_COLOR[s.city] : null;
@@ -1580,9 +1792,10 @@ function renderOption(opt){
     + table + segs;
 }
 OPTIONS.forEach(renderOption);
+wireSearch();
 
 /* ===================== TABS ===================== */
-const btns = document.querySelectorAll("nav.tabs button");
+const btns = document.querySelectorAll("nav.tabs button[data-tab]");
 function activate(tab){
   btns.forEach(x=>x.classList.toggle("active", x.dataset.tab===tab));
   document.querySelectorAll(".tab-pane").forEach(p=>p.classList.toggle("active", p.id==="pane-"+tab));
