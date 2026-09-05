@@ -153,6 +153,7 @@
         background:var(--surface-2);border-top:2px solid var(--line);font-size:13.5px;font-weight:700;}
   .mt-sum b{font-size:16px;direction:ltr;margin-inline-start:auto;}
   .mt-sum-note{flex-basis:100%;font-size:11.5px;font-weight:600;color:var(--muted);}
+  .warn-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
   .hb-price{font-size:13.5px;font-weight:800;direction:ltr;background:var(--surface);
         border:1px solid var(--line);border-radius:999px;padding:4px 11px;flex:0 0 auto;}
 
@@ -975,7 +976,11 @@ const OPTIONS = [
         city:"קיוטו + נארה", region:"Kyoto Japan", dates:"18.9–23.9", nights:5, price:2110,
         hotel:"KABIN Kyoto", hotelNote:"נארה כטיול יום", booking:true, cancel:"14.9",
         access:"כ-10 דק׳ הליכה מתחנת קיוטו (יציאה דרומית) או מתחנת המטרו Kyoto/Shichijo.",
-        warn:"<b>כפילות פתוחה בקיוטו.</b> מלבד ההזמנה כאן ב-KABIN Kyoto (₪2,110) קיימת גם הזמנה ל-<b>Hotel M's Est Shijo Karasuma</b> (₪1,713) שחופפת לאותה שהות. צריך להחליט באיזו מהן נשארים ולבטל את השנייה בזמן.",
+        warn:"<b>כפילות פתוחה בקיוטו.</b> מלבד ההזמנה כאן ב-KABIN Kyoto (₪2,110) קיימת גם הזמנה ל-<b>Hotel M's Est Shijo Karasuma</b> (₪1,713) שחופפת לאותה שהות. צריך להחליט באיזו מהן נשארים ולבטל את השנייה בזמן."
+             +"<span class=\"warn-links\">"
+             +"<a class=\"btn-book\" target=\"_blank\" rel=\"noopener\" href=\"https://www.booking.com/searchresults.html?ss=Hotel%20M%27s%20Est%20Shijo%20Karasuma%20Kyoto\">Booking · M&#39;s Est <span class=\"ext\">↗</span></a>"
+             +"<a class=\"btn-map\" target=\"_blank\" rel=\"noopener\" href=\"https://www.google.com/maps/search/?api=1&query=Hotel%20M%27s%20Est%20Shijo%20Karasuma%20Kyoto%20Japan\">Google&nbsp;Maps <span class=\"ext\">↗</span></a>"
+             +"</span>",
         highlights:["Kiyomizu-dera","Fushimi Inari","יער הבמבוק","Kinkaku-ji","Gion","Philosopher's Path","שוק Nishiki","Tōdai-ji (נארה)","teamLab Kyoto","Studio Shinobi YASE (סכינים)"],
         days:[
           {d:"18.9", t:"מזרח קיוטו (Higashiyama)", x:"Kiyomizu-dera מוקדם, Sannenzaka/Ninenzaka, פגודת Yasaka, Yasaka Shrine, Kōdai-ji, ו-Gion בערב."},
